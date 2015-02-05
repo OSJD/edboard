@@ -1,0 +1,95 @@
+<w:p w:rsidR="00436867" w:rsidP="008353D5" w:rsidRDefault="00436867">
+            <w:pPr>
+                <w:pStyle w:val="a0020block0020para"/>
+                <w:spacing w:before="0" w:beforeAutospacing="false" w:after="120" w:afterAutospacing="false"/>
+                <w:rPr>
+                    <w:rFonts w:eastAsia="Times New Roman"/>
+                    <w:b/>
+                    <w:bCs/>
+                    <w:sz w:val="20"/>
+                    <w:szCs w:val="20"/>
+                    <w:u w:val="single"/>
+                </w:rPr>
+            </w:pPr>
+        </w:p>
+        <w:p w:rsidR="008353D5" w:rsidP="008353D5" w:rsidRDefault="008353D5">
+            <w:pPr>
+                <w:pStyle w:val="a0020block0020para"/>
+                <w:spacing w:before="0" w:beforeAutospacing="false" w:after="120" w:afterAutospacing="false"/>
+                <w:rPr>
+                    <w:rFonts w:eastAsia="Times New Roman"/>
+                    <w:b/>
+                    <w:bCs/>
+                    <w:sz w:val="20"/>
+                    <w:szCs w:val="20"/>
+                    <w:u w:val="single"/>
+                </w:rPr>
+            </w:pPr>
+            <w:r w:rsidRPr="007E251A">
+                <w:rPr>
+                    <w:rFonts w:eastAsia="Times New Roman"/>
+                    <w:b/>
+                    <w:bCs/>
+                    <w:sz w:val="20"/>
+                    <w:szCs w:val="20"/>
+                    <w:u w:val="single"/>
+                </w:rPr>
+                <w:t xml:space="preserve">Planned </w:t>
+            </w:r>
+            <w:r w:rsidRPr="007E251A" w:rsidR="00257531">
+                <w:rPr>
+                    <w:rFonts w:eastAsia="Times New Roman"/>
+                    <w:b/>
+                    <w:bCs/>
+                    <w:sz w:val="20"/>
+                    <w:szCs w:val="20"/>
+                    <w:u w:val="single"/>
+                </w:rPr>
+                <w:t>Ta</w:t>
+            </w:r>
+            <w:r w:rsidR="00257531">
+                <w:rPr>
+                    <w:rFonts w:eastAsia="Times New Roman"/>
+                    <w:b/>
+                    <w:bCs/>
+                    <w:sz w:val="20"/>
+                    <w:szCs w:val="20"/>
+                    <w:u w:val="single"/>
+                </w:rPr>
+                <w:t>s</w:t>
+            </w:r>
+            <w:r w:rsidRPr="007E251A" w:rsidR="00257531">
+                <w:rPr>
+                    <w:rFonts w:eastAsia="Times New Roman"/>
+                    <w:b/>
+                    <w:bCs/>
+                    <w:sz w:val="20"/>
+                    <w:szCs w:val="20"/>
+                    <w:u w:val="single"/>
+                </w:rPr>
+                <w:t>ks</w:t>
+            </w:r>
+            <w:r w:rsidRPr="007E251A">
+                <w:rPr>
+                    <w:rFonts w:eastAsia="Times New Roman"/>
+                    <w:b/>
+                    <w:bCs/>
+                    <w:sz w:val="20"/>
+                    <w:szCs w:val="20"/>
+                    <w:u w:val="single"/>
+                </w:rPr>
+                <w:t xml:space="preserve"> for Next Week</w:t>
+            </w:r>
+            <w:r w:rsidR="00D01D0F">
+                <w:rPr>
+                    <w:rFonts w:eastAsia="Times New Roman"/>
+                    <w:b/>
+                    <w:bCs/>
+                    <w:sz w:val="20"/>
+                    <w:szCs w:val="20"/>
+                    <w:u w:val="single"/>
+                </w:rPr>
+                <w:t>:</w:t>
+            </w:r>
+        </w:p>
+        

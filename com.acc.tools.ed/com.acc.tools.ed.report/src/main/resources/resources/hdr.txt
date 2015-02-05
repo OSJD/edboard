@@ -1,0 +1,255 @@
+<w:hdr xmlns:w15="http://schemas.microsoft.com/office/word/2012/wordml" xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" xmlns:ns21="urn:schemas-microsoft-com:office:powerpoint" xmlns:ns23="http://schemas.microsoft.com/office/2006/coverPageProps" xmlns:dsp="http://schemas.microsoft.com/office/drawing/2008/diagram" xmlns:w10="urn:schemas-microsoft-com:office:word" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:odx="http://opendope.org/xpaths" xmlns:odgm="http://opendope.org/SmartArt/DataHierarchy" xmlns:dgm="http://schemas.openxmlformats.org/drawingml/2006/diagram" xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:odi="http://opendope.org/components" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:ns19="urn:schemas-microsoft-com:office:excel" xmlns:ns9="http://schemas.openxmlformats.org/schemaLibrary/2006/main" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:ns32="http://schemas.openxmlformats.org/drawingml/2006/lockedCanvas" xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture" xmlns:ns30="http://schemas.openxmlformats.org/officeDocument/2006/bibliography" xmlns:ns12="http://schemas.openxmlformats.org/drawingml/2006/chartDrawing" xmlns:ns31="http://schemas.openxmlformats.org/drawingml/2006/compatibility" xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" xmlns:odq="http://opendope.org/questions" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:odc="http://opendope.org/conditions" xmlns:oda="http://opendope.org/answers">
+    <w:tbl>
+        <w:tblPr>
+            <w:tblW w:w="10908" w:type="dxa"/>
+            <w:tblLook w:firstRow="1" w:lastRow="1" w:firstColumn="1" w:lastColumn="1" w:noHBand="0" w:noVBand="0" w:val="01E0"/>
+        </w:tblPr>
+        <w:tblGrid>
+            <w:gridCol w:w="5688"/>
+            <w:gridCol w:w="5220"/>
+        </w:tblGrid>
+        <w:tr w:rsidRPr="0019241A" w:rsidR="006040EF" w:rsidTr="003A5A15">
+            <w:tc>
+                <w:tcPr>
+                    <w:tcW w:w="5688" w:type="dxa"/>
+                    <w:shd w:val="clear" w:color="auto" w:fill="auto"/>
+                </w:tcPr>
+                <w:p w:rsidRPr="0019241A" w:rsidR="006040EF" w:rsidP="0019241A" w:rsidRDefault="007F07F7">
+                    <w:pPr>
+                        <w:pStyle w:val="Title"/>
+                        <w:tabs>
+                            <w:tab w:val="left" w:pos="2340"/>
+                        </w:tabs>
+                        <w:spacing w:after="120"/>
+                        <w:ind w:left="0"/>
+                        <w:jc w:val="left"/>
+                        <w:rPr>
+                            <w:color w:val="000099"/>
+                            <w:sz w:val="28"/>
+                            <w:szCs w:val="28"/>
+                        </w:rPr>
+                    </w:pPr>
+                    <w:r>
+                        <w:rPr>
+                            <w:noProof/>
+                            <w:color w:val="000099"/>
+                            <w:sz w:val="28"/>
+                            <w:szCs w:val="28"/>
+                        </w:rPr>
+                        <w:drawing>
+                            <wp:anchor distT="0" distB="0" distL="114300" distR="114300" simplePos="false" relativeHeight="251657728" behindDoc="false" locked="false" layoutInCell="true" allowOverlap="true">
+                                <wp:simplePos x="0" y="0"/>
+                                <wp:positionH relativeFrom="column">
+                                    <wp:posOffset>-859155</wp:posOffset>
+                                </wp:positionH>
+                                <wp:positionV relativeFrom="paragraph">
+                                    <wp:posOffset>20320</wp:posOffset>
+                                </wp:positionV>
+                                <wp:extent cx="743585" cy="320675"/>
+                                <wp:effectExtent l="0" t="0" r="0" b="3175"/>
+                                <wp:wrapSquare wrapText="bothSides"/>
+                                <wp:docPr id="1" name="Picture 5" descr="HCSC Logo feb2009"/>
+                                <wp:cNvGraphicFramePr>
+                                    <a:graphicFrameLocks noChangeAspect="true"/>
+                                </wp:cNvGraphicFramePr>
+                                <a:graphic>
+                                    <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                                        <pic:pic>
+                                            <pic:nvPicPr>
+                                                <pic:cNvPr id="0" name="Picture 5" descr="HCSC Logo feb2009"/>
+                                                <pic:cNvPicPr>
+                                                    <a:picLocks noChangeAspect="true" noChangeArrowheads="true"/>
+                                                </pic:cNvPicPr>
+                                            </pic:nvPicPr>
+                                            <pic:blipFill>
+                                                <a:blip r:embed="rId1">
+                                                    <a:extLst>
+                                                        <a:ext uri="{28A0092B-C50C-407E-A947-70E740481C1C}">
+                                                            <a14:useLocalDpi val="0" xmlns:a14="http://schemas.microsoft.com/office/drawing/2010/main" xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk"/>
+                                                        </a:ext>
+                                                    </a:extLst>
+                                                </a:blip>
+                                                <a:srcRect/>
+                                                <a:stretch>
+                                                    <a:fillRect/>
+                                                </a:stretch>
+                                            </pic:blipFill>
+                                            <pic:spPr bwMode="auto">
+                                                <a:xfrm>
+                                                    <a:off x="0" y="0"/>
+                                                    <a:ext cx="743585" cy="320675"/>
+                                                </a:xfrm>
+                                                <a:prstGeom prst="rect">
+                                                    <a:avLst/>
+                                                </a:prstGeom>
+                                                <a:noFill/>
+                                                <a:ln>
+                                                    <a:noFill/>
+                                                </a:ln>
+                                            </pic:spPr>
+                                        </pic:pic>
+                                    </a:graphicData>
+                                </a:graphic>
+                            </wp:anchor>
+                        </w:drawing>
+                    </w:r>
+                </w:p>
+            </w:tc>
+            <w:tc>
+                <w:tcPr>
+                    <w:tcW w:w="5220" w:type="dxa"/>
+                    <w:shd w:val="clear" w:color="auto" w:fill="auto"/>
+                </w:tcPr>
+                <w:p w:rsidRPr="00B46E19" w:rsidR="006040EF" w:rsidP="0019241A" w:rsidRDefault="003A5A15">
+                    <w:pPr>
+                        <w:pStyle w:val="Subtitle"/>
+                        <w:tabs>
+                            <w:tab w:val="left" w:pos="2700"/>
+                        </w:tabs>
+                        <w:ind w:left="0"/>
+                        <w:jc w:val="left"/>
+                        <w:rPr>
+                            <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>
+                            <w:b/>
+                            <w:color w:val="000066"/>
+                            <w:sz w:val="20"/>
+                            <w:szCs w:val="20"/>
+                            <w:lang w:val="en-GB"/>
+                        </w:rPr>
+                    </w:pPr>
+                    <w:r w:rsidRPr="00B46E19">
+                        <w:rPr>
+                            <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>
+                            <w:b/>
+                            <w:color w:val="000066"/>
+                            <w:sz w:val="20"/>
+                            <w:szCs w:val="20"/>
+                            <w:lang w:val="en-GB"/>
+                        </w:rPr>
+                        <w:t xml:space="preserve">**ProjectName** </w:t>
+                    </w:r>
+                    <w:r w:rsidRPr="00B46E19" w:rsidR="006040EF">
+                        <w:rPr>
+                            <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>
+                            <w:b/>
+                            <w:color w:val="000066"/>
+                            <w:sz w:val="20"/>
+                            <w:szCs w:val="20"/>
+                            <w:lang w:val="en-GB"/>
+                        </w:rPr>
+                        <w:t>- Project Status Report</w:t>
+                    </w:r>
+                </w:p>
+                <w:p w:rsidRPr="00B46E19" w:rsidR="006040EF" w:rsidP="0019241A" w:rsidRDefault="00257531">
+                    <w:pPr>
+                        <w:pStyle w:val="Title"/>
+                        <w:tabs>
+                            <w:tab w:val="left" w:pos="2340"/>
+                        </w:tabs>
+                        <w:ind w:left="0"/>
+                        <w:jc w:val="left"/>
+                        <w:rPr>
+                            <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>
+                            <w:color w:val="000066"/>
+                            <w:sz w:val="20"/>
+                            <w:szCs w:val="20"/>
+                        </w:rPr>
+                    </w:pPr>
+                    <w:r w:rsidRPr="00B46E19">
+                        <w:rPr>
+                            <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>
+                            <w:color w:val="000066"/>
+                            <w:sz w:val="20"/>
+                            <w:szCs w:val="20"/>
+                        </w:rPr>
+                        <w:t>Work stream</w:t>
+                    </w:r>
+                    <w:r w:rsidRPr="00B46E19" w:rsidR="006040EF">
+                        <w:rPr>
+                            <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>
+                            <w:color w:val="000066"/>
+                            <w:sz w:val="20"/>
+                            <w:szCs w:val="20"/>
+                        </w:rPr>
+                        <w:t xml:space="preserve">: </w:t>
+                    </w:r>
+                    <w:r w:rsidRPr="00B46E19" w:rsidR="003A5A15">
+                        <w:rPr>
+                            <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>
+                            <w:color w:val="000066"/>
+                            <w:sz w:val="20"/>
+                            <w:szCs w:val="20"/>
+                            <w:lang w:val="en-GB"/>
+                        </w:rPr>
+                        <w:t>**ProgramName**</w:t>
+                    </w:r>
+                </w:p>
+                <w:p w:rsidRPr="00B46E19" w:rsidR="006040EF" w:rsidP="0019241A" w:rsidRDefault="006040EF">
+                    <w:pPr>
+                        <w:pStyle w:val="Title"/>
+                        <w:tabs>
+                            <w:tab w:val="left" w:pos="2340"/>
+                        </w:tabs>
+                        <w:ind w:left="0"/>
+                        <w:jc w:val="left"/>
+                        <w:rPr>
+                            <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>
+                            <w:color w:val="000066"/>
+                            <w:sz w:val="20"/>
+                            <w:szCs w:val="20"/>
+                        </w:rPr>
+                    </w:pPr>
+                    <w:r w:rsidRPr="00B46E19">
+                        <w:rPr>
+                            <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>
+                            <w:color w:val="000066"/>
+                            <w:sz w:val="20"/>
+                            <w:szCs w:val="20"/>
+                        </w:rPr>
+                        <w:t>Re</w:t>
+                    </w:r>
+                    <w:r w:rsidRPr="00B46E19" w:rsidR="00CC141A">
+                        <w:rPr>
+                            <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman"/>
+                            <w:color w:val="000066"/>
+                            <w:sz w:val="20"/>
+                            <w:szCs w:val="20"/>
+                        </w:rPr>
+                        <w:t xml:space="preserve">porting Period: **Period**</w:t>
+                    </w:r>
+                    
+                </w:p>
+                <w:p w:rsidRPr="0019241A" w:rsidR="006040EF" w:rsidP="0019241A" w:rsidRDefault="006040EF">
+                    <w:pPr>
+                        <w:pStyle w:val="Title"/>
+                        <w:tabs>
+                            <w:tab w:val="left" w:pos="2340"/>
+                        </w:tabs>
+                        <w:ind w:left="0"/>
+                        <w:jc w:val="left"/>
+                        <w:rPr>
+                            <w:color w:val="000066"/>
+                            <w:sz w:val="20"/>
+                            <w:szCs w:val="20"/>
+                        </w:rPr>
+                    </w:pPr>
+                </w:p>
+            </w:tc>
+        </w:tr>
+    </w:tbl>
+    <w:p w:rsidRPr="005F3B17" w:rsidR="006040EF" w:rsidP="001855F6" w:rsidRDefault="006040EF">
+        <w:pPr>
+            <w:pStyle w:val="Title"/>
+            <w:tabs>
+                <w:tab w:val="left" w:pos="2340"/>
+            </w:tabs>
+            <w:spacing w:after="120"/>
+            <w:ind w:left="0"/>
+            <w:jc w:val="left"/>
+            <w:rPr>
+                <w:sz w:val="4"/>
+                <w:szCs w:val="4"/>
+            </w:rPr>
+        </w:pPr>
+    </w:p>
+</w:hdr>

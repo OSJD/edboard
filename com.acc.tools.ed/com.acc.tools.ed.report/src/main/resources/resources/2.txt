@@ -1,0 +1,72 @@
+</w:t>
+                        </w:r>
+                    </w:p>
+                </w:tc>
+            </w:tr>
+            <w:tr w:rsidRPr="007E251A" w:rsidR="003520EE" w:rsidTr="00642EDB">
+                <w:trPr>
+                    <w:trHeight w:val="314"/>
+                </w:trPr>
+                <w:tc>
+                    <w:tcPr>
+                        <w:tcW w:w="10080" w:type="dxa"/>
+                        <w:gridSpan w:val="5"/>
+                        <w:shd w:val="clear" w:color="auto" w:fill="008000"/>
+                    </w:tcPr>
+                    <w:p w:rsidRPr="007E251A" w:rsidR="003520EE" w:rsidP="00642EDB" w:rsidRDefault="00AA64BF">
+                        <w:pPr>
+                            <w:pStyle w:val="Status"/>
+                            <w:tabs>
+                                <w:tab w:val="left" w:pos="9525"/>
+                                <w:tab w:val="right" w:pos="10686"/>
+                            </w:tabs>
+                            <w:spacing w:before="0" w:after="0"/>
+                            <w:jc w:val="left"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/>
+                                <w:color w:val="FFFFFF"/>
+                                <w:sz w:val="20"/>
+                                <w:szCs w:val="20"/>
+                                <w:lang w:val="en-GB"/>
+                            </w:rPr>
+                        </w:pPr>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/>
+                                <w:color w:val="FFFFFF"/>
+                                <w:sz w:val="20"/>
+                                <w:szCs w:val="20"/>
+                                <w:lang w:val="en-GB"/>
+                            </w:rPr>
+                            <w:t>Release details</w:t>
+                        </w:r>
+                    </w:p>
+                </w:tc>
+            </w:tr>
+            <w:tr w:rsidRPr="007E251A" w:rsidR="003520EE" w:rsidTr="00642EDB">
+                <w:trPr>
+                    <w:trHeight w:val="207"/>
+                </w:trPr>
+                <w:tc>
+                    <w:tcPr>
+                        <w:tcW w:w="2700" w:type="dxa"/>
+                        <w:shd w:val="clear" w:color="auto" w:fill="auto"/>
+                        <w:vAlign w:val="bottom"/>
+                    </w:tcPr>
+                    <w:p w:rsidRPr="007E251A" w:rsidR="003520EE" w:rsidP="00642EDB" w:rsidRDefault="006A0F2D">
+                        <w:pPr>
+                            <w:pStyle w:val="Milestone"/>
+                            <w:ind w:left="432"/>
+                            <w:rPr>
+                                <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/>
+                                <w:sz w:val="18"/>
+                                <w:szCs w:val="18"/>
+                            </w:rPr>
+                        </w:pPr>
+                        <w:r>
+                            <w:rPr>
+                                <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/>
+                                <w:sz w:val="18"/>
+                                <w:szCs w:val="18"/>
+                            </w:rPr>
+                            <w:t xml:space="preserve">

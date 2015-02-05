@@ -1,0 +1,71 @@
+</w:t>
+                        </w:r>
+                    </w:p>
+                </w:tc>
+            </w:tr>
+        </w:tbl>
+        <w:p w:rsidR="007B77B3" w:rsidP="007B77B3" w:rsidRDefault="00972725">
+            <w:pPr>
+                <w:pStyle w:val="StyleHeading110pt"/>
+                <w:contextualSpacing/>
+                <w:rPr>
+                    <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/>
+                    <w:u w:val="single"/>
+                </w:rPr>
+            </w:pPr>
+            <w:r>
+                <w:rPr>
+                    <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/>
+                    <w:u w:val="single"/>
+                </w:rPr>
+                <w:br/>
+            </w:r>
+            <w:r w:rsidRPr="007E251A" w:rsidR="00416A9E">
+                <w:rPr>
+                    <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/>
+                    <w:u w:val="single"/>
+                </w:rPr>
+                <w:t>Milestone Details &amp; Mitigation Plans:</w:t>
+            </w:r>
+        </w:p>
+        <w:p w:rsidR="005F57D8" w:rsidP="007B77B3" w:rsidRDefault="005F57D8">
+            <w:pPr>
+                <w:pStyle w:val="StyleHeading110pt"/>
+                <w:contextualSpacing/>
+                <w:rPr>
+                    <w:rFonts w:cs="Arial"/>
+                    <w:b w:val="false"/>
+                    <w:strike/>
+                </w:rPr>
+            </w:pPr>
+        </w:p>
+        <w:p w:rsidR="00414656" w:rsidP="00414656" w:rsidRDefault="00414656">
+            <w:pPr>
+                <w:pStyle w:val="StyleHeading110pt"/>
+                <w:ind w:left="1440"/>
+                <w:contextualSpacing/>
+                <w:rPr>
+                    <w:rFonts w:cs="Arial"/>
+                    <w:b w:val="false"/>
+                </w:rPr>
+            </w:pPr>
+        </w:p>
+        <w:p w:rsidR="00414656" w:rsidP="00C4651F" w:rsidRDefault="00414656">
+            <w:pPr>
+                <w:pStyle w:val="StyleHeading110pt"/>
+                <w:numPr>
+                    <w:ilvl w:val="0"/>
+                    <w:numId w:val="22"/>
+                </w:numPr>
+                <w:contextualSpacing/>
+                <w:rPr>
+                    <w:rFonts w:cs="Arial"/>
+                    <w:b w:val="false"/>
+                </w:rPr>
+            </w:pPr>
+            <w:r>
+                <w:rPr>
+                    <w:rFonts w:cs="Arial"/>
+                    <w:b w:val="false"/>
+                </w:rPr>
+                <w:t xml:space="preserve">

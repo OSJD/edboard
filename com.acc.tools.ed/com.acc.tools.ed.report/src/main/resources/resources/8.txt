@@ -1,0 +1,55 @@
+</w:t>
+            </w:r>
+        </w:p>
+        <w:p w:rsidR="00E168B2" w:rsidP="00C11D8C" w:rsidRDefault="00E168B2">
+            <w:pPr>
+                <w:pStyle w:val="StyleHeading110pt"/>
+                <w:ind w:left="1440"/>
+                <w:contextualSpacing/>
+                <w:rPr>
+                    <w:rFonts w:cs="Arial"/>
+                    <w:b w:val="false"/>
+                </w:rPr>
+            </w:pPr>
+        </w:p>
+        <w:p w:rsidRPr="00C4651F" w:rsidR="001845BB" w:rsidP="001845BB" w:rsidRDefault="001845BB">
+            <w:pPr>
+                <w:pStyle w:val="StyleHeading110pt"/>
+                <w:ind w:left="1080"/>
+                <w:contextualSpacing/>
+                <w:rPr>
+                    <w:rFonts w:cs="Arial"/>
+                    <w:b w:val="false"/>
+                </w:rPr>
+            </w:pPr>
+        </w:p>
+        <w:p w:rsidRPr="007E251A" w:rsidR="002D4751" w:rsidP="002D4751" w:rsidRDefault="002D4751">
+            <w:pPr>
+                <w:pStyle w:val="StyleHeading110pt"/>
+                <w:rPr>
+                    <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/>
+                    <w:u w:val="single"/>
+                </w:rPr>
+            </w:pPr>
+            <w:r w:rsidRPr="007E251A">
+                <w:rPr>
+                    <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/>
+                    <w:u w:val="single"/>
+                </w:rPr>
+                <w:t>Accomplishments</w:t>
+            </w:r>
+            <w:r w:rsidRPr="007E251A" w:rsidR="007F475E">
+                <w:rPr>
+                    <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/>
+                    <w:u w:val="single"/>
+                </w:rPr>
+                <w:t xml:space="preserve"> This Period</w:t>
+            </w:r>
+            <w:r w:rsidR="00972725">
+                <w:rPr>
+                    <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/>
+                    <w:u w:val="single"/>
+                </w:rPr>
+                <w:t>:</w:t>
+            </w:r>
+        </w:p>

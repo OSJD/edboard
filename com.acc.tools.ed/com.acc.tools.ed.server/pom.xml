@@ -1,0 +1,82 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<groupId>com.acc.tools.ed</groupId>
+		<artifactId>com.acc.tools.ed</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.acc.tools.ed.server</groupId>
+	<artifactId>com.acc.tools.ed.server</artifactId>
+	<properties>
+		<jetty.version>9.3.0.M1</jetty.version>
+	 </properties>
+
+	<packaging>jar</packaging>
+	<name>Engagement Dashboard Server</name>
+
+	<dependencies>
+	    <!-- JETTY DEPENDENCIES -->
+	    <dependency>
+	      <groupId>org.eclipse.jetty</groupId>
+	      <artifactId>jetty-server</artifactId>
+	      <version>${jetty.version}</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.eclipse.jetty</groupId>
+	      <artifactId>jetty-servlet</artifactId>
+	      <version>${jetty.version}</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.eclipse.jetty</groupId>
+	      <artifactId>jetty-webapp</artifactId>
+	      <version>${jetty.version}</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.eclipse.jetty</groupId>
+	      <artifactId>jetty-servlets</artifactId>
+	      <version>${jetty.version}</version>
+	    </dependency>
+	
+	    <!-- JSP and JSTL SUPPORT -->
+	    <dependency>
+		  <groupId>org.eclipse.jetty</groupId>
+		  <artifactId>jetty-jsp</artifactId>
+		  <version>${jetty.version}</version>
+		</dependency>    
+	    <dependency>
+	      <groupId>javax.servlet</groupId>
+	      <artifactId>jstl</artifactId>
+	      <version>1.2</version>
+	      <scope>provided</scope>
+	    </dependency>
+
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>com.acc.tools.ed.server.ui.EDBWebStart</mainClass>
+						</manifest>
+					</archive>
+					<finalName>edb</finalName>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

@@ -1,0 +1,176 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.acc.tools.ed</groupId>
+	<artifactId>com.acc.tools.ed</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>Engagement Dashboard</name>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<spring.version>4.0.6.RELEASE</spring.version>
+		<spring.security.version>3.2.5.RELEASE</spring.security.version>
+		<slf4j.version>1.7.5</slf4j.version>
+		<log4j.version>1.2.14</log4j.version>
+		<commons.dbcp.version>1.4</commons.dbcp.version>
+		<derby.version>10.10.2.0</derby.version>
+		<apache.commons>3.0</apache.commons>
+	</properties>
+
+	<modules>
+		<module>com.acc.tools.ed.database</module>
+		<module>com.acc.tools.ed.sonar</module>		
+		<module>com.acc.tools.ed.integration</module>
+		<module>com.acc.tools.ed.web</module>
+		<module>com.acc.tools.ed.server</module>
+		<module>com.acc.tools.ed.report</module>
+	</modules>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.acc.tools.ed</groupId>
+				<artifactId>com.acc.tools.ed.database</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<!-- Spring framework -->
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-core</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-jdbc</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-webmvc</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-orm</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-core</artifactId>
+				<version>${spring.security.version}</version>
+			</dependency>
+			<!-- Apache common -->
+			<dependency>
+				<groupId>commons-dbcp</groupId>
+				<artifactId>commons-dbcp</artifactId>
+				<version>${commons.dbcp.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>${apache.commons}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>1.3.2</version>
+			</dependency>
+
+			<!-- derby -->
+			<dependency>
+				<groupId>org.apache.derby</groupId>
+				<artifactId>derbynet</artifactId>
+				<version>${derby.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.derby</groupId>
+				<artifactId>derbyclient</artifactId>
+				<version>${derby.version}</version>
+			</dependency>
+			<!-- sl4j - log4j configuration -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>${log4j.version}</version>
+			</dependency>
+			<!-- Test -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.8.1</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-test</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<!-- JSON -->
+			<dependency>
+				<groupId>org.codehaus.jackson</groupId>
+				<artifactId>jackson-mapper-asl</artifactId>
+				<version>1.9.13</version>
+			</dependency>
+			<!-- JODA DATE -->
+			<dependency>
+				<groupId>joda-time</groupId>
+				<artifactId>joda-time</artifactId>
+				<version>1.5.2</version>
+			</dependency>
+			<dependency>
+				<groupId>joda-time</groupId>
+				<artifactId>joda-time-jsptags</artifactId>
+				<version>1.1.1</version>
+			</dependency>
+			<!-- File Upload -->
+			<dependency>
+				<groupId>commons-fileupload</groupId>
+				<artifactId>commons-fileupload</artifactId>
+				<version>1.3</version>
+			</dependency>
+			<!-- Excel API POI -->
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi-ooxml</artifactId>
+				<version>3.9</version>
+			</dependency>
+
+		</dependencies>
+	</dependencyManagement>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.17</version>
+				<configuration>
+					<skipTests>true</skipTests>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

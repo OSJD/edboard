@@ -1,0 +1,21 @@
+<w:p w:rsidR="00DF106C" w:rsidP="00D85EB9" w:rsidRDefault="00DF106C">
+            <w:pPr>
+                <w:pStyle w:val="a0020block0020para"/>
+                <w:numPr>
+                    <w:ilvl w:val="0"/>
+                    <w:numId w:val="12"/>
+                </w:numPr>
+                <w:spacing w:before="0" w:beforeAutospacing="false" w:after="120" w:afterAutospacing="false"/>
+                <w:rPr>
+                    <w:sz w:val="20"/>
+                    <w:szCs w:val="20"/>
+                </w:rPr>
+            </w:pPr>
+            <w:r>
+                <w:rPr>
+                    <w:sz w:val="20"/>
+                    <w:szCs w:val="20"/>
+                </w:rPr>
+                <w:t xml:space="preserve"> ****UpcomingTasks**** </w:t>
+            </w:r>
+</w:p>

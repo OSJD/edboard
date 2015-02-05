@@ -1,0 +1,114 @@
+.boxmsg {
+	position: relative;
+	margin: 18px 0;
+	padding: 18px 20px;
+	background-color: #eef4f9;
+	/* easy rounded corners for modern browsers */
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+}
+
+.boxmsg .notch {
+	position: absolute;
+	top: -10px;
+	left: 20px;
+	margin: 0;
+	border-top: 0;
+	border-left: 10px solid transparent;
+	border-right: 10px solid transparent;
+	border-bottom: 10px solid #eef4f9;
+	padding: 0;
+	width: 0;
+	height: 0;
+	/* ie6 height fix */
+	font-size: 0;
+	line-height: 0;
+	/* ie6 transparent fix */
+	_border-right-color: pink;
+	_border-left-color: pink;
+	_filter: chroma(color = pink);
+}
+
+.border-boxmsg {
+	border: 1px solid #c5d9e8;
+	padding: 17px 19px;
+}
+
+.border-boxmsg .border-notch {
+	border-bottom-color: #c5d9e8;
+	top: -11px;
+}
+/*
+Usage: 
+	<div class="boxmsg border-boxmsg">
+	    msg box
+	    <b class="border-notch notch"></b>
+	    <b class="notch"></b>
+	</div>
+ */
+ 
+ /*
+ message box with a arrow on left side pointing down.
+ */
+.arrow_box {
+	position: relative;
+	background: #eef4f9;
+	margin-top:25px;	
+	border: 1px solid #c5d9e8;
+}
+
+.arrow_box:after, .arrow_box:before { 
+    bottom: 100%; 
+    border: solid transparent; 
+    content: " "; 
+    height: 0; 
+    width: 0;
+    position: absolute;
+} 
+.arrow_box:after {
+	bottom: 100%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+}
+/* .arrow_box:after { 
+    border-color: rgba(136, 183, 213, 0); 
+    border-bottom-color: #88b7d5;
+    border-width: 30px;
+    left: 50%; 
+    margin-left: -30px; 
+}  */
+/* .arrow_box:before { 
+    border-color: rgba(194, 225, 245, 0); 
+    border-bottom-color: #c2e1f5; 
+    border-width: 36px; 
+    left: 50%; 
+    margin-left: -36px;
+} */
+.arrow_box>div:after,.arrow_box>div:before {
+	top: 100%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+}
+
+.arrow_box>div:after {
+	border-color: rgba(136, 183, 213, 0);
+	border-top-color: #eef4f9;
+	border-width: 15px;
+	left: 10%;
+	margin-left: -30px;
+}
+
+.arrow_box>div:before {
+	border-color: rgba(194, 225, 245, 0);
+	border-top-color: #c2e1f5;
+	border-width: 17px;
+	left: 10%;
+	margin-left: -32px;
+}

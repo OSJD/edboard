@@ -1,0 +1,57 @@
+.login {
+	border-style: solid;
+	border-width: 1px;
+	border-color: gray;
+	width: 300px;
+	margin: 0 auto;
+	margin-top: 250px;
+	margin-bottom: 100px;
+	/*IE9*/
+	box-shadow: 5px 5px 5px #888888;
+	border-radius: 10px;
+}
+
+.loginheader {
+		padding-left:5px;
+		height:25px;
+		background-color: blue;
+		color: white;
+		border-top-right-radius: 10px;
+		border-top-left-radius: 10px;
+		font-family: Trebuchet MS, Lucida Grande, Arial, Helvetica,sans-serif;
+		font-size: 20px;
+		font-style: normal;
+		font-weight: bold;
+}
+
+.logindetail {
+	width: 85%;
+	height:100px; 
+	border-collapse: collapse;
+	border: 0px;
+	margin:0px;
+	font-family: Trebuchet MS, Lucida Grande, Arial, Helvetica,sans-serif;
+	font-size: 15px;
+	font-style: normal;
+}
+
+/**
+hyper link visible as button
+*/
+
+a.button:link, a.button:visited {
+    display: block;
+    font-weight: bold;
+    color: black;
+    background-color: gray;
+    width: 60px;
+	text-align: center;
+	font-family: "Trebuchet MS", "Lucida Grande", Arial, Helvetica, sans-serif;
+	font-size: 85%;
+    padding: 4px;
+    text-decoration: none;
+}
+
+a.button:hover, a.button:active {
+    background-color: #7A991A;
+}
