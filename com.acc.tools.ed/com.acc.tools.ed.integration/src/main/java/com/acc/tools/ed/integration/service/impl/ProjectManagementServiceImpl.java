@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.acc.tools.ed.integration.dao.ProjectManagementDao;
+import com.acc.tools.ed.integration.dto.EditProjectForm;
 import com.acc.tools.ed.integration.dto.MasterEmployeeDetails;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
@@ -361,6 +361,23 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+	
+	public List<EditProjectForm> editProject(int projectId) {
+		try {
+			 return projectManagementDao.editProject(projectId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	public int checkProjName(String projectName, int progId) {
+		try {
+			 return projectManagementDao.checkProjName(projectName, progId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
 		}
 	}
 	

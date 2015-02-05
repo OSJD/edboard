@@ -1,6 +1,7 @@
 <%@ include file="/WEB-INF/jsp/includes/document-header.jsp"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 	<jsp:include page="/WEB-INF/jsp/projectmanagement/projects.jsp" flush="true"></jsp:include>
+	<jsp:include page="/WEB-INF/jsp/projectmanagement/editProjects.jsp" flush="true"></jsp:include>
 	<jsp:include page="/WEB-INF/jsp/projectmanagement/release.jsp" flush="true"></jsp:include>	
 	<table class="ebdtableheader">
 		<tr>
@@ -9,7 +10,7 @@
 				<select id="projects" class="textbox">
 					<option value="0">Select Project</option>
 				    <c:forEach items="${projectList}" var="project">
-				        <option value="${project.id}" <c:if test="${project.selected==true}">selected</c:if> >${project.label}</option>
+				        <option value="${project.id}" <%-- <c:if test="${project.selected==true}">selected</c:if> --%> >${project.label}</option>
 				    </c:forEach>
 				</select>
 			</td>

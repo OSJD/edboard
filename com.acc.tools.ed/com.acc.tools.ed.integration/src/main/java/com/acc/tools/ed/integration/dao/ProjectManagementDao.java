@@ -3,9 +3,9 @@ package com.acc.tools.ed.integration.dao;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
+import com.acc.tools.ed.integration.dto.EditProjectForm;
 import com.acc.tools.ed.integration.dto.MasterEmployeeDetails;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
@@ -32,4 +32,7 @@ public interface ProjectManagementDao {
 	public List<MasterEmployeeDetails> getAllEmployees();
 	public List<ReferenceData> getProjectResourceDetails(Integer projectId);
 	public void addReleasePlan(int releaseId, String empId, LocalDate weekDateStart, LocalDate weekDateEnd, List<Long> weekHourList, Long weeklyPlannedHr, boolean isLastWeek);
+	
+	public List<EditProjectForm> editProject(int projectId);
+	public int checkProjName(String projectName, int progId);
 }

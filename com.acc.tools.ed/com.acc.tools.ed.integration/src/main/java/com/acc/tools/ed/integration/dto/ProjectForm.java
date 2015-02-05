@@ -23,9 +23,44 @@ public class ProjectForm implements Serializable{
 	private List<String> phases;
 	private String projectDescription;
 	private List<String> stringResources;
+	private List<String> selectedResources;
 	private List<ReferenceData> resources;
 	private List<ReleaseForm> releases;
 	private String projectLead;
+	private String addResource;
+	
+	
+	/*
+	private int existingProgramEdit;
+	private  List<String> stringResourcesEdit;
+	private  List<String> selectedResourcesEdit;
+	private String projectLeadEdit;
+	
+	public List<String> getStringResourcesEdit() {
+		return stringResourcesEdit;
+	}
+	public int getExistingProgramEdit() {
+		return existingProgramEdit;
+	}
+	public void setExistingProgramEdit(int existingProgramEdit) {
+		this.existingProgramEdit = existingProgramEdit;
+	}
+	public String getProjectLeadEdit() {
+		return projectLeadEdit;
+	}
+	public void setProjectLeadEdit(String projectLeadEdit) {
+		this.projectLeadEdit = projectLeadEdit;
+	}
+	public List<String> getSelectedResourcesEdit() {
+		return selectedResourcesEdit;
+	}
+	public void setSelectedResourcesEdit(List<String> selectedResourcesEdit) {
+		this.selectedResourcesEdit = selectedResourcesEdit;
+	}
+	public void setStringResourcesEdit(List<String> stringResourcesEdit) {
+		this.stringResourcesEdit = stringResourcesEdit;
+	}
+	*/
 	
 	public String getProjectName() {
 		return projectName;
@@ -90,7 +125,7 @@ public class ProjectForm implements Serializable{
 	public List<ReferenceData> getResources() {
 		if(resources==null){
 			resources=new ArrayList<ReferenceData>();
-			for(String id:stringResources){
+			for(String id:selectedResources){
 				ReferenceData refData=new ReferenceData();
 				refData.setId(id);
 				resources.add(refData);
@@ -113,5 +148,17 @@ public class ProjectForm implements Serializable{
 	}
 	public void setPhases(List<String> phases) {
 		this.phases = phases;
+	}
+	public String getAddResource() {
+		return addResource;
+	}
+	public void setAddResource(String addResource) {
+		this.addResource = addResource;
+	}
+	public List<String> getSelectedResources() {
+		return selectedResources;
+	}
+	public void setSelectedResources(List<String> selectedResources) {
+		this.selectedResources = selectedResources;
 	}
 }

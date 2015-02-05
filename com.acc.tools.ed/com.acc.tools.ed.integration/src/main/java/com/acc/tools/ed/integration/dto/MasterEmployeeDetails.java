@@ -2,8 +2,6 @@ package com.acc.tools.ed.integration.dto;
 
 import java.io.Serializable;
 
-import org.joda.time.DateTime;
-
 public class MasterEmployeeDetails implements Serializable{
 
 	/**

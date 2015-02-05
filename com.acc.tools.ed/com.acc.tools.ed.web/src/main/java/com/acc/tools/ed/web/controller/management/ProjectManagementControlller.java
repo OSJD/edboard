@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.acc.tools.ed.integration.dto.ComponentForm;
+import com.acc.tools.ed.integration.dto.EditProjectForm;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.ReleaseForm;
@@ -38,7 +39,9 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 	@RequestMapping(value = "/projectPlan.do")
 	public String projectPlan(Model model) {
 		model.addAttribute("addProjectForm", new ProjectForm());
-		model.addAttribute("addReleaseForm", new ReleaseForm());
+		model.addAttribute("addReleaseForm", new ReleaseForm());		
+		model.addAttribute("editProjectForm", new EditProjectForm());
+		
 		return "/projectmanagement/projectPlan";
 	}
 
@@ -47,6 +50,7 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 			@ModelAttribute("addProjectForm") ProjectForm addProjectForm,
 			@ModelAttribute("projectList") List<ReferenceData> projectList,
 			Model model) {
+		model.addAttribute("editProjectForm", new EditProjectForm());
 		LOG.debug("Project Name:{} | Id:{}", addProjectForm.getProjectName(),addProjectForm.getProjectId());
 		LOG.debug("Existing Program Id:{}", addProjectForm.getExistingProgram());
 		LOG.debug("New Program Name:{} Id:{}", addProjectForm.getNewProgramName(),addProjectForm.getNewProgramId());
@@ -66,6 +70,29 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		initialProjSetupDeteails.put("resourceList",getResourceList());
 		initialProjSetupDeteails.put("projectLeadList",getProjectLeadList());
 		return initialProjSetupDeteails;
+	}
+	
+	@RequestMapping(value = "/editProjectSetupDetails.do")
+	public @ResponseBody Map<String,Object> editProjectSetupDetails(@RequestParam("projectId") int projectId, Model model){
+		
+		Map<String,Object> initialProjSetupDeteails=new HashMap<String,Object>(); 
+		initialProjSetupDeteails.put("programList",getProgramList());
+		initialProjSetupDeteails.put("resourceList",getResourceList());
+		initialProjSetupDeteails.put("projectLeadList",getProjectLeadList());
+		List<EditProjectForm> editProjectList = getProjectManagementService().editProject(projectId);
+		
+		for(EditProjectForm EditProjectForm1 : editProjectList){
+			System.out.println(" "+  EditProjectForm1.getSelectedResourcesEdit());
+		}
+		
+		initialProjSetupDeteails.put("editProjectList1", editProjectList);
+		return initialProjSetupDeteails;
+	}
+	
+	@RequestMapping(value = "/checkProjName.do")
+	public @ResponseBody int checkProjName(@RequestParam("projectName") String projectName, @RequestParam("progId") int progId,Model model){
+		int flag = getProjectManagementService().checkProjName(projectName, progId);
+		return flag;
 	}
 	
 	@RequestMapping(value = "/getPrjDate.do")

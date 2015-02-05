@@ -6,10 +6,10 @@
 			<fieldset>
 				<legend>Add Project</legend>
 				<div>
-					<table class="ebdtable">
+					<table class="ebdtable" style="width: 10px;">
 						<tr id="programRow">
 							<th style="text-align: right; height: 25px;">Program</th>
-							<td id="programTD" colspan="3"><form:select path="existingProgram"  style="width:135px;" multiple="false">
+							<td id="programTD" colspan="3"><form:select path="existingProgram"   multiple="false">
 									<form:option value="0" label="--- Select ---" />
     								<form:option value="-1" label="Create New Program" />
 								</form:select>
@@ -24,11 +24,12 @@
 							<th style="text-align: right; height: 25px;">Project Name</th>
 							<td>
 								<form:input type="text" path="projectName" class="textbox" />
-								<form:hidden path="projectId" />
+								<form:hidden path="projectId" /><br />
+								<span id="display" style="color: red;"/>
 							</td>
 							<th style="text-align: right;">Project Lead</th>
 							<td>
-								<form:select path="projectLead" class="textbox" multiple="false">
+								<form:select path="projectLead" class="textbox" multiple="false" cssStyle="width : 195px;">
 									<form:option value="0" label="--- Select ---" />
 								</form:select>
 							</td>
@@ -44,7 +45,7 @@
 						<tr>
 							<th style="text-align: right;">Phase</th>
 							<td  colspan="3">
-								<form:checkboxes items="${phaseList}" path="phases" itemLabel="label" itemValue="id" />
+								<form:checkboxes items="${phaseList}" path="phases" itemLabel="label" itemValue="id" id="listphase" />
 							</td>
 						</tr>
 						<tr>
@@ -54,8 +55,22 @@
 						</tr>
 						<tr style="height: 93px;">
 							<th style="text-align: right;">Resources</th>
-							<td colspan="3">
+							
+							<td colspan="1">
+								 <a>Available Resources</a>  <br /> <br /> 
 								<form:select path="stringResources" multiple="true">
+								</form:select>
+							</td>
+							<td colspan="1">
+								
+								 <a href="JavaScript:void(0);" id="btn-add" class="button">Add >></a>  <br />
+								 <a href="JavaScript:void(0);" id="btn-remove" class="button"> << Remove</a>
+							</td>
+							<td colspan="1">
+								<a>Selected Resources</a>  <br /><br /> 
+								<!-- <select id="selectedResources" multiple="true" style="width : 195px;">
+								</select> -->
+								<form:select path="selectedResources" multiple="true" cssStyle="width : 195px;" id="selectedResources1">
 								</form:select>
 							</td>
 						</tr>
@@ -64,3 +79,4 @@
 			</fieldset>
 		</form:form>
 	</div>
+	

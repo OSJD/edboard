@@ -2,8 +2,6 @@ package com.acc.tools.ed.integration.dto;
 
 import java.io.Serializable;
 
-import org.joda.time.DateTime;
-
 public class TaskForm implements Serializable {
 
 	private static final long serialVersionUID = 9197621972979099410L;

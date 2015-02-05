@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.acc.tools.ed.integration.dto.EDBUser;
+import com.acc.tools.ed.integration.dto.EditProjectForm;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.TaskForm;
 import com.acc.tools.ed.integration.service.ILoginService;
@@ -52,6 +53,7 @@ public class LoginController extends AbstractEdbBaseController{
 			model.addAttribute("edbUser", new EDBUser());
 			model.addAttribute("addProjectForm",new ProjectForm());
 			model.addAttribute("addTaskForm",new TaskForm());
+			model.addAttribute("editProjectForm", new EditProjectForm());
 		return "/login/index";
 		} else {
 			return "redirect:/login.do";
@@ -80,6 +82,7 @@ public class LoginController extends AbstractEdbBaseController{
 				model.addAttribute("edbUser", user);
 				model.addAttribute("addProjectForm",new ProjectForm());
 				model.addAttribute("addTaskForm",new TaskForm());
+				model.addAttribute("editProjectForm", new EditProjectForm());
 				List<ProjectForm> projData=projectWorkService.getMyTasks(user.getEmployeeId());
 				model.addAttribute("projData",projData);
 				LOG.debug("Login - Adding user to session - User Id:[{}] Role:[{}]",user.getEmployeeId(),user.getRole());

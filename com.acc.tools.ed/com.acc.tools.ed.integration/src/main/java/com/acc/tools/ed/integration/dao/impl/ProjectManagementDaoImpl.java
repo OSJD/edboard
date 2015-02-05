@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import com.acc.tools.ed.integration.dao.ProjectManagementDao;
 import com.acc.tools.ed.integration.dto.ComponentForm;
+import com.acc.tools.ed.integration.dto.EditProjectForm;
 import com.acc.tools.ed.integration.dto.MasterEmployeeDetails;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
@@ -715,5 +716,78 @@ public List<ReferenceData> editRelease(String releaseId,String editRelArti,Strin
 		}
 		
 	}
+	
+	public List<EditProjectForm> editProject(int projectId) {
+		List<EditProjectForm> editProjList = new ArrayList<EditProjectForm>();
+		List<String> resources = new ArrayList<String>();
+		try {
+			String resourceQuery  ="SELECT "+
+					"PRGM_NAME, "+
+					"PROJ_NAME, "+
+					"(SELECT EMP_RESOURCE_NAME  FROM EDB_MSTR_EMP_DTLS WHERE EMP_ID = ( SELECT  PROJ_LEAD FROM EDB_PROJECT  WHERE PROJ_ID  = "+projectId+" )) AS PROJ_LEAD, "+ 
+					"PROJ_ST_DT, "+
+					"PROJ_ET_DT, "+
+					"PROJ_DESC ,"+
+					"PROJ_PHSE "+
+					"FROM EDB_PROJECT PROJ, EDB_PROGRAM PROG WHERE "+  
+					"PROJ.PRGM_ID = PROG.PRGM_ID AND "+
+					"PROJ.PROJ_ID  = "+projectId+" ";
+					
+			final String subQuery = "SELECT EMP_RESOURCE_NAME FROM EDB_MSTR_EMP_DTLS  D ,EDB_PROJ_EMP O WHERE D.EMP_ID IN (SELECT E.EMP_ID FROM "+
+					"EDB_PROJ_EMP E, EDB_PROJECT P WHERE P.PROJ_ID = E.PROJ_ID AND P.PROJ_ID = "+projectId+") AND D.EMP_ID = O.EMP_ID ";
+			System.out.println(subQuery);
+			Statement selectStatement = getConnection().createStatement();
+			ResultSet rs = selectStatement.executeQuery(resourceQuery);
+			PreparedStatement  resourceStmt = getConnection().prepareStatement(subQuery);
+            ResultSet resourceRs = resourceStmt.executeQuery();
+            while(resourceRs.next()){ 
+            	resources.add(resourceRs.getString("EMP_RESOURCE_NAME"));
+            }
+            resourceStmt.close();
+			while (rs.next()) {
+				EditProjectForm editProjectData = new EditProjectForm();
+//				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+//				DateTime stDate =  new DateTime(sdf.parse(rs.getString("PROJ_ST_DT")));
+//				DateTime etDate =  new DateTime(sdf.parse(rs.getString("PROJ_ET_DT")));
+				editProjectData.setNewProgramNameEdit(rs.getString("PRGM_NAME"));
+				editProjectData.setProjectNameEdit(rs.getString("PROJ_NAME"));
+				editProjectData.setProjectLeadEdit(rs.getString("PROJ_LEAD"));
+				editProjectData.setStartDateEdit(rs.getString("PROJ_ST_DT"));
+				editProjectData.setEndDateEdit(rs.getString("PROJ_ET_DT"));
+				editProjectData.setProjectDescriptionEdit(rs.getString("PROJ_DESC"));
+				List<String> phaseList = new ArrayList<String>();
+				String arr[] =  rs.getString("PROJ_PHSE").split("[[,]]+");
+				for(int i=0;i<arr.length;i++){
+					phaseList.add(arr[i]);
+				}
+				editProjectData.setPhasesEdit(phaseList);
+				editProjectData.setSelectedResourcesEdit(resources);
+				editProjList.add(editProjectData);
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}	
+		return editProjList;
+	}
+
+	public int checkProjName(String projectName, int progId) {
+		int flag = 0;
+		try {
+				String resourceQuery = "SELECT PROJ_ID FROM EDB_PROJECT WHERE PROJ_NAME = '"+projectName+"' AND PRGM_ID ="+progId+" ";
+				Statement selectStatement = getConnection().createStatement();
+				ResultSet rs = selectStatement.executeQuery(resourceQuery);
+				if (!rs.next()){
+					flag = 1;
+					System.out.println("Project Not Exist");
+				}else{
+					flag = 0;
+					System.out.println("Project already Exist");
+				}
+				
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return flag;
+	}	
 }
 

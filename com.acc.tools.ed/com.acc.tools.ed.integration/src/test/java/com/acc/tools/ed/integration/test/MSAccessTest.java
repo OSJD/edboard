@@ -37,10 +37,10 @@ public class MSAccessTest {
 			}
 			fileOutputStream.close();
 			
-			String url = "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ="+localFile.getAbsolutePath()+";Uid=dir\\murali.k.gavarasana;Pwd=Amma123!@#;";
+			String url = "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ="+localFile.getAbsolutePath()+";";
 
 
-			connection = DriverManager.getConnection(url,"dir\\murali.k.gavarasan","Amma123!@#");
+			connection = DriverManager.getConnection(url);
 			
 			statement = connection.createStatement();
 

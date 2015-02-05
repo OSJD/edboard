@@ -1,6 +1,5 @@
 package com.acc.tools.ed.integration.dto;
 
-import java.sql.Date;
 
 /**
  * @author nikhil.jagtiani

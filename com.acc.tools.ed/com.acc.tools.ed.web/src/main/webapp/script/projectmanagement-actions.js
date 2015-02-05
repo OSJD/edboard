@@ -1,4 +1,36 @@
-	$(document)
+$(document).ready(function(){
+	    $("#projectName").blur(function(){
+    	var progId=$("#existingProgram option:selected").val();
+		var projectName = $("#projectName").val();
+    	$.ajax({
+			type : "GET",
+			url : "./checkProjName.do",
+			dataType:'json',
+			data : {
+				projectName : projectName,
+				progId : progId
+			},
+			success : function(response) {
+				if(response == 0){
+					document.getElementById("display").innerHTML = "Program already Exists";
+					$("#projectName").val('');
+					$("#projectName").focus();
+				}else{
+					document.getElementById("display").innerHTML = "";
+				}
+			},
+			error : function(data) {	
+				alert('Application error! Please call help desk.');
+				$("#mainContainer").html("Application error! Please call help desk. Error:"+data.status);
+			}
+			
+		});	
+    });
+});
+
+
+
+$(document)
 			.ready(
 					function() {
 						
@@ -34,32 +66,262 @@
 							buttons : {
 								"Add Project" : function() { 
 									
-									var progName=$("#programs option:selected").text();
-									var progId=$("#programs").val();
-									var progName1=$("#program").val();
-									if(progId == "NONE" && progName1 == ''){
-										alert("Please select Program!");
-									} else if (progName == progName1) {
-										alert("Program already exist!");
-									} else if ((progId == "NONE" && progName != progName1) || progId != "NONE") {
-										if($("#newProgramName:empty").length > 0 && $("#existingProgram").val()=='-1'){
-											var newProgramId=generateId("existingProgram")+1;
-											$("#newProgramId").val(newProgramId);
+									var progName=$("#existingProgram option:selected").text();
+									var progId=$("#existingProgram option:selected").val();
+									var projectName = $("#projectName").val();
+									var newProgramName = $("#newProgramName").val();
+									var projectLead = $("#projectLead").val();
+									var progName1=$(progName).val();
+									var startDate = $("#startDate").val();
+									var projectDescription = $('#projectDescription').val();
+									var list = new Array();
+									$('#existingProgram option').each( function() {
+										if($(this).val() != 0 && $(this).val() != -1){
+											list.push($(this).text());
 										}
-										var newProjectId=generateId("projects")+1;
-										$("#projectId").val(newProjectId);
-										$("#addProjectForm").submit();																		
+									});
+									if(progId == 0){alert("Please select Program!");$("#existingProgram").focus();return false;}
+									if(progId == -1 && $("#newProgramName").val() == ''){
+										alert("Please Enter New Program!"); 
+										$("#newProgramName").focus();return false
 									}
+									if (jQuery.inArray(newProgramName, list) == 0) {alert("Program already exist!");$("#newProgramName").val('');$("#newProgramName").focus();return false;}
+									
+									
+									if(projectName == ''){alert("Please Enter project Name!");$("#projectName").focus();document.getElementById("display").innerHTML = "";return false;	}
+									
+									
+									if(projectLead == 0){alert("Please Select Lead!");$("#projectLead").focus();return false;}
+									if(startDate == ''){alert("Please Enter Start Date!");$("#startDate").focus();return false;}
+									if(projectDescription == ''){alert("Please Enter Project Description !");$("#projectDescription").focus();return false;}
+									
+									
+									if(!$("#selectedResources1 option").length) {
+										  alert('Please add atleast one resource');
+										  $("#selectedResources1").focus();
+										  return false
+									}
+									
+									if($("#selectedResources1 option:selected").text() == ''){
+										alert("Please choose selected resource to submit ");$("#selectedResources1").focus();return false;
+									}
+									
+									if($("#newProgramName:empty").length > 0 && $("#existingProgram").val()=='-1'){
+										var newProgramId=generateId("existingProgram")+1;
+										$("#newProgramId").val(newProgramId);
+									}
+									var newProjectId=generateId("projects")+1;
+									$("#projectId").val(newProjectId);
+									$("#addProjectForm").submit();																		
 									
 									},
 								Cancel : function() {
 									addProjectDialog.dialog("close");
+									fnRemoveDuplicates();
 								},
 							},
 
 						});
 
-						$("#addProject,#editProject,#deleteProject").button().unbind("click").on("click", function() {
+						$('#addproject-popup').bind('dialogclose', function(event) { fnRemoveDuplicates(); });
+
+						
+						$("#deleteProject").button().unbind("click").on("click", function() {
+							if($("#projects option:selected").val() == 0){
+								alert('Please select Project to Delete');
+								return false;
+							}
+							$.ajax({
+								type : "GET",
+								url : "./fetchInitialProjectSetupDetails.do",
+								dataType:'json',
+								success : function(response) {
+									$.each(response, function(outerKey, outerValue){
+									   if(outerKey=='resourceList'){
+										    $.each(outerValue, function(key, value){
+										       $('#stringResources').append('<option value="'+value.id+'">'+value.label+'</option>');
+										    });
+									   }
+									   if(outerKey=='programList'){
+										    $.each(outerValue, function(key, value){
+										       $('#existingProgram').append('<option value="'+value.id+'">'+value.label+'</option>');
+										    });
+									   }
+									   if(outerKey=='projectLeadList'){
+										    $.each(outerValue, function(key, value){
+										       $('#projectLead').append('<option value="'+value.id+'">'+value.label+'</option>');
+										    });
+									   }
+									   
+									});
+									addProjectDialog.dialog("open");
+								},
+								error : function(data) {	
+									$("#mainContainer").html("Application error! Please call help desk. Error:"+data.status);
+								}
+							});	
+						
+						});
+						
+						var editProjectDialog = $("#editproject-popup").dialog({
+							autoOpen : false,
+							height : 550,
+							width : 650,
+							modal : true,
+							buttons : {
+								"Edit Project" : function() { 
+									
+									var progName=$("#existingProgram option:selected").text();
+									var progId=$("#existingProgram option:selected").val();
+									var newProgramName = $("#newProgramName").val();
+									var projectName = $("#projectName").val();
+									var projectLead = $("#projectLead").val();
+									var progName1=$(progName).val();
+									var startDate = $("#startDate").val();
+									var projectDescription = $('#projectDescription').val();
+									var list = new Array();
+									
+									
+									
+									$('#existingProgram option').each( function() {
+										if($(this).val() != 0 && $(this).val() != -1){
+											list.push($(this).text());
+										}
+									});
+									if(progId == 0){alert("Please select Program!");$("#existingProgram").focus();return false;}
+									if(progId == -1 && $("#newProgramName").val() == ''){
+										alert("Please Enter New Program!"); 
+										$("#newProgramName").focus();return false
+									}
+									if (jQuery.inArray(newProgramName, list) == 0) {alert("Program already exist!");$("#newProgramName").val('');$("#newProgramName").focus();return false;}
+									
+									
+									if(projectName == ''){alert("Please Enter project Name!");$("#projectName").focus();return false;	}
+									if(projectLead == 0){alert("Please Select Lead!");$("#projectLead").focus();return false;}
+									if(startDate == ''){alert("Please Enter Start Date!");$("#startDate").focus();return false;}
+									if(projectDescription == ''){alert("Please Enter Project Description !");$("#projectDescription").focus();return false;}
+									
+									if($("#selectedResources1 option:selected").text() == ''){
+										alert("Please choose atleast one resource ");$("#selectedResources1").focus();return false;
+									}
+									
+									if($("#newProgramName:empty").length > 0 && $("#existingProgram").val()=='-1'){
+										var newProgramId=generateId("existingProgram")+1;
+										$("#newProgramId").val(newProgramId);
+									}
+									var newProjectId=generateId("projects")+1;
+									alert(newProjectId);
+									$("#projectId").val(newProjectId);
+									$("#addProjectForm").submit();																		
+									
+									},
+								Cancel : function() {
+									editProjectDialog.dialog("close");
+								},
+							},
+
+						});
+						
+						$("#editProject").button().unbind("click").on("click", function() {
+							
+							var projectId = $("#projects option:selected").val(); 
+							if($("#projects option:selected").val() == 0){
+								alert('Please select Project to Edit');
+								$("#projects").focus();
+								return false;
+							}
+							$.ajax({
+								type : "GET",
+								url : "./editProjectSetupDetails.do",
+								dataType:'json',
+								data : {
+									projectId : projectId
+								},
+								success : function(response) {
+									
+									
+									$.each(response, function(outerKey, outerValue){
+									   if(outerKey=='resourceList'){
+										    $.each(outerValue, function(key, value){
+										       $('#stringResourcesEdit').append('<option value="'+value.id+'">'+value.label+'</option>');
+										    });
+									   }
+									   if(outerKey=='programList'){
+										    $.each(outerValue, function(key, value){
+										       $('#existingProgramEdit').append('<option value="'+value.id+'">'+value.label+'</option>');
+										    });
+									   }
+									   if(outerKey=='projectLeadList'){
+										    $.each(outerValue, function(key, value){
+										       $('#projectLeadEdit').append('<option value="'+value.id+'">'+value.label+'</option>');
+										    });
+									   }
+									   if(outerKey == 'editProjectList1'){
+										   $.each(outerValue, function(key, value){
+											   
+											   $('#projectDescriptionEdit').val(value.projectDescriptionEdit);
+											   $('#startDateEdit').val(value.startDateEdit);
+											   $('#endDateEdit').val(value.endDateEdit);
+											   $('#projectNameEdit').val(value.projectNameEdit);
+											   $('#existingProgramEdit').append('<option selected="selected" value="'+value.existingProgramEdit+'">'+value.newProgramNameEdit+'</option>');
+											   $("#projectLeadEdit option:selected").text(value.projectLeadEdit);
+											   $("#selectedResourcesEdit").val(value.selectedResourcesEdit);
+											   
+											   var arr = new Array();
+											   var listPhase = value.phasesEdit.toString().replace(/\[+(.*?)\]+/g,"$1");
+											   $('.phases').each(function() {
+													   if (jQuery.inArray(this.value, listPhase) != -1) {
+														   $(this).attr("checked", true);
+													   } 
+											   });
+											   
+											  
+
+
+											   
+											/*   arr = listPhase.toString().split(",");
+											   var tempList = new Array();
+											   $('.phases').each(function() {tempList.push(this.value);});
+											   for (var i=0; i < arr.length; i++){
+												   if (jQuery.inArray(arr[i].trim(), tempList) != -1) {
+													   $('.phases').eq(arr[i].trim()).attr('checked', true);
+												   }
+											   }
+											   
+											   
+											   arr = listPhase.toString().split(",");
+											   var tempList = new Array();
+											   $('.phases').each(function() {
+												   for (var i=0; i < arr.length; i++){
+													   alert('in ' +arr[i]);
+													   if(this.value == arr[i]){
+//														   this.checked = true;
+														   $(this).attr("checked", true);
+													   }
+												   }
+											   });*/
+										    });
+									   }
+									});
+									editProjectDialog.dialog("open");
+								},
+								error : function(data) {	
+									$("#mainContainer").html("Application error! Please call help desk. Error:"+data.status);
+								}
+							});	
+						
+						});
+						
+						
+						
+						$("#addProject").button().unbind("click").on("click", function() {
+							fnReset();
+							if($("#projects option:selected").val() != 0){
+								alert('If you choose projects go for Edit Project !!! ');
+								$("#projects").val(0);
+								projects
+								return false;
+							}
 							$.ajax({
 								type : "GET",
 								url : "./fetchInitialProjectSetupDetails.do",
@@ -252,7 +514,8 @@
 								type : "POST",
 								url : "./fetchReleases.do",
 								data : {projectId:selectedProject},
-								dataType : 'json',		
+								dataType : 'json',	
+								
 								beforeSend:function(){
 								  },
 								success : function(response) {
@@ -343,12 +606,51 @@
 	
 	function generateId(id){
 		var projectid=0;
-			$("#"+id+" > option").each(function() {
-				var tempValue=parseInt(this.value);
-				if(projectid<tempValue){
-					projectid=tempValue;
-				}
-			});
-			return projectid;
+		$("#"+id+" > option").each(function() {
+			var tempValue=parseInt(this.value);
+			if(projectid<tempValue){
+				projectid=tempValue;
+			}
+		});
+		return projectid;
+	}
+	
+
+	
+	
+	$(document).ready(function() {
+	    $('#btn-add').click(function(){
+	        $('#stringResources option:selected').each( function() {
+	                $('#selectedResources1').append("<option value='"+$(this).val()+"'>"+$(this).text()+"</option>");
+	                $("#selectedResources1").focus();
+	            $(this).remove();
+	        });
+	    });
+	    $('#btn-remove').click(function(){
+	        $('#selectedResources1 option:selected').each( function() {
+	            $('#stringResources').append("<option value='"+$(this).val()+"'>"+$(this).text()+"</option>");
+	            $(this).remove();
+	        });
+	    });
+	});
+	
+	function fnReset(){
+		var projectName = document.forms["addProjectForm"]["projectName"].value;
+		$("#projectName").val('');
+		var startDate = document.forms["addProjectForm"]["startDate"].value;
+		$("#startDate").val('');
+		var endDate = document.forms["addProjectForm"]["endDate"].value;
+		$("#endDate").val('');
+		var projectDescription = document.forms["addProjectForm"]["projectDescription"].value;
+		$("#projectDescription").val('');
+		$('input:checkbox').removeAttr('checked');
+    }
+
+	function fnRemoveDuplicates(){
+		var foundedinputs = [];
+		$("select[name=existingProgram] option").slice(2).remove();
+		$("select[name=projectLead] option").slice(1).remove();
 	}
 
+
+	

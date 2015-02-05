@@ -4,9 +4,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
+import com.acc.tools.ed.integration.dto.EditProjectForm;
 import com.acc.tools.ed.integration.dto.MasterEmployeeDetails;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
@@ -32,5 +32,8 @@ public interface ProjectManagementService {
 	public List<MasterEmployeeDetails> getAllEmployees(); 
 	public ReleasePlan createReleasePlan(String releaseStartDate,String releaseEndDate, Integer integer);
 	public List<Object> getComponentDetails(String componentName,Integer phaseId,Integer releaseId);	
-	public void addReleasePlan(ReleaseForm addReleaseForm, String empId,LocalDate dateStart, LocalDate tempDateStart, int dayFromIndex,int dayToIndex, boolean isLastWeek);	
+	public void addReleasePlan(ReleaseForm addReleaseForm, String empId,LocalDate dateStart, LocalDate tempDateStart, int dayFromIndex,int dayToIndex, boolean isLastWeek);
+	
+	public List<EditProjectForm> editProject(int projectId);
+	public int checkProjName(String projectName, int progId);
 }
