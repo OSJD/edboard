@@ -1,38 +1,32 @@
 $(document).ready(function(){
-	    $("#projectName").blur(function(){
-    	var progId=$("#existingProgram option:selected").val();
-		var projectName = $("#projectName").val();
-    	$.ajax({
-			type : "GET",
-			url : "./checkProjName.do",
-			dataType:'json',
-			data : {
-				projectName : projectName,
-				progId : progId
-			},
-			success : function(response) {
-				if(response == 0){
-					document.getElementById("display").innerHTML = "Program already Exists";
-					$("#projectName").val('');
-					$("#projectName").focus();
-				}else{
-					document.getElementById("display").innerHTML = "";
-				}
-			},
-			error : function(data) {	
-				alert('Application error! Please call help desk.');
-				$("#mainContainer").html("Application error! Please call help desk. Error:"+data.status);
-			}
-			
-		});	
-    });
-});
+						    $("#projectName").blur(function(){
+					    	var progId=$("#existingProgram option:selected").val();
+							var projectName = $("#projectName").val();
+					    	$.ajax({
+								type : "GET",
+								url : "./checkProjName.do",
+								dataType:'json',
+								data : {
+									projectName : projectName,
+									progId : progId
+								},
+								success : function(response) {
+									if(response == 0){
+										document.getElementById("display").innerHTML = "Program already Exists";
+										$("#projectName").val('');
+										$("#projectName").focus();
+									}else{
+										document.getElementById("display").innerHTML = "";
+									}
+								},
+								error : function(data) {	
+									alert('Application error! Please call help desk.');
+									$("#mainContainer").html("Application error! Please call help desk. Error:"+data.status);
+								}
+								
+							});	
+					    });
 
-
-
-$(document)
-			.ready(
-					function() {
 						
 						/*
 						 * Date Format :yyyy-mm-dd
@@ -102,8 +96,12 @@ $(document)
 										  return false
 									}
 									
-									if($("#selectedResources1 option:selected").text() == ''){
+									if($("#selectedResources1 option").length == 0){
 										alert("Please choose selected resource to submit ");$("#selectedResources1").focus();return false;
+									} else {
+										$("#selectedResources1 option").each(function(i){
+									        $(this).prop("selected",true);
+									    });										
 									}
 									
 									if($("#newProgramName:empty").length > 0 && $("#existingProgram").val()=='-1'){
@@ -274,32 +272,7 @@ $(document)
 														   $(this).attr("checked", true);
 													   } 
 											   });
-											   
-											  
 
-
-											   
-											/*   arr = listPhase.toString().split(",");
-											   var tempList = new Array();
-											   $('.phases').each(function() {tempList.push(this.value);});
-											   for (var i=0; i < arr.length; i++){
-												   if (jQuery.inArray(arr[i].trim(), tempList) != -1) {
-													   $('.phases').eq(arr[i].trim()).attr('checked', true);
-												   }
-											   }
-											   
-											   
-											   arr = listPhase.toString().split(",");
-											   var tempList = new Array();
-											   $('.phases').each(function() {
-												   for (var i=0; i < arr.length; i++){
-													   alert('in ' +arr[i]);
-													   if(this.value == arr[i]){
-//														   this.checked = true;
-														   $(this).attr("checked", true);
-													   }
-												   }
-											   });*/
 										    });
 									   }
 									});
@@ -319,7 +292,6 @@ $(document)
 							if($("#projects option:selected").val() != 0){
 								alert('If you choose projects go for Edit Project !!! ');
 								$("#projects").val(0);
-								projects
 								return false;
 							}
 							$.ajax({
@@ -345,6 +317,7 @@ $(document)
 									   }
 									   
 									});
+									$("#newProgramName").val("");
 									addProjectDialog.dialog("open");
 								},
 								error : function(data) {	
@@ -567,6 +540,20 @@ $(document)
 							}
 						});
 						
+					    $('#btn-add').click(function(){
+					        $('#stringResources option:selected').each( function() {
+					                $('#selectedResources1').append("<option value='"+$(this).val()+"'>"+$(this).text()+"</option>");
+					                $("#selectedResources1").focus();
+					            $(this).remove();
+					        });
+					    });
+					    $('#btn-remove').click(function(){
+					        $('#selectedResources1 option:selected').each( function() {
+					            $('#stringResources').append("<option value='"+$(this).val()+"'>"+$(this).text()+"</option>");
+					            $(this).remove();
+					        });
+					    });						
+						
 						
 					});
 
@@ -616,24 +603,6 @@ $(document)
 	}
 	
 
-	
-	
-	$(document).ready(function() {
-	    $('#btn-add').click(function(){
-	        $('#stringResources option:selected').each( function() {
-	                $('#selectedResources1').append("<option value='"+$(this).val()+"'>"+$(this).text()+"</option>");
-	                $("#selectedResources1").focus();
-	            $(this).remove();
-	        });
-	    });
-	    $('#btn-remove').click(function(){
-	        $('#selectedResources1 option:selected').each( function() {
-	            $('#stringResources').append("<option value='"+$(this).val()+"'>"+$(this).text()+"</option>");
-	            $(this).remove();
-	        });
-	    });
-	});
-	
 	function fnReset(){
 		var projectName = document.forms["addProjectForm"]["projectName"].value;
 		$("#projectName").val('');

@@ -56,20 +56,18 @@
 						<tr style="height: 93px;">
 							<th style="text-align: right;">Resources</th>
 							
-							<td colspan="1">
-								 <a>Available Resources</a>  <br /> <br /> 
+							<td>
+								 <span>Available Resources</span> 
 								<form:select path="stringResources" multiple="true">
 								</form:select>
 							</td>
-							<td colspan="1">
+							<td>
 								
 								 <a href="JavaScript:void(0);" id="btn-add" class="button">Add >></a>  <br />
 								 <a href="JavaScript:void(0);" id="btn-remove" class="button"> << Remove</a>
 							</td>
-							<td colspan="1">
-								<a>Selected Resources</a>  <br /><br /> 
-								<!-- <select id="selectedResources" multiple="true" style="width : 195px;">
-								</select> -->
+							<td>
+								<span>Selected Resources</span> 
 								<form:select path="selectedResources" multiple="true" cssStyle="width : 195px;" id="selectedResources1">
 								</form:select>
 							</td>
