@@ -1,8 +1,8 @@
-	<div id="addrelease-popup" title="Add New Release">
+	<div id="editrelease-popup" title="Add New Release">
 		<p class="validateTips">All form fields are required.</p>
 		<form id="addReleaseForm">
 			<fieldset>
-				<legend>Add Release</legend>
+				<legend>Edit Release</legend>
 				<table class="ebdtable" id="release">
 					<tr>
 						<th style="text-align: right; height: 25px;">Project Name</th>
@@ -28,12 +28,11 @@
 					</tr>	
 					<tr>
 					  	<td colspan="6">
-						  	<a href="#" class="button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id="createReleasePlan" role="button" style="width: 120px;margin-left: 400px;">
-								<span class="ui-button-text">Create Release Plan</span>
+						  	<a href="#" class="button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id="getReleasePlan" role="button" style="width: 120px;margin-left: 400px;">
+								<span class="ui-button-text">Get Release Plan</span>
 				 			</a>
 			 			</td>
-					</tr>
-					<tr id="addReleasePlan"><td colspan="6"><span style="color: red;">Please Click on "Create Release Plan" button to add release plan.</span></td></tr>	
+					</tr>	
 				</table>
 			</fieldset>
 		</form>

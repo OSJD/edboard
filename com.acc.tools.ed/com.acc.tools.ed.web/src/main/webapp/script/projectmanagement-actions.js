@@ -240,16 +240,19 @@ $(document).ready(function(){
 									
 									$.each(response, function(outerKey, outerValue){
 									   if(outerKey=='resourceList'){
+										   $('#stringResourcesEdit option').remove();
 										    $.each(outerValue, function(key, value){
 										       $('#stringResourcesEdit').append('<option value="'+value.id+'">'+value.label+'</option>');
 										    });
 									   }
 									   if(outerKey=='programList'){
+										   $('#existingProgramEdit option').remove();
 										    $.each(outerValue, function(key, value){
 										       $('#existingProgramEdit').append('<option value="'+value.id+'">'+value.label+'</option>');
 										    });
 									   }
 									   if(outerKey=='projectLeadList'){
+										   $('#projectLeadEdit option').remove();
 										    $.each(outerValue, function(key, value){
 										       $('#projectLeadEdit').append('<option value="'+value.id+'">'+value.label+'</option>');
 										    });
@@ -341,8 +344,7 @@ $(document).ready(function(){
 									var releaseIdCount=generateId("releases")+1;
 									var projectId=$("#projectId").val();
 									var releaseForm = $('#addReleaseForm').serializeArray();
-									var resources = $("td[id^='resource']").length;
-									var days = $("input[id^='resDayHour']").length/resources;
+									var resources = $("input[id^='resource']").length;
 									var jsonString = "{";
 									$.each(releaseForm,
 									    function(i, v) {
@@ -355,24 +357,21 @@ $(document).ready(function(){
 									jsonString=jsonString+"\"resourcesAndHours\" : {";
 									
 									for(var i=0; i<resources;i++){										
-										jsonString=jsonString+"\""+$("#resId"+i).val()+"\": [";
-										for(var j=0;j<days;j++){
-											if(i==(resources-1) && j==(days-1)){
-												jsonString=jsonString+"\""+$("#resDayHour"+i+j).val()+"\" ] }," ;
+										jsonString=jsonString+"\""+$("#resource"+i).val()+"\": [";
+										$("input[id^='resDayHour']").each(function(index, obj){
+											if(obj.id.indexOf("resDayHour"+i)==0){
+												jsonString=jsonString+obj.value+",";
 											}
-										    else if(j==(days-1)){
-											 jsonString=jsonString+"\""+$("#resDayHour"+i+j).val()+"\" ]," ;
-											}
-											else{
-												jsonString=jsonString+"\""+$("#resDayHour"+i+j).val()+"\"," ;
-											}											
-										}
-										
+										});
+										jsonString=jsonString.substring(0,jsonString.lastIndexOf(","));
+										jsonString=jsonString+"],";
 									}
+									jsonString=jsonString.substring(0,jsonString.lastIndexOf(","))+"},";
 
 									jsonString=jsonString+"\"releaseId\":\""+releaseIdCount+"\",";
 									jsonString=jsonString+"\"projectId\":\""+projectId+"\"";
 									jsonString=jsonString+"}";
+									
 									
 									$.ajax({
 										type : "POST",
@@ -394,6 +393,22 @@ $(document).ready(function(){
 								},
 								Cancel : function() {
 									addReleaseDialog.dialog("close");
+								}
+							},
+
+						});
+						
+						var editReleaseDialog = $("#editrelease-popup").dialog({
+							autoOpen : false,
+							height : 700,
+							width : 1100,
+							modal : true,
+							buttons : {
+								"Edit Release" : function() {
+									
+								},
+								Cancel : function() {
+									editReleaseDialog.dialog("close");
 								}
 							},
 
@@ -455,7 +470,12 @@ $(document).ready(function(){
 									}
 								});	
 								
-								addReleaseDialog.dialog("open");
+								if(this.id==="addRelease"){
+									addReleaseDialog.dialog("open");	
+								}else {
+									editReleaseDialog.dialog("open");
+								}
+								
 							}
 						});
 						
@@ -468,7 +488,7 @@ $(document).ready(function(){
 								url : "./createReleasePlan.do",
 								data : "releaseStartDate="+releaseStDt+"&releaseEndDate="+releaseEndDt+"&projId="+projId,									
 								success : function(response) {
-									$('#release tr:last').after(response);
+									$('#addReleasePlan').html(response);
 								},
 								error : function(data) {	
 									$("#mainContainer").html("Application error! Please call help desk. Error:"+data.status);

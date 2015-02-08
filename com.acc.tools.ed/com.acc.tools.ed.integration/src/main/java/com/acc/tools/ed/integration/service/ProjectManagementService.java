@@ -30,10 +30,12 @@ public interface ProjectManagementService {
 	public Map<String,String> getProjectDate(String projectId);
 	public ProjectForm addComponent(Integer projectId,Integer phaseId,String componentName,String functionalDesc,String compStartDate,String compEndDate,String compResource,Integer releaseId,String workDesc);
 	public List<MasterEmployeeDetails> getAllEmployees(); 
-	public ReleasePlan createReleasePlan(String releaseStartDate,String releaseEndDate, Integer integer);
+	//public ReleasePlan createReleasePlan(String releaseStartDate,String releaseEndDate, Integer integer);
 	public List<Object> getComponentDetails(String componentName,Integer phaseId,Integer releaseId);	
 	public void addReleasePlan(ReleaseForm addReleaseForm, String empId,LocalDate dateStart, LocalDate tempDateStart, int dayFromIndex,int dayToIndex, boolean isLastWeek);
 	
 	public List<EditProjectForm> editProject(int projectId);
 	public int checkProjName(String projectName, int progId);
+	
+	public ReleasePlan buildReleasePlan(LocalDate relDateStart,LocalDate relDateEnd,Integer projId);
 }

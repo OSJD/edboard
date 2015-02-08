@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,21 +114,18 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		
 		LOG.debug("Release Start Date:{} End Date:{}",releaseStartDate,releaseEndDate);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		DateTime stDate =  new DateTime(sdf.parse(releaseStartDate));
-		DateTime etDate =  new DateTime(sdf.parse(releaseEndDate));
+		LocalDate stDate =  new LocalDate(sdf.parse(releaseStartDate));
+		LocalDate etDate =  new LocalDate(sdf.parse(releaseEndDate));
 				
-		ReleasePlan releasePlan=getProjectManagementService().createReleasePlan(stDate.toString("yyyy-MM-dd"),etDate.toString("yyyy-MM-dd"), Integer.valueOf(projId));
-		LOG.debug("------------------Release Plan ------------------------------");
-		/*for(Map.Entry<String,Map<String,Map<String,String>>> resourceWeek:releasePlan.entrySet()){
-			System.out.print(resourceWeek.getKey()+" --> ");
-			for(Map.Entry<String,Map<String,String>> weekDay:resourceWeek.getValue().entrySet()){
-				System.out.print(weekDay.getKey() +"["+weekDay.getValue()+"] |");
-			}
-			System.out.println("");
-		}	*/
+		//ReleasePlan releasePlan=getProjectManagementService().createReleasePlan(stDate.toString("yyyy-MM-dd"),etDate.toString("yyyy-MM-dd"), Integer.valueOf(projId));
+
+		ReleasePlan releasePlan=getProjectManagementService().buildReleasePlan(stDate,etDate, Integer.valueOf(projId));
 		model.addAttribute("releasePlan",releasePlan);
 		return "/projectmanagement/releasePlan";
 	}	
+	
+	
+	
 	
 	@RequestMapping(value = "/addRelease.do")
 	public @ResponseBody ReferenceData addRelease(
@@ -169,7 +165,7 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 				 
 				tempDateStart = tempDateStart.plusDays(1);
 		         }			  					 
-		     getProjectManagementService().addReleasePlan(addReleaseForm,empId,dateStart,tempDateStart.minusDays(1),dayFromIndex,dayToIndex,true);		     
+		     getProjectManagementService().addReleasePlan(addReleaseForm,empId,dateStart,tempDateStart.minusDays(1),dayFromIndex,dayToIndex,true);     
 		     
 			 }
 		
