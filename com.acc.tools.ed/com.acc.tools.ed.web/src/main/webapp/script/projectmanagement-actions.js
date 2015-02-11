@@ -405,7 +405,7 @@ $(document).ready(function(){
 							modal : true,
 							buttons : {
 								"Edit Release" : function() {
-									
+									alert('hello');
 								},
 								Cancel : function() {
 									editReleaseDialog.dialog("close");
@@ -413,8 +413,31 @@ $(document).ready(function(){
 							},
 
 						});
+						
+						
+						$("#editRelease").button().unbind("click").on("click", function() {
+							var releaseName=$("#releases option:selected").text();
+							var releaseId = $("#releases option:selected").val();
+							var projectId = $("#projects").val();
+							
+							if(releaseId=="SR"){
+								alert("Please select Release!");
+							} else {
+								$.ajax({
+									url : "./getReleaseDetails.do",
+									data : {releaseId:releaseId,projectId:projectId},									
+									success : function(response) {
+										$("#editrelease-popup").html(response);
+										editReleaseDialog.dialog("open");
+									},
+									error : function(data) {	
+										alert("Application error! Please call help desk. Error:"+data.status);
+									}
+								});	
+							}
+						});
 
-						$("#addRelease,#editRelease,#deleteRelease").button().unbind("click").on("click", function() {
+						$("#addRelease").button().unbind("click").on("click", function() {
 							var prjName=$("#projects option:selected").text();
 							var projectId = $("#projects").val();
 							if(projectId=="0"){
@@ -469,12 +492,8 @@ $(document).ready(function(){
 										$("#mainContainer").html("Application error! Please call help desk. Error:"+data.status);
 									}
 								});	
-								
-								if(this.id==="addRelease"){
-									addReleaseDialog.dialog("open");	
-								}else {
-									editReleaseDialog.dialog("open");
-								}
+
+								addReleaseDialog.dialog("open");	
 								
 							}
 						});

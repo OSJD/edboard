@@ -1,29 +1,29 @@
-	<div id="editrelease-popup" title="Add New Release">
+	<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 		<p class="validateTips">All form fields are required.</p>
-		<form id="addReleaseForm">
+		<form:form commandName="editReleaseForm" action="editRelease.do">
 			<fieldset>
 				<legend>Edit Release</legend>
 				<table class="ebdtable" id="release">
 					<tr>
 						<th style="text-align: right; height: 25px;">Project Name</th>
-						<td><div id="projName"></div></td>
+						<td>${projectForm.projectName}</div></td>
 						<th style="text-align: right;">Proj. Start Date</th>
-						<td><div id="projStartDate"></div></td>
+						<td>${projectForm.startDate}</div></td>
 						<th style="text-align: right;">Proj. End Date</th>
-						<td><div id="projEndDate"></div></td>
+						<td>${projectForm.endDate}</div></td>
 					</tr>
 					<tr>
 						<th style="text-align: right;">Release Name</th>
-						<td><input type="text" name="releaseName" class="textbox" /></td>
+						<td><form:input path="releaseName" cssClass="textbox" /></td>
 						<th style="text-align: right;">Rel. Start Date</th>
-						<td style="width: 200px;"><input type="text" id="releaseStartDate" name="releaseStartDate" class="textbox" /></td>
+						<td style="width: 200px;"><form:input path="releaseStartDate" id="releaseStartDate" cssClass="textbox" /></td>
 						<th style="text-align: right;">Rel. End Date</th>
-						<td><input type="text" id="releaseEndDate" name="releaseEndDate" class="textbox" /></td>
+						<td><form:input path="releaseEndDate" id="releaseEndDate" cssClass="textbox" /></td>
 					</tr>						
 					<tr>
 						<th style="text-align: right;">Release Artifacts</th>
 						<td  colspan="5">
-							<textarea style="overflow: auto; resize: none;width: 800px;" rows="6" name="releaseArtifacts"	 class="textarea" ></textarea>  
+							<form:textarea path="releaseArtifacts" cssStyle="overflow: auto; resize: none;width: 800px;" cssClass="textarea"/>  
 						</td>
 					</tr>	
 					<tr>
@@ -35,5 +35,4 @@
 					</tr>	
 				</table>
 			</fieldset>
-		</form>
-	</div>
+		</form:form>

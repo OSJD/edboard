@@ -105,6 +105,19 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		return projDates;
 	}
 	
+	@RequestMapping(value = "/getReleaseDetails.do")
+	public String getReleaseDetails(
+			@RequestParam("releaseId") Integer releaseId,
+			@RequestParam("projectId") Integer projectId,
+			Model model) {
+		
+		LOG.debug("Release Id:[{}]",releaseId);
+		ProjectForm planData = getProjectManagementService().getProjectPlanDetails(releaseId, projectId);
+		model.addAttribute("editReleaseForm", planData.getReleases().get(0));
+		model.addAttribute("projectForm", planData);
+		return "/projectmanagement/editRelease";
+	}
+	
 	@RequestMapping(value = "/createReleasePlan.do")
 	public String createReleasePlan(
 			@RequestParam("releaseStartDate") String releaseStartDate,
@@ -116,8 +129,6 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		LocalDate stDate =  new LocalDate(sdf.parse(releaseStartDate));
 		LocalDate etDate =  new LocalDate(sdf.parse(releaseEndDate));
-				
-		//ReleasePlan releasePlan=getProjectManagementService().createReleasePlan(stDate.toString("yyyy-MM-dd"),etDate.toString("yyyy-MM-dd"), Integer.valueOf(projId));
 
 		ReleasePlan releasePlan=getProjectManagementService().buildReleasePlan(stDate,etDate, Integer.valueOf(projId));
 		model.addAttribute("releasePlan",releasePlan);
@@ -246,7 +257,7 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 	}
 	
 	@RequestMapping(value = "/addComponent.do")
-	public @ResponseBody List<ComponentForm> addComponent(
+	public @ResponseBody ComponentForm addComponent(
 			@RequestParam("projectId") Integer projectId,
 			@RequestParam("componentName") String componentName,
 			@RequestParam("functionalDesc") String functionalDesc,
@@ -257,13 +268,14 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 			@RequestParam("phaseId") Integer phaseId,
 			@RequestParam("workDesc") String workDesc,
 			Model model) {
+
 		LOG.debug("addComponent :[{},{},{},{},{},{},{},{}]",new Object[]{projectId,componentName,functionalDesc,compStartDate,compEndDate,compResource,releaseId,phaseId});
-		ProjectForm planData = getProjectManagementService().addComponent(projectId,phaseId,componentName,functionalDesc,compStartDate,compEndDate,compResource,releaseId,workDesc);
-		return planData.getReleases().get(0).getComponents();		
+		return	getProjectManagementService().addComponent(projectId,phaseId,componentName,functionalDesc,compStartDate,compEndDate,compResource,releaseId,workDesc);
+				
 	}
 	
 	@RequestMapping(value = "/getCompDetails.do")
-	public @ResponseBody List<Object> getComponentDetails(
+	public @ResponseBody ComponentForm getComponentDetails(
 			@RequestParam("cmpName") String componentName,
 			@RequestParam("cmpPhase") Integer phaseId,
 			@RequestParam("cmpRelease") Integer releaseId,

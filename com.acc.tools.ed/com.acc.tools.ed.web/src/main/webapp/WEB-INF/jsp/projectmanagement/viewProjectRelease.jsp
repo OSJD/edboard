@@ -8,120 +8,8 @@
 		 $( "#compStartDate" ).datepicker(); 
 			
 	 
-		 $( "#editRelStartDate" ).datepicker({
-			 
-			 beforeShow: function (input, inst) {
-				 var dt2 = $('#editRelStartDate').datepicker('getDate');
-	             $('#editRelStartDate').datepicker('option', 'minDate', dt2);
-	         }
-		 });
 		 
-		 $( "#editRelEndDate" ).datepicker({
-			 
-			 beforeShow: function (input, inst) {
-				 var dt2 = $('#editRelStartDate').datepicker('getDate');				 
-	             $('#editRelEndDate').datepicker('option', 'minDate', dt2);
-	         }
-		 });
-		 
-		 $( "#editPrjStartDate" ).datepicker({
-			 
-			 beforeShow: function (input, inst) {
-				 var dt2 = $('#editPrjStartDate').datepicker('getDate');
-				 $('#editPrjStartDate').datepicker('option', 'minDate', dt2);
-	         }
-		 });
-		 
-		 $( "#editPrjEndDate" ).datepicker({
-			 
-			 beforeShow: function (input, inst) {
-				 var dt2 = $('#editPrjStartDate').datepicker('getDate');				 
-	             $('#editPrjEndDate').datepicker('option', 'minDate', dt2);
-	         }
-		 });
-				 
-		 $("#editproject-popup").dialog({ 
-			 autoOpen: false,
-			 height : 450,
-			 width : 650,
-			 modal : true,
-			 buttons : {
-					"Edit Project" : function() { 
-						
-						var selectedProject=$("#projects").val();
-						var startDate=$("#editPrjStartDate").val();
-						var desc=$("#editPrjDesc").val();
-						var endDate=$("#editPrjEndDate").val();						
-												
-						$.ajax({
-							type : "POST",
-							url : "./editProject.do",
-							data : {projectId:selectedProject,editPrjStartDate:startDate,editPrjEndDate:endDate,editPrjDesc:desc},												
-							dataType : 'json',		
-							beforeSend:function(){
-							  },
-							success : function(response) {
-								
-								for(var obj in response){
-									$('#prjDesc').html(response[obj].editPrjDescResp);
-									$('#prjStartDate').html(response[obj].editPrjStartDateResp);
-									$('#prjEndDate').html(response[obj].editPrjEndDateResp);
-									$('#editproject-popup').dialog("close");	
-								}
-							},
-							error : function(data) {	
-								$("#mainContainer").html("Application error! Please call help desk. Error:"+data.status);
-							}
-						});	
-					},
-					Cancel : function() {
-						$("#editproject-popup").dialog("close");
-					},
-				},
-
-		 });
-		 
-		 
-		 $("#editrelease-popup").dialog({ 
-			 autoOpen: false,
-			 height : 300,
-			 width : 650,
-			 modal : true,
-			 buttons : {
-					"Edit Release" : function() { 
-						
-						var selectedRelease=$("#releases").val();
-						var startDate=$("#editRelStartDate").val();
-						var desc=$("#editRelArti").val();
-						var endDate=$("#editRelEndDate").val();						
-						
-						$.ajax({
-							type : "POST",
-							url : "./editRelease.do",
-							data : {releaseId:selectedRelease, releaseEdDate:endDate, editRelStartDate:startDate, editRelArti:desc},												
-							dataType : 'json',						
-							success : function(response) {
-								
-								for(var obj in response){
-									$('#relArti').html(response[obj].editRelArtiResp);
-									$('#relStartDate').html(response[obj].editRelStartDateResp);
-									$('#relEndDate').html(response[obj].editRelEndDateResp);
-								}
-								$('#editrelease-popup').dialog("close");
-							},
-							error : function(data) {	
-								$('#editrelease-popup').dialog("close");
-								$("#mainContainer").html("Application error! Please call help desk. Error:"+data.status);
-							}
-						});	
-					},
-					Cancel : function() {
-						$("#editrelease-popup").dialog("close");
-					},
-				},
-
-		 });
-		 
+	 
 		 $("#delPrj-popup").dialog({ 
 			 autoOpen: false,
 			 height : 150,
@@ -226,30 +114,41 @@
 						phaseId:lphaseId,
 						workDesc:lworkDesc},
 				dataType : 'json',
-				success : function(response) {
-					var tableResp = '';
-					/* for(var obj in response) {
-						tableResp = '<tr><td width="165px;" id="compName">'+response[obj].componentName+'</td>'+
-						'<td width="160px"></td>'+
-						'<td width="385px;" id="compFuncDesc"><div style="height:20px;display:table-cell;vertical-align:middle;">'+response[obj].functionalDesc+'</div></td>'+
-						'<td width="100px;" id="comStDate">'+response[obj].startDate+'</td>'+
-						'<td width="100px;" id="compEtDate">'+response[obj].endDate+'</td>'+
-						'<td width="80px"></td>'+
-						'<td width="80px">% </td>'+
-						'<td width="180px;" id="compResName">'+response[obj].resourceName+'</td>'+
-						'<td width="295px">'+response[obj].workDesc+'</td>'+
-						'<td><img alt="edit project" src="./resources/edit.gif"	width="20px;"></td>'+
-						'<td><img alt="delete project" src="./resources/delete.gif"	width="20px;"></td></tr>';
+				success : function(componentData) {
+					var compName="";
+					var phaseId="";
+					var functionalDesc="";
+					var startDate="";
+					var endDate="";
+					var workDesc=""
+					var resourceName="";
+					for(var field in componentData){
+						if(field=="componentName"){
+							compName=componentData.componentName;
+						} else if(field=="phaseId"){
+							phaseId=componentData.phaseId;
+						} else if(field=="functionalDesc"){
+							functionalDesc=componentData.functionalDesc;
+						} else if(field=="startDate"){
+							startDate=componentData.startDate;
+						} else if(field=="endDate"){
+							endDate=componentData.endDate;
+						} else if(field=="resourceName"){
+							resourceName=componentData.resourceName;
+						} else if(field=="workDesc"){
+							workDesc=componentData.workDesc;
+						}
+						
 					}
-					
-					 */
-					if($('#children').length){
-						$('#componentTable > tbody:first').append(tableResp);	
-					} else {
-						$("#noComponetMsg").hide();
-						$('#componentTable').append('<tbody>'+tableResp+'</tbody>');
-					}
-					$("#releases").trigger("change");
+					var newComponentRow='<tr><td width="160px;" id="compName">'+compName+'</td><td width="160px">'+phaseId+'</td><td width="295px;" id="compFuncDesc">'+
+										'<div style="height:20px;display:table-cell;vertical-align:middle;">'+functionalDesc+'</div></td>'+
+										'<td awidth="80px;" id="comStDate">'+startDate+'</td><td width="80px;" id="compEtDate">'+endDate+'</td>'+
+										'<td width="80px">Not Started</td><td width="80px" align="center">0 % </td><td width="150px;" id="compResName">'+resourceName+'</td>'+
+										'<td width="295px">'+workDesc+'</td><td><img alt="edit project" src="./resources/edit.gif"	width="20px;"></td>'+
+										'<td><img alt="delete project" src="./resources/delete.gif" width="20px;"></td></tr>';
+
+					$("#noComponentsRow").remove();
+					$('#componentTable > tbody:last').append(newComponentRow);	
 					
 				},
 				error : function(data) {	
@@ -283,22 +182,18 @@
 						cmpRelease:compRelease,
 						},												
 				dataType : 'json',
-				success : function(response) {
-						if (response[0] != 0) {
-						$('#compStartDate').val(response[1]);
-						$("#compStartDate").attr('disabled','disabled');
-						$('#compEndDate').val(response[2]);
-						$("#compEndDate").attr('disabled','disabled');
-						$('#functionalDesc').val(response[3]);
-						$("#functionalDesc").attr('disabled','disabled');
-						
-					} else {
-						$("#compStartDate").removeAttr('disabled');
-						$("#compEndDate").removeAttr('disabled');
-						$("#functionalDesc").removeAttr('disabled');
-						$('#compStartDate').val('');
-						$('#compEndDate').val('');
-						$('#functionalDesc').val('');
+				success : function(componentDetail) {
+					for(var field in componentDetail){
+						if(field=="functionalDesc"){
+							$('#functionalDesc').val(componentDetail.functionalDesc);
+							$("#functionalDesc").attr('disabled','disabled');
+						} else if(field=="startDate"){
+							$('#compStartDate').val(componentDetail.startDate);
+							$("#compStartDate").attr('disabled','disabled');
+						} else if(field=="endDate"){
+							$('#compEndDate').val(componentDetail.endDate);
+							$("#compEndDate").attr('disabled','disabled');
+						}
 					}
 				}
 		});
@@ -341,7 +236,7 @@
 
 	</script>
 </head>
-<form id="projectForm">
+
 
 <table>
 	<tr>
@@ -491,125 +386,61 @@
 		</tr>
 	</table>
 	<table class="innertable2" id="componentTable"
-		style="border-width: 1px; border-style: solid; border-color: #999999;">
-		<c:choose>	
-	        <c:when test="${empty viewProjRelDetails.releases[0].components}">
-				<div id="noComponetMsg" class="boxmsg border-boxmsg" style="width: 780px;color: red;">
-				    <p>No <u>Components/Tasks</u> , <u>Change Requests(CR)</u> or <u>Defects</u> are configured for Project :<u>${viewProjRelDetails.projectName}</u> and Release :<u>${viewProjRelDetails.releases[0].releaseName}</u> .<br>
-				    Please add <u>Component/Task/CR/Defect</u> and assign a resource accordingly using the above form.
-				    </p>
-				    <b class="border-notch notch"></b>
-				    <b class="notch"></b>
-				</div>
-	        </c:when>
-	        <c:otherwise>
-	        	<c:forEach var="component" items="${viewProjRelDetails.releases[0].components}">
-					<tr>
-						<td width="160px;" id="compName">${component.componentName}</td>
-						<td width="160px">
-						<c:forEach var = "cphase" items="${component.phaseId}">
-									<c:choose>
-										<c:when test="${cphase.trim() =='1'}">
-											Analysis
-										</c:when>
-										<c:when test="${cphase.trim() =='2'}">
-											Design
-										</c:when>
-										<c:when test="${cphase.trim() =='3'}">
-											Build
-										</c:when>
-										<c:when test="${cphase.trim() =='4'}">
-											Test
-										</c:when>
-										<c:otherwise>
-											Support
-										</c:otherwise>
-									</c:choose>
-						</c:forEach></td>
-						<td width="295px;" id="compFuncDesc"><div style="height:20px;display:table-cell;vertical-align:middle;">${component.functionalDesc}</div></td>
-						<td awidth="80px;" id="comStDate">${component.startDate}</td>
-						<td width="80px;" id="compEtDate">${component.endDate}</td>
-						<td width="80px">Not Started</td>
-						<td width="80px" align="center">0 % </td>
-						<td width="150px;" id="compResName">${component.resourceName}</td>
-						<td width="295px">${component.workDesc}</td>
-						<td><img alt="edit project" src="./resources/edit.gif"
-							width="20px;"></td>
-						<td><img alt="delete project" src="./resources/delete.gif"
-							width="20px;"></td>
+		style="border-width: 1px; border-style: solid; border-color: #999999;width: 100%;">
+		<tbody>
+			<c:choose>	
+		        <c:when test="${empty viewProjRelDetails.releases[0].components}">
+		        	<tr id="noComponentsRow">
+		        		<td colspan="11">
+							<div id="noComponetMsg" class="boxmsg border-boxmsg" style="margin-left:50px; width: 780px;color: red;">
+							    <p>No <u>Components/Tasks</u> , <u>Change Requests(CR)</u> or <u>Defects</u> are configured for Project :<u>${viewProjRelDetails.projectName}</u> and Release :<u>${viewProjRelDetails.releases[0].releaseName}</u> .<br>
+							    Please add <u>Component/Task/CR/Defect</u> and assign a resource accordingly using the above form.
+							    </p>
+							    <b class="border-notch notch"></b>
+							    <b class="notch"></b>
+							</div>
+						</td>
 					</tr>
-				</c:forEach>
-	        </c:otherwise>
-	    </c:choose>
+		        </c:when>
+		        <c:otherwise>
+		        	<c:forEach var="component" items="${viewProjRelDetails.releases[0].components}">
+						<tr>
+							<td width="215px;" id="compName">${component.componentName}</td>
+							<td width="115px">
+								<c:choose>
+									<c:when test="${component.phaseId==1}">
+										Analysis
+									</c:when>
+									<c:when test="${component.phaseId ==2}">
+										Design
+									</c:when>
+									<c:when test="${component.phaseId==3}">
+										Build
+									</c:when>
+									<c:when test="${component.phaseId ==4}">
+										Test
+									</c:when>
+									<c:otherwise>
+										Support
+									</c:otherwise>
+								</c:choose>
+							</td>
+							<td width="295px;" id="compFuncDesc"><div style="height:20px;display:table-cell;vertical-align:middle;">${component.functionalDesc}</div></td>
+							<td awidth="80px;" id="comStDate">${component.startDate}</td>
+							<td width="80px;" id="compEtDate">${component.endDate}</td>
+							<td width="80px">Not Started</td>
+							<td width="80px" align="center">0 % </td>
+							<td width="150px;" id="compResName">${component.resourceName}</td>
+							<td width="295px">${component.workDesc}</td>
+							<td><img alt="edit project" src="./resources/edit.gif"
+								width="20px;"></td>
+							<td><img alt="delete project" src="./resources/delete.gif"
+								width="20px;"></td>
+						</tr>
+					</c:forEach>
+		        </c:otherwise>
+		    </c:choose>
+		</tbody>	    
 	</table>
 </div>
-	<div id="editproject-popup" title="Edit Project Details">
-		<p class="validateTips">All form fields are required.</p>
-			<fieldset>
-				<legend>Edit Project</legend>
-				<div>
-					<table class="ebdtable">
-						<tr>
-							<th style="text-align: right; height: 25px;">Task Name</th>
-							<td><input type="text" id="taskName" name="taskName" value="" /></td>
-							<th style="text-align: right;">Task Description</th>
-							<td><input type="text" id="taskDesc" name="taskDesc" value="" /></td>
-						</tr>
-						<tr>
-							<th style="text-align: right;">Phase</th>
-							<td  colspan="3">
-								<c:forEach items="${phaseList}" var="i">
-									 <input type="checkbox" id="editPrjPhase">
-									 	<option value="${i}">${i}</option>
-									 </input>
-								</c:forEach>
-								</input>	
-							</td>
-						</tr>
-						<tr>
-							<th style="text-align: right;">Start Date</th>
-							<td style="width: 200px;"><input type="text" id="editPrjStartDate" name="editPrjStartDate" value="${viewProjRelDetails.releases[0].releaseStartDate}" class="textbox" /></td>
-							<th style="text-align: right;">End Date</th>
-							<td><input type="text" id="editPrjEndDate" name="editPrjEndDate" value="${viewProjRelDetails.releases[0].releaseEndDate}" class="textbox" /></td>
-						</tr>
-					</table>
-				</div>				
-			</fieldset>
-	</div>
-	<div id="editrelease-popup" title="Edit Release Details">
-		<p class="validateTips">All form fields are required.</p>
-			<fieldset>
-				<legend>Edit Release</legend>
-				<div>
-					<table class="ebdtable">
-						<tr>
-							<th style="text-align: right; height: 25px;">Release Name</th>
-							<td>${viewProjRelDetails.releases[0].releaseName}</td>
-							
-							<th style="text-align: right;">Release Artifacts</th>
-							<td  colspan="3">
-								<textarea style="overflow: auto; resize: none" rows="4" 
-									cols="40" class="textarea" id="editRelArti" name="editRelArti" value="${viewProjRelDetails.releases[0].releaseArtifacts}"></textarea>  
-							</td>
-						</tr>						
-						<tr>
-							<th style="text-align: right;">Start Date</th>
-							<td style="width: 200px;"><input type="text" id="editRelStartDate" name="editRelStartDate" value="${viewProjRelDetails.releases[0].releaseStartDate}" class="textbox" /></td>
-							<th style="text-align: right;">End Date</th>
-							<td><input type="text" id="editRelEndDate" name="editRelEndDate" value="${viewProjRelDetails.releases[0].releaseEndDate}" class="textbox" /></td>
-						</tr>
-					</table>
-				</div>				
-			</fieldset>
-	</div>
-	
-	<div id="delPrj-popup" title="Delete Project">
-		<p style="margin-top:25px;margin-left:20px;">Do you want to delete the project?</p>
-	</div>
-	
-	<div id="delRel-popup" title="Delete Release">
-		<p style="margin-top:25px;margin-left:20px;">Do you want to delete the release?</p>
-	</div>
-	
-	</form>
 	

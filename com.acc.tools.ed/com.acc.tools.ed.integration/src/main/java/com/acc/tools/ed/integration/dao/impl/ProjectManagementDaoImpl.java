@@ -241,7 +241,9 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
                             	final ComponentForm component = new ComponentForm();
                             	component.setComponentId(rs.getInt("COMPNT_ID"));
             			        component.setResourceName(rs.getString("EMP_ENTERPRISE_ID"));
-                            	mapComponentData(rs,release,component);
+            			        log.debug("Component Id:{}",component.getComponentId());
+            			        if(component.getComponentId()!=0)
+            			        	mapComponentData(rs,release,component);
                             } else {
                             	ReleaseForm release=new ReleaseForm(); 
                                 release.setProjectId(projId);
@@ -413,6 +415,7 @@ public List<ReferenceData> editRelease(String releaseId,String editRelArti,Strin
 	}
 	
 
+
 	public String deleteRelease(String releaseId) {
 		
 		try {
@@ -525,51 +528,52 @@ public List<ReferenceData> editRelease(String releaseId,String editRelArti,Strin
 		return projectDates;
 	}
 	
-	public ProjectForm addComponent(Integer projectId,Integer phaseId,String componentName,String functionalDesc,
+	public ComponentForm addComponent(Integer projectId,Integer phaseId,String componentName,String functionalDesc,
 			String compStartDate,String compEndDate,String compResource, Integer releaseId, String workDesc) {
 		
-		ProjectForm projectData = new ProjectForm();
-		
-		List<Object> compDet = new ArrayList<Object>();
-		 
+		ComponentForm compDet=null;
 		try{
 
-				Integer compId = 0;
-				compDet = getComponentDetails(phaseId, componentName,releaseId);
-				
-				if(compDet.size()==1){
+					compDet = getComponentDetails(phaseId, componentName,releaseId);
 					
-				final String employeeTable="insert into EDB_PROJ_COMPNT(COMPNT_PHASE,COMPNT_NAME,COMPNT_FUNC_DESC,COMPNT_ST_DT,COMPNT_END_DT,MLSTN_ID) values (?,?,?,?,?,?)";
-				PreparedStatement  preparedStatement = getConnection().prepareStatement(employeeTable);
-				preparedStatement.setInt(1, phaseId);
-				preparedStatement.setString(2, componentName);
-				preparedStatement.setString(3, functionalDesc);
-				preparedStatement.setString(4, compStartDate);
-				preparedStatement.setString(5, compEndDate);
-				preparedStatement.setInt(6, releaseId);
-				preparedStatement.executeUpdate();
-				preparedStatement.close();
-				
-				compDet = getComponentDetails(phaseId, componentName,releaseId);
-				
-				}
-				compId= (Integer)compDet.get(0);
-				insertCompEmp(compId, phaseId, componentName,compResource,releaseId,workDesc);
-				
-				projectData = getProjectPlanDetails(releaseId, projectId);
-				
+					if(compDet==null){
+						final String employeeTable="insert into EDB_PROJ_COMPNT(COMPNT_PHASE,COMPNT_NAME,COMPNT_FUNC_DESC,COMPNT_ST_DT,COMPNT_END_DT,MLSTN_ID) values (?,?,?,?,?,?)";
+						PreparedStatement  preparedStatement = getConnection().prepareStatement(employeeTable);
+						preparedStatement.setInt(1, phaseId);
+						preparedStatement.setString(2, componentName);
+						preparedStatement.setString(3, functionalDesc);
+						preparedStatement.setString(4, compStartDate);
+						preparedStatement.setString(5, compEndDate);
+						preparedStatement.setInt(6, releaseId);
+						preparedStatement.executeUpdate();
+						preparedStatement.close();
+						
+						compDet = getComponentDetails(phaseId, componentName,releaseId);
+						
+						if(compDet!=null && compDet.getComponentId()!=0 && !isComponentAssignedToEmployee(compDet.getComponentId(), Integer.parseInt(compResource))){
+							compDet.setResourceId(Integer.parseInt(compResource));
+							insertCompEmp(compDet.getComponentId(), phaseId, componentName,compResource,releaseId,workDesc);
+						} else {
+							throw new RuntimeException("Component '"+componentName+"' with "+phaseId+" phase is already assigned to resource "+compResource);
+						}
+					} else {
+						if(compDet.getComponentId()!=0){
+							compDet.setResourceId(Integer.parseInt(compResource));
+							insertCompEmp(compDet.getComponentId(), phaseId, componentName,compResource,releaseId,workDesc);
+						}
+					}
 				
 			}catch(Exception e)	{
 				log.error("Error inserting EDB_PROJ_COMPNT table :",e);
 				return null;
 			}
-		return projectData;
+		return compDet;
 	}
 	
-	public List<Object> getComponentDetails(Integer phaseId, String componentName,
+	public ComponentForm getComponentDetails(Integer phaseId, String componentName,
 			Integer releaseId) {
 		
-		List<Object> componentDet = new ArrayList<Object>();
+		ComponentForm componentDet = null;
 		try{
 			//Employee table
 			final StringBuffer compEmpTable=new StringBuffer();
@@ -578,27 +582,50 @@ public List<ReferenceData> editRelease(String releaseId,String editRelArti,Strin
 			compEmpTable.append("' AND COMPNT_PHASE=");
 			compEmpTable.append(phaseId);
 			compEmpTable.append(" AND MLSTN_ID=");
-			System.out.println();
 			compEmpTable.append(releaseId);
 			PreparedStatement  preparedStatement = getConnection().prepareStatement(compEmpTable.toString());
-			log.debug(compEmpTable.toString());
+			log.debug("Component Query:{}",compEmpTable.toString());
 			ResultSet r1 = preparedStatement.executeQuery();
-			if (r1.next()){
-				componentDet.add(r1.getInt("COMPNT_ID"));
-				componentDet.add(r1.getDate("COMPNT_ST_DT"));
-				componentDet.add(r1.getDate("COMPNT_END_DT"));
-				componentDet.add(r1.getString("COMPNT_FUNC_DESC"));
+			while (r1.next()){
+				componentDet = new ComponentForm();
+				componentDet.setComponentId(r1.getInt("COMPNT_ID"));
+				componentDet.setComponentName(componentName);
+				componentDet.setStartDate(r1.getString("COMPNT_ST_DT"));
+				componentDet.setEndDate(r1.getString("COMPNT_END_DT"));
+				componentDet.setFunctionalDesc(r1.getString("COMPNT_FUNC_DESC"));
+				componentDet.setPhaseId(phaseId);
 			}
-			else {
-				componentDet.add(0);
-			}
+
 			preparedStatement.close();
 		}catch(Exception e)	{
 			log.error("Error while retrieving data from  EDB_PROJ_COMPNT:",e);
 		}
 		return componentDet;
+	}
+	
+	public boolean isComponentAssignedToEmployee(Integer componentId,Integer empId){
 		
-		
+		boolean componentAssigned=false;
+		try{
+			final StringBuffer compEmpTable=new StringBuffer();
+			compEmpTable.append("SELECT count(*) as COMPNT_IDS FROM EDB_COMPNT_EMP WHERE COMPNT_ID=");
+			compEmpTable.append(componentId);
+			compEmpTable.append(" AND EMP_ID=");
+			compEmpTable.append(empId);
+			PreparedStatement  preparedStatement = getConnection().prepareStatement(compEmpTable.toString());
+			log.debug("isComponentAssignedToEmployee -> Query : {}",compEmpTable.toString());
+			ResultSet r1 = preparedStatement.executeQuery();
+			while(r1.next()){
+				if(r1.getInt("COMPNT_IDS")!=0){
+					componentAssigned=true;
+				}
+			}
+
+			preparedStatement.close();
+		}catch(Exception e)	{
+			log.error("Error while retrieving data from  EDB_PROJ_COMPNT:",e);
+		}
+		return componentAssigned;
 	}
 
 	private void insertCompEmp(Integer componentId, Integer phaseId, String componentName, String compResource, Integer releaseId, String workDesc) {

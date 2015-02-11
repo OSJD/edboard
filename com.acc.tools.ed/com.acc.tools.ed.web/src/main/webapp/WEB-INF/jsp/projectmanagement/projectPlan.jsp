@@ -3,7 +3,6 @@
 	<jsp:include page="/WEB-INF/jsp/projectmanagement/projects.jsp" flush="true"></jsp:include>
 	<jsp:include page="/WEB-INF/jsp/projectmanagement/editProjects.jsp" flush="true"></jsp:include>
 	<jsp:include page="/WEB-INF/jsp/projectmanagement/release.jsp" flush="true"></jsp:include>	
-	<jsp:include page="/WEB-INF/jsp/projectmanagement/editRelease.jsp" flush="true"></jsp:include>
 	
 	<table class="ebdtableheader">
 		<tr>
@@ -46,3 +45,5 @@
 		    <b class="notch"></b>
 		</div>
 	</div>
+	<div id="editrelease-popup" title="Edit Release"><!-- Edit release form --></div>
+		

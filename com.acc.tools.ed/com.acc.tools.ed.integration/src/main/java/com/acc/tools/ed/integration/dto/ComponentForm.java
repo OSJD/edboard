@@ -19,7 +19,7 @@ public class ComponentForm implements Serializable {
 	private int resourceId;
 	private String resourceName;
 	private String workDesc;
-	private String phaseId;
+	private Integer phaseId;
 	private List<TaskForm> taskFormList;
 
 	public int getComponentId() {
@@ -110,11 +110,11 @@ public class ComponentForm implements Serializable {
 		this.workDesc = workDesc;
 	}
 
-	public String getPhaseId() {
+	public Integer getPhaseId() {
 		return phaseId;
 	}
 
-	public void setPhaseId(String phaseId) {
+	public void setPhaseId(Integer phaseId) {
 		this.phaseId = phaseId;
 	}
 

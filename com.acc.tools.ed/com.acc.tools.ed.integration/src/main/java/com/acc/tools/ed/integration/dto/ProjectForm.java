@@ -30,37 +30,6 @@ public class ProjectForm implements Serializable{
 	private String addResource;
 	
 	
-	/*
-	private int existingProgramEdit;
-	private  List<String> stringResourcesEdit;
-	private  List<String> selectedResourcesEdit;
-	private String projectLeadEdit;
-	
-	public List<String> getStringResourcesEdit() {
-		return stringResourcesEdit;
-	}
-	public int getExistingProgramEdit() {
-		return existingProgramEdit;
-	}
-	public void setExistingProgramEdit(int existingProgramEdit) {
-		this.existingProgramEdit = existingProgramEdit;
-	}
-	public String getProjectLeadEdit() {
-		return projectLeadEdit;
-	}
-	public void setProjectLeadEdit(String projectLeadEdit) {
-		this.projectLeadEdit = projectLeadEdit;
-	}
-	public List<String> getSelectedResourcesEdit() {
-		return selectedResourcesEdit;
-	}
-	public void setSelectedResourcesEdit(List<String> selectedResourcesEdit) {
-		this.selectedResourcesEdit = selectedResourcesEdit;
-	}
-	public void setStringResourcesEdit(List<String> stringResourcesEdit) {
-		this.stringResourcesEdit = stringResourcesEdit;
-	}
-	*/
 	
 	public String getProjectName() {
 		return projectName;

@@ -41,45 +41,50 @@ public class AbstractEdbDao {
 	}
 	
 	public void mapComponentData(ResultSet rs,ReleaseForm release,ComponentForm component) throws SQLException, ParseException{
-        component.setComponentName(rs.getString("COMPNT_NAME"));
-        component.setFunctionalDesc(rs.getString("COMPNT_FUNC_DESC"));
-        component.setResourceId(rs.getInt("EMP_ID"));
-        component.setResourceName(rs.getString("EMP_RESOURCE_NAME"));
-        component.setWorkDesc(rs.getString("WORK_DESC"));
-        component.setPhaseId(rs.getString("COMPNT_PHASE"));
-        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        String cStDt = rs.getString("COMPNT_ST_DT");
-        if(cStDt != null) {
-               Date compStDate =  sdf2.parse(cStDt);
-               sdf2.applyPattern("MM/dd/yyyy");
-               component.setStartDate(sdf2.format(compStDate));                                   
-        } else {
-               component.setStartDate(null);
-        }
-        
-        SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        String cEtDt = rs.getString("COMPNT_END_DT");
-        if(cEtDt != null) {
-               Date compEtDate =  sdf3.parse(cEtDt);
-               sdf3.applyPattern("MM/dd/yyyy");                
-               component.setEndDate(sdf3.format(compEtDate));
-        } else {
-               component.setEndDate(null);
-        }
-        if(release.getComponents()==null){
-        	release.setComponents(new ArrayList<ComponentForm>());
-        }
-        release.getComponents().add(component);
-        if(release.getTeamTasks()==null){
-        	release.setTeamTasks(new HashMap<String, List<ComponentForm>>());
-        }
-        if(release.getTeamTasks().containsKey(component.getResourceId())){
-        	release.getTeamTasks().get(component.getResourceId()).add(component);
-        } else {
-        	List<ComponentForm> empComponents=new ArrayList<ComponentForm>();
-        	empComponents.add(component);
-        	release.getTeamTasks().put(component.getResourceName(), empComponents);	
-        }
+		final String compName=rs.getString("COMPNT_NAME");
+		final int empId=rs.getInt("EMP_ID");
+		log.debug("Component Name:{} Resource Id:{}",compName,empId);
+		if(compName!=null && !compName.isEmpty() && empId!=0){
+	        component.setComponentName(compName);
+	        component.setResourceId(empId);
+	        component.setFunctionalDesc(rs.getString("COMPNT_FUNC_DESC"));
+	        component.setResourceName(rs.getString("EMP_RESOURCE_NAME"));
+	        component.setWorkDesc(rs.getString("WORK_DESC"));
+	        component.setPhaseId(rs.getInt("COMPNT_PHASE"));
+	        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+	        String cStDt = rs.getString("COMPNT_ST_DT");
+	        if(cStDt != null) {
+	               Date compStDate =  sdf2.parse(cStDt);
+	               sdf2.applyPattern("MM/dd/yyyy");
+	               component.setStartDate(sdf2.format(compStDate));                                   
+	        } else {
+	               component.setStartDate(null);
+	        }
+	        
+	        SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+	        String cEtDt = rs.getString("COMPNT_END_DT");
+	        if(cEtDt != null) {
+	               Date compEtDate =  sdf3.parse(cEtDt);
+	               sdf3.applyPattern("MM/dd/yyyy");                
+	               component.setEndDate(sdf3.format(compEtDate));
+	        } else {
+	               component.setEndDate(null);
+	        }
+	        if(release.getComponents()==null){
+	        	release.setComponents(new ArrayList<ComponentForm>());
+	        }
+	        release.getComponents().add(component);
+	        if(release.getTeamTasks()==null){
+	        	release.setTeamTasks(new HashMap<String, List<ComponentForm>>());
+	        }
+	        if(release.getTeamTasks().containsKey(component.getResourceId())){
+	        	release.getTeamTasks().get(component.getResourceId()).add(component);
+	        } else {
+	        	List<ComponentForm> empComponents=new ArrayList<ComponentForm>();
+	        	empComponents.add(component);
+	        	release.getTeamTasks().put(component.getResourceName(), empComponents);	
+	        }
+		}
 	}
 	
 	public void mapTaskData(ResultSet rs,TaskForm taskForm,Integer componentId,Integer taskId) throws SQLException{

@@ -9,7 +9,10 @@ import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.acc.tools.ed.integration.dao.LoginDao;
 import com.acc.tools.ed.integration.dao.ProjectManagementDao;
+import com.acc.tools.ed.integration.dto.ComponentForm;
+import com.acc.tools.ed.integration.dto.EDBUser;
 import com.acc.tools.ed.integration.dto.EditProjectForm;
 import com.acc.tools.ed.integration.dto.MasterEmployeeDetails;
 import com.acc.tools.ed.integration.dto.ProjectForm;
@@ -25,6 +28,9 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 	
 	@Autowired
 	private ProjectManagementDao projectManagementDao;
+	
+	@Autowired
+	private LoginDao loginDao;
 	
 	public List<ReferenceData> getAllProjectIds(){
 		return projectManagementDao.getAllProjectIds();
@@ -106,176 +112,6 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 			weeksWorkPlanMap.put("Week-"+weekCount, weekPlanList);
 		}
 	}
-	
-	/*public ReleasePlan createReleasePlan(String releaseStartDate,String releaseEndDate, Integer projId){
-		
-		List<ReferenceData> resourceDetails = projectManagementDao.getProjectResourceDetails(projId);
-		
-		LocalDate relDateStart = new LocalDate(releaseStartDate);
-		LocalDate dateStart = relDateStart;
-		System.out.println(CalendarEnum.getMonthName(dateStart.getMonthOfYear()));
-		LocalDate relDateEnd = new LocalDate(releaseEndDate);	
-		LocalDate dateEnd = relDateEnd;
-		
-	    ReleasePlan releasePlan = new ReleasePlan();	
-		
-		 calculateAndSetWeeksAndDays(dateStart, dateEnd, releasePlan);
-		 dateStart = relDateStart;dateEnd = relDateEnd;
-		 calculateAndSetMonthsNoOfDays(dateStart, dateEnd, releasePlan);
-		 dateStart = relDateStart;dateEnd = relDateEnd;
-		 calculateAndSetResourceHours(dateStart, dateEnd,resourceDetails, releasePlan);
-		 dateStart = relDateStart;dateEnd = relDateEnd;
-		 calculateAndSetTotalHoursPerWeek(dateStart, dateEnd,resourceDetails, releasePlan);
-		
-		
-		
-		
-		return releasePlan;
-		
-		
-		
-	}
-
-	private void calculateAndSetTotalHoursPerWeek(LocalDate dateStart,
-			LocalDate dateEnd, List<ReferenceData> resourceDetails, ReleasePlan releasePlan) {
-		 // List<Long> weeklyTotalHoursList = new ArrayList<Long>();
-		  List<String> weekTotHourStrList = new ArrayList<String>();	  
-		  Long weeklyTotalHours = 0L;
-		  String weekOfYear=dateStart.weekOfWeekyear().getAsShortText();		
-		  Long noOfdaysInWeek = 0L;
-		  					  
-			while(dateStart.isBefore(dateEnd) || dateStart.equals(dateEnd)){
-				
-		      for (int i = 0; i < resourceDetails.size(); i++) {
-				
-				if(weekOfYear.equalsIgnoreCase(dateStart.weekOfWeekyear().getAsShortText())){
-			           if(!StringUtils.containsIgnoreCase("SunSat", dateStart.dayOfWeek().getAsShortText())){
-			        	   weeklyTotalHours = weeklyTotalHours+9L; 
-			        	   noOfdaysInWeek++;
-			                   }
-			           else{
-			        	   noOfdaysInWeek++;
-			           }
-				           }
-				else{	
-					//weeklyTotalHoursList.add(weeklyTotalHours);
-					weekTotHourStrList.add(String.valueOf(noOfdaysInWeek/resourceDetails.size())+"~"+weeklyTotalHours);
-					noOfdaysInWeek = 1L;
-					weeklyTotalHours = 9L;  
-					weekOfYear=dateStart.weekOfWeekyear().getAsShortText();
-				    }						
-			
-			    
-		          }	
-		      dateStart=dateStart.plusDays(1);
-			 }
-			weekTotHourStrList.add(String.valueOf(noOfdaysInWeek/resourceDetails.size())+"~"+weeklyTotalHours);
-			//weeklyTotalHoursList.add(weeklyTotalHours);
-			releasePlan.setWeeklyTotalHours(weekTotHourStrList);
-			
-		
-	}
-	private void calculateAndSetResourceHours(LocalDate dateStart,
-			LocalDate dateEnd, List<ReferenceData> resourceDetails, ReleasePlan releasePlan) {
-		Map<ReferenceData,List<Long>> resourcesAndHours = new LinkedHashMap<ReferenceData, List<Long>>();		
-		LocalDate tempDateStart;
-		LocalDate tempDateEnd;
-		
-		String weekOfYear=dateStart.weekOfWeekyear().getAsShortText();
-		
-
-		
-
-		
-		for (ReferenceData resource : resourceDetails) {	
-			List<Long> tempHours = new ArrayList<Long>();
-			tempDateStart = dateStart;
-			tempDateEnd = dateEnd;
-			weekOfYear = tempDateStart.weekOfWeekyear().getAsShortText();
-		while(tempDateStart.isBefore(tempDateEnd) || tempDateStart.equals(tempDateEnd)){
-				
-				if(weekOfYear.equalsIgnoreCase(tempDateStart.weekOfWeekyear().getAsShortText())){
-			           if(!StringUtils.containsIgnoreCase("SunSat", tempDateStart.dayOfWeek().getAsShortText())){
-			        	   tempHours.add(9L); 				                  
-			                   }
-			           else{
-			        	   tempHours.add(0L);
-			           }
-				           }
-				else{	
-					tempHours.add(9L); 
-					weekOfYear=tempDateStart.weekOfWeekyear().getAsShortText();
-				    }						        
-				tempDateStart = tempDateStart.plusDays(1);
-		         }
-		resourcesAndHours.put(resource, new ArrayList<Long>(tempHours));
-		tempHours.clear();
-		tempHours = null;
-		}
-		
-		releasePlan.setResourcesAndHours(resourcesAndHours);
-		
-	}
-	private void calculateAndSetMonthsNoOfDays(LocalDate dateStart,
-			LocalDate dateEnd, ReleasePlan releasePlan) {
-		Map<String,Long> monthsNoOfDays = new LinkedHashMap<String, Long>();
-		String month = dateStart.monthOfYear().getAsShortText();
-		int year = dateStart.getYear();
-		Long days = 0L;
-		
-		
-		while(dateStart.isBefore(dateEnd) || dateStart.equals(dateEnd)){
-			if(month.equalsIgnoreCase(dateStart.monthOfYear().getAsShortText())){				
-				days++;
-				}
-				else{
-					monthsNoOfDays.put(month+"/"+String.valueOf(year),days);
-					month = dateStart.monthOfYear().getAsShortText();
-					year = dateStart.getYear();
-					days = 1L;
-				}
-				  dateStart = dateStart.plusDays(1);
-		}
-		monthsNoOfDays.put(month+"/"+String.valueOf(year),days);
-		releasePlan.setMonthsNoOfDays(monthsNoOfDays);
-	}
-	
-	
-	public void calculateAndSetWeeksAndDays(
-			LocalDate dateStart, LocalDate dateEnd, ReleasePlan releasePlan) {
-		Map<String,List<String>> weeksAndDays = new LinkedHashMap<String, List<String>>();
-		List<String> days = new ArrayList<String>();
-		String weekOfYear=dateStart.weekOfWeekyear().getAsShortText();
-		Long weekCount = 0L;
-		
-		while(dateStart.isBefore(dateEnd) || dateStart.equals(dateEnd)){
-			if(weekOfYear.equalsIgnoreCase(dateStart.weekOfWeekyear().getAsShortText())){
-			weekOfYear =dateStart.weekOfWeekyear().getAsShortText();
-			days.add(dateStart.dayOfWeek().getAsShortText()+"-"+dateStart.dayOfMonth().getAsShortText());
-			}
-			else{
-				List<String> actualDays= new ArrayList<String>(days);				
-				weeksAndDays.put("Week-"+(++weekCount),actualDays);
-				weekOfYear = dateStart.weekOfWeekyear().getAsShortText();
-				days.clear();
-				days.add(dateStart.dayOfWeek().getAsShortText()+"-"+dateStart.dayOfMonth().getAsShortText());
-			}
-			  dateStart = dateStart.plusDays(1);
-		}
-		weeksAndDays.put("Week-"+(++weekCount),days);
-		for(Map.Entry<String, List<String>> week:weeksAndDays.entrySet()) {
-			System.out.println("inside weeksAndDays:");
-			System.out.println("Key:" + week.getKey());
-			for (Iterator<String> it = week.getValue().iterator(); it.hasNext();) {
-				System.out.println("days: " + it.next());
-
-			}
-		}
-		
-	releasePlan.setWeeksAndDays(weeksAndDays);
-	}		*/
-	
-	
 	
 	public ReferenceData addProject(ProjectForm project) {
 		try {
@@ -399,11 +235,15 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 		}
 	}
 	
-	public ProjectForm addComponent(Integer projectId,Integer phaseId,String componentName,String functionalDesc,
+	public ComponentForm addComponent(Integer projectId,Integer phaseId,String componentName,String functionalDesc,
 			String compStartDate,String compEndDate,String compResource, Integer relaseId, String workDesc) {
 
 		try {
-			 return projectManagementDao.addComponent(projectId,phaseId,componentName, functionalDesc, compStartDate, compEndDate, compResource,relaseId,workDesc);
+			ComponentForm component= projectManagementDao.addComponent(projectId,phaseId,componentName, functionalDesc, compStartDate, compEndDate, compResource,relaseId,workDesc);
+			EDBUser user=loginDao.getEmployeeById(compResource);
+			component.setResourceName(user.getEnterpriseId());
+			component.setWorkDesc(workDesc);
+			return component;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -413,7 +253,7 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 	public List<MasterEmployeeDetails> getAllEmployees(){
 		return projectManagementDao.getAllEmployees();
 	}
-	public List<Object> getComponentDetails(String componentName,
+	public ComponentForm getComponentDetails(String componentName,
 			Integer phaseId, Integer releaseId) {
 		try {
 			 return projectManagementDao.getComponentDetails(phaseId, componentName, releaseId);
@@ -421,6 +261,10 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	public boolean isComponentAssignedToEmployee(Integer componentId,Integer empId){
+		return projectManagementDao.isComponentAssignedToEmployee(componentId, empId);
 	}
 	
 	public List<EditProjectForm> editProject(int projectId) {

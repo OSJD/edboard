@@ -14,14 +14,17 @@
 		</layout>
 	</appender>
 	
-	<logger name="com.acc.tools.ed.integration">
-      	<level value="error" />
+	<logger name="com.acc.tools.ed" additivity="false">
+      	<level value="debug" />
+		<appender-ref ref="consoleAppender" />
 	</logger>
-	<logger name="org.docx4j">
+	<logger name="org.docx4j" additivity="false">
       	<level value="error" />
+		<appender-ref ref="consoleAppender" />
    </logger>
-	<logger name="org.springframework">
+	<logger name="org.springframework" additivity="false">
       	<level value="error" />
+		<appender-ref ref="consoleAppender" />
    </logger>
 
 

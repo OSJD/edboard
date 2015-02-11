@@ -33,12 +33,29 @@ public class LoginDaoImpl extends AbstractEdbDao implements LoginDao{
 				user.setSapId(resultSet.getString("EMP_EMPLOYEE_ID"));
 				user.setRole(resultSet.getString("EMP_ROLE"));
 				user.setLevel(resultSet.getString("EMP_LEVEL"));
-				System.out.println("Name of the Project:" + name);
-				return user;
 			}
 
 		
 		return user;
+	}
+	
+	public EDBUser getEmployeeById(String employeeId) throws IOException, SQLException{
+		
+		final Connection connection=getConnection();
+		Statement stmt=connection.createStatement();
+		final String empQuery="SELECT EMP_RESOURCE_NAME,EMP_EMPLOYEE_ID,EMP_ROLE,EMP_LEVEL FROM EDB_MSTR_EMP_DTLS WHERE EMP_ID="+employeeId;
+		final ResultSet resultSet = stmt.executeQuery(empQuery);
+		EDBUser user=null;
+		while (resultSet.next()) {
+			user=new EDBUser();
+			user.setEnterpriseId(resultSet.getString("EMP_RESOURCE_NAME"));
+			user.setEmployeeId(employeeId);
+			user.setSapId(resultSet.getString("EMP_EMPLOYEE_ID"));
+			user.setRole(resultSet.getString("EMP_ROLE"));
+			user.setLevel(resultSet.getString("EMP_LEVEL"));
+		}
+		return user;
+		
 	}
 
 }

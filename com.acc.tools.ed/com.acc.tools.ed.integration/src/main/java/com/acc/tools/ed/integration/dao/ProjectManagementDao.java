@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.joda.time.LocalDate;
 
+import com.acc.tools.ed.integration.dto.ComponentForm;
 import com.acc.tools.ed.integration.dto.EditProjectForm;
 import com.acc.tools.ed.integration.dto.MasterEmployeeDetails;
 import com.acc.tools.ed.integration.dto.ProjectForm;
@@ -27,8 +28,9 @@ public interface ProjectManagementDao {
 	public List<ReferenceData> getResourceList();
 	public List<ReferenceData> getPrjLeadList();
 	public Map<String,String> getProjectDate(String projectId);
-	public ProjectForm addComponent(Integer projectId,Integer phaseId,String componentName,String functionalDesc,String compStartDate,String compEndDate,String compResource,Integer relaseId,String workDesc);
-	public List<Object>getComponentDetails(Integer phaseId, String componentName,Integer releaseId);
+	public ComponentForm addComponent(Integer projectId,Integer phaseId,String componentName,String functionalDesc,String compStartDate,String compEndDate,String compResource,Integer relaseId,String workDesc);
+	public ComponentForm getComponentDetails(Integer phaseId, String componentName,Integer releaseId);
+	public boolean isComponentAssignedToEmployee(Integer componentId,Integer empId);
 	public List<MasterEmployeeDetails> getAllEmployees();
 	public List<ReferenceData> getProjectResourceDetails(Integer projectId);
 	public void addReleasePlan(int releaseId, String empId, LocalDate weekDateStart, LocalDate weekDateEnd, List<Long> weekHourList, Long weeklyPlannedHr, boolean isLastWeek);
