@@ -77,8 +77,8 @@ public class AbstractEdbDao {
 	        if(release.getTeamTasks()==null){
 	        	release.setTeamTasks(new HashMap<String, List<ComponentForm>>());
 	        }
-	        if(release.getTeamTasks().containsKey(component.getResourceId())){
-	        	release.getTeamTasks().get(component.getResourceId()).add(component);
+	        if(release.getTeamTasks().containsKey(component.getResourceName())){
+	        	release.getTeamTasks().get(component.getResourceName()).add(component);
 	        } else {
 	        	List<ComponentForm> empComponents=new ArrayList<ComponentForm>();
 	        	empComponents.add(component);

@@ -40,8 +40,10 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 				LOG.debug("\tRelease Name:[{}]",rf.getReleaseName());
 				for(ComponentForm cf:rf.getComponents()){
 					LOG.debug("\t\tComponent Name:[{}]",cf.getComponentName());
-					for(TaskForm tf:cf.getTaskFormList()){
-						LOG.debug("\t\t\tTaskName Name:[{}]",tf.getTaskName());
+					if(cf.getTaskFormList()!=null && cf.getTaskFormList().size()>0){
+						for(TaskForm tf:cf.getTaskFormList()){
+							LOG.debug("\t\t\tTaskName Name:[{}]",tf.getTaskName());
+						}
 					}
 				}
 			}
@@ -60,8 +62,10 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 				LOG.debug("\tRelease Name:[{}]",rf.getReleaseName());
 				for(ComponentForm cf:rf.getComponents()){
 					LOG.debug("\t\tComponent Name:[{}]",cf.getComponentName());
-					for(TaskForm tf:cf.getTaskFormList()){
-						LOG.debug("\t\t\tTaskName Name:[{}]",tf.getTaskName());
+					if(cf.getTaskFormList()!=null && cf.getTaskFormList().size()>0){					
+						for(TaskForm tf:cf.getTaskFormList()){
+							LOG.debug("\t\t\tTaskName Name:[{}]",tf.getTaskName());
+						}
 					}
 				} 
 			}
@@ -78,10 +82,18 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 			LOG.debug("Project Name:[{}]",pf.getProjectName());
 			for(ReleaseForm rf:pf.getReleases()){
 				LOG.debug("\tRelease Name:[{}]",rf.getReleaseName());
-				for(ComponentForm cf:rf.getComponents()){
-					LOG.debug("\t\tComponent Name:[{}]",cf.getComponentName());
-					for(TaskForm tf:cf.getTaskFormList()){
-						LOG.debug("\t\t\tTaskName Name:[{}]",tf.getTaskName());
+				if(rf.getTeamTasks()!=null && rf.getTeamTasks().size()>0){
+					for(String resource:rf.getTeamTasks().keySet()){
+						List<ComponentForm> cfl= rf.getTeamTasks().get(resource);
+						LOG.debug("\t\tResource Name:{}",resource);
+						for(ComponentForm cf:cfl){
+							LOG.debug("\t\t\tComponent Name:[{}] | Assigned Work:[{}]",new Object[]{cf.getComponentName(),cf.getWorkDesc()});
+							if(cf.getTaskFormList()!=null && cf.getTaskFormList().size()>0){
+								for(TaskForm tf:cf.getTaskFormList()){
+									LOG.debug("\t\t\t\tTaskName Name:[{}]",tf.getTaskName());
+								}
+							}
+						}
 					}
 				}
 			}

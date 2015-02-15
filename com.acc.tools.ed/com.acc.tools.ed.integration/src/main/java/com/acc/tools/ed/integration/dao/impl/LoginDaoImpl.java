@@ -44,6 +44,7 @@ public class LoginDaoImpl extends AbstractEdbDao implements LoginDao{
 		final Connection connection=getConnection();
 		Statement stmt=connection.createStatement();
 		final String empQuery="SELECT EMP_RESOURCE_NAME,EMP_EMPLOYEE_ID,EMP_ROLE,EMP_LEVEL FROM EDB_MSTR_EMP_DTLS WHERE EMP_ID="+employeeId;
+		log.debug("Get Employee by Id Query:{}",empQuery);
 		final ResultSet resultSet = stmt.executeQuery(empQuery);
 		EDBUser user=null;
 		while (resultSet.next()) {

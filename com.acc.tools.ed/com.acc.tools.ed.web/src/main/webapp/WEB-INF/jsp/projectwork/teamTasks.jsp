@@ -10,7 +10,7 @@
 </head>
 <body>
 
-	<table class="ebdtable">
+	<table class="ebdtable" style="width: 100%;">
 		<tr>
 			<th style="width: 70px; font-weight: bold;">Release Name</th>
 			<th style="width: 70px; font-weight: bold;">Release Desc</th>
@@ -40,7 +40,7 @@
 							</tr>
 							<c:forEach items="${release.teamTasks}" var="teamTask" varStatus="loop">
 								<tr>
-								<td><a href="#" id="${release.releaseId}${fn:replace(teamTask.key,' ', '')}" class="devRow"><div id="devtree${release.releaseId}${fn:replace(teamTask.key,' ', '')}" style="float:left; clear: both;width: 20px;margin-left: 5px;">[+]</div>${teamTask.key}</a></td>
+									<td><a href="#" id="${release.releaseId}${fn:replace(teamTask.key,' ', '')}" class="devRow"><div id="devtree${release.releaseId}${fn:replace(teamTask.key,' ', '')}" style="float:left; clear: both;width: 20px;margin-left: 5px;">[+]</div>${teamTask.key}</a></td>
 								</tr>
 								<tr id="devdev${release.releaseId}${fn:replace(teamTask.key,' ', '')}" class="compData">
 									<td style="background-image: none; background-color: white;">
@@ -49,6 +49,7 @@
 												<th style="width: 145px;">Component Name</th>
 												<th style="width: 75px;">Component Phase</th>
 												<th style="width: 560px;">Functional Desc</th>
+												<th style="width: 560px;">Assigned Work Desc</th>
 												<th style="width: 80px;">Start Date</th>
 												<th style="width: 80px;">End Date</th>
 												<th style="width: 80px;">Status</th>
@@ -57,9 +58,10 @@
 											</tr>
 											<c:forEach items="${teamTask.value}" var="component">
 												<tr>
-													<td><a href="#" id="${component.componentId}" class="componentRow"><div id="tasktree${component.componentId}" style="float:left; clear: both;width: 20px;margin-left: 5px;">[+]</div>${component.componentName}</a></td>
+													<td><a href="#" id="${component.componentId}${fn:replace(teamTask.key,' ', '')}" class="componentRow"><div id="tasktree${component.componentId}" style="float:left; clear: both;width: 20px;margin-left: 5px;">[+]</div>${component.componentName}</a></td>
 													<td>Requirements</td>									
 													<td>${component.functionalDesc}</td>
+													<td>${component.workDesc}</td>
 													<td>${component.startDate}</td>
 													<td>${component.endDate}</td>
 													<td>In Progress</td>
@@ -70,8 +72,8 @@
 													</td>
 													<td>De</td>
 												</tr>
-												<tr id="component${component.componentId}" class="taskData">
-													<td colspan="7" style="background-color: white;">
+												<tr id="component${component.componentId}${fn:replace(teamTask.key,' ', '')}" class="taskData">
+													<td colspan="10" style="background-color: white;">
 														<table class="innertable1" id="taskTable${component.componentId}" style="width: 100%;">
 															<tr>
 																<th style="width: 150px;">Task Name</th>
@@ -84,34 +86,39 @@
 																<th style="width: 220px;">Comments</th>
 																<th colspan="2" style="width: 150px;">Actions</th>
 															</tr>
-														
-															 <c:forEach var="tasks" items="${component.taskFormList}">
 															 <c:choose>
-				        										<c:when test="${fn:length(component.taskFormList) gt 0}">
-																	<tr id="taskDatta_${tasks.taskId}" style="width: 100%;">
-																		<td>${tasks.taskName}<input type="hidden" id="taskIdValue" value="${tasks.taskId}"/></td>
-																		<td>${tasks.taskDesc}</td>
-																		<td>${tasks.taskHrs}</td>
-																		<td>01/01/2015</td>
-																		<td>Submitted</td>
-																		<td>${tasks.taskReviewUser}</td>
-																		<td>${tasks.rejComment}</td>
-																		<td>${tasks.taskComments}</td>
-																		<td><a href="#" taskType="teamTasks"  id="editTask" onclick="edit('${tasks.taskId}');"><img alt="edit project" src="./resources/edit.gif"
-																			width="20px;"></a>
-																		</td>
-																		<td><a href="#"  id="deleteTask" onclick="deleteTask('${tasks.taskId}');"><img alt="delete project" src="./resources/delete.gif"
-																			width="20px;"></a>
-																		</td>
-																	</tr>
-																	</c:when>
-																	<c:otherwise>
+				        										<c:when test="${empty component.taskFormList}">
 																	<tr>
-																		<td colspan="9" style="font-weight: bold;text-align: center;">No Task Found</td>
+																		<td colspan="10" style="font-weight: bold;text-align: center;">
+																			<div id="noComponetMsg" class="boxmsg border-boxmsg" style="margin-left:50px; width: 780px;color: red;">
+						    													<p>The assigned work is not yet started.</p>
+						    													<b class="border-notch notch"></b>
+						    													<b class="notch"></b>
+																			</div>
+																		</td>
 																	</tr>
-																	</c:otherwise>
-																	</c:choose>
-															</c:forEach>
+																</c:when>
+																<c:otherwise>
+																	<c:forEach var="tasks" items="${component.taskFormList}">
+																		<tr id="taskDatta_${tasks.taskId}" style="width: 100%;">
+																			<td>${tasks.taskName}<input type="hidden" id="taskIdValue" value="${tasks.taskId}"/></td>
+																			<td>${tasks.taskDesc}</td>
+																			<td>${tasks.taskHrs}</td>
+																			<td>01/01/2015</td>
+																			<td>Submitted</td>
+																			<td>${tasks.taskReviewUser}</td>
+																			<td>${tasks.rejComment}</td>
+																			<td>${tasks.taskComments}</td>
+																			<td><a href="#" taskType="teamTasks"  id="editTask" onclick="edit('${tasks.taskId}');"><img alt="edit project" src="./resources/edit.gif"
+																				width="20px;"></a>
+																			</td>
+																			<td><a href="#"  id="deleteTask" onclick="deleteTask('${tasks.taskId}');"><img alt="delete project" src="./resources/delete.gif"
+																				width="20px;"></a>
+																			</td>
+																		</tr>
+																	</c:forEach>
+																</c:otherwise>
+															</c:choose>
 														</table>
 													</td>
 												</tr>

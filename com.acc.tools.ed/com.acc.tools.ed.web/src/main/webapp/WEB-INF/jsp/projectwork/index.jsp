@@ -9,6 +9,6 @@
 <!-- SUB MENU-->
 <%@ include file="/WEB-INF/jsp/projectwork/submenu.jsp"%>
 <div id="pwMainContainer" 
-	style="width: 1001px; padding-top: 10px; height: 650px; overflow: auto;">
+	style="width: 75%; padding-top: 10px; height: 650px; overflow: auto;">
 	<jsp:include page="/WEB-INF/jsp/projectwork/myTasks.jsp" flush="true"></jsp:include>
 </div>

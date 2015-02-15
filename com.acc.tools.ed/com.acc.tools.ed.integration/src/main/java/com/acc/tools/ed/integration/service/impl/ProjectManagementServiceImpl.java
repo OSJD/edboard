@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,8 @@ import com.acc.tools.ed.integration.service.ProjectManagementService;
 
 @Service("projectManagementService")
 public class ProjectManagementServiceImpl implements ProjectManagementService{
+	
+	private final Logger log=LoggerFactory.getLogger(ProjectManagementServiceImpl.class);
 	
 	@Autowired
 	private ProjectManagementDao projectManagementDao;
@@ -241,6 +245,7 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 		try {
 			ComponentForm component= projectManagementDao.addComponent(projectId,phaseId,componentName, functionalDesc, compStartDate, compEndDate, compResource,relaseId,workDesc);
 			EDBUser user=loginDao.getEmployeeById(compResource);
+			log.debug("Employe Details :{}",user);
 			component.setResourceName(user.getEnterpriseId());
 			component.setWorkDesc(workDesc);
 			return component;

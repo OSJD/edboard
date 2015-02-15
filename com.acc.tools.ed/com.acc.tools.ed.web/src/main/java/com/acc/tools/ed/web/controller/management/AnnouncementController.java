@@ -166,10 +166,12 @@ public class AnnouncementController {
 	  for(SurveyQuestionnaire question:surveySystemForm.getQuestionnaire()){
 		  announcementId=question.getAnnouncementId();
 		  String correctAnswer=question.getCorrectAnswer().replace(",","");
-		  String empResponse=question.getResponse().replace(",","");
-		  if(correctAnswer.equalsIgnoreCase(empResponse)){
-			  question.setIsAnswerCorrect(1);
-			  totalScore++;
+		  if(question.getResponse()!=null){
+			  String empResponse=question.getResponse().replace(",","");
+			  if(correctAnswer.equalsIgnoreCase(empResponse)){
+				  question.setIsAnswerCorrect(1);
+				  totalScore++;
+			  }
 		  }
 		  LOG.debug("Question :{} | Answer:{} | Emp Response:{} | isAnswerCorrect:{}",new Object[]{question.getQuestionDescription(),question.getCorrectAnswer(),question.getResponse(),question.getIsAnswerCorrect()});
 		  announcementDao.saveSurveyResponse(question,edbUser);

@@ -3,8 +3,8 @@ $(document).ready(
 			
 		$("#addTaskPanel").dialog({
 			autoOpen : false,
-			height : 450,
-			width : 650,
+			height : 700,
+			width : 1100,
 			modal : true,
 			buttons : {
 				"Add Task" :  {
@@ -12,7 +12,6 @@ $(document).ready(
 					id:"addTaskButton",
 					click:function(){
 					var cId = $('#addTaskPanel').data('param');
-					var uId = $('#addTaskPanel').attr("edbUser");
 					$("#componentId").val(cId);
 					$.ajax({
 						type : "POST",
@@ -22,6 +21,7 @@ $(document).ready(
 						beforeSend : function() {
 						},
 						success : function(response) {
+							$("#NoTask"+cId).remove();
 							$("#taskTable"+cId).append(response);
 						},
 						error : function(data) {
@@ -118,10 +118,6 @@ $(document).ready(
 		});
 		
 		
-		 
-		
-										
-		
 		$(".componentData").hide();	
 		$(".compData").hide();	
 		$(".taskData").hide();
@@ -130,8 +126,14 @@ $(document).ready(
 			$("#release"+releaseId).toggle(function(){
 				if($("#release"+releaseId).is(":visible")){
 					$("#comptree"+releaseId).html("[-]");
-				} else
+					$("a[class='releaseRow']").each(function(index, obj){
+						if(obj.id!=releaseId){
+							$("#release"+obj.id).hide();
+						} 
+					});
+				} else{
 					$("#comptree"+releaseId).html("[+]");
+				}
 			});
 		});
 		$(".devRow").on("click",function(){

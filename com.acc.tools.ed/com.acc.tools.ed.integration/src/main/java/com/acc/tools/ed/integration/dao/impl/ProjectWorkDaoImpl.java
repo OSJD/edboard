@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.acc.tools.ed.integration.dao.ProjectWorkDao;
@@ -21,27 +23,28 @@ import com.acc.tools.ed.integration.dto.TaskForm;
 @Service("projectWorkDao")
 public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao {
 	
+	private static final Logger log = LoggerFactory.getLogger(ProjectWorkDaoImpl.class);
+	
 public List<ProjectForm> getMyTasks(String userId) {
 		
 		final List<ProjectForm> projectTasks=new ArrayList<ProjectForm>();
 		final Map<Integer,ProjectForm> projMap = new HashMap<Integer, ProjectForm>();
 		final Map<Integer,ReleaseForm> relMap = new HashMap<Integer, ReleaseForm>();
-		final Map<Integer,ComponentForm> compMap = new HashMap<Integer, ComponentForm>();
 
 		try{
 	        final StringBuffer componentTable =new StringBuffer();
 	       
-	        componentTable.append(" SELECT C.*, M.*, T.*,H.*, P.PROJ_NAME, CE.EMP_ID, CE.WORK_DESC,ED.EMP_RESOURCE_NAME FROM (((EDB_PROJECT AS P LEFT JOIN EDB_MILESTONE AS M ON P.PROJ_ID = M.PROJ_ID) ");
+	        componentTable.append(" SELECT C.COMPNT_ID as COMPONENT_ID,C.COMPNT_NAME,C.COMPNT_FUNC_DESC,C.COMPNT_PHASE,C.COMPNT_ST_DT,C.COMPNT_END_DT, M.*, T.*,H.*, P.PROJ_NAME, CE.EMP_ID, CE.WORK_DESC,ED.EMP_RESOURCE_NAME FROM (((EDB_PROJECT AS P LEFT JOIN EDB_MILESTONE AS M ON P.PROJ_ID = M.PROJ_ID) ");
 	        componentTable.append(" LEFT JOIN (EDB_PROJ_COMPNT AS C LEFT JOIN EDB_TASK_MASTER AS T ON C.COMPNT_ID = T.COMPNT_ID) ON M.MLSTN_ID = C.MLSTN_ID) ");
 	        componentTable.append(" LEFT JOIN (EDB_COMPNT_EMP AS CE LEFT JOIN EDB_MSTR_EMP_DTLS AS ED ON CE.EMP_ID = ED.EMP_ID) ON CE.COMPNT_ID=C.COMPNT_ID) LEFT JOIN EDB_TASK_REVW_HISTORY AS H ON T.TASK_ID=H.TASK_ID  WHERE CE.EMP_ID="+userId);
 
-			
+			log.debug("My Tasks Query:{}",componentTable.toString());
 			Statement stmt=getConnection().createStatement();
 			ResultSet rs=stmt.executeQuery(componentTable.toString());
 			while(rs.next()){
 				final int projectId=rs.getInt("PROJ_ID");
 				final int releaseId = rs.getInt("MLSTN_ID");
-				final int componentId=rs.getInt("COMPNT_ID");
+				final int componentId=rs.getInt("COMPONENT_ID");
 				final int taskId=rs.getInt("TASK_ID");
 
 				
@@ -50,41 +53,37 @@ public List<ProjectForm> getMyTasks(String userId) {
 					ProjectForm project=projMap.get(projectId);
 					if(!relMap.isEmpty() && relMap.containsKey(releaseId)){
 						ReleaseForm release=relMap.get(releaseId);
-						if(!compMap.isEmpty() && compMap.containsKey(componentId)){
-							final ComponentForm component=compMap.get(componentId);
-							final TaskForm taskForm=new TaskForm();
-							taskForm.setTaskId(taskId);
-							mapTaskData(rs, taskForm, componentId,taskId);
-							if(component.getTaskFormList()==null){
-								component.setTaskFormList(new ArrayList<TaskForm>());
-							}
-							component.getTaskFormList().add(taskForm);
-						} else {
+						if(componentId!=0){
 							final ComponentForm component=new ComponentForm(); 
 							component.setComponentId(componentId);
 							mapComponentData(rs, release,component);
-							final TaskForm task=new TaskForm();
-							mapTaskData(rs, task,component.getComponentId(),taskId);
-							if(component.getTaskFormList()==null){
-								component.setTaskFormList(new ArrayList<TaskForm>());
+							if(taskId!=0){
+								final TaskForm task=new TaskForm();
+								mapTaskData(rs, task,component.getComponentId(),taskId);
+								if(component.getTaskFormList()==null){
+									component.setTaskFormList(new ArrayList<TaskForm>());
+								}
+								component.getTaskFormList().add(task);
 							}
-							component.getTaskFormList().add(task);
-							compMap.put(componentId, component);
 						}
+
 					} else {
 						final ReleaseForm release=new ReleaseForm();
 						mapReleaseData(rs, project, release, releaseId);
-						final ComponentForm component=new ComponentForm(); 
-						component.setComponentId(componentId);
-						mapComponentData(rs, release,component);
-						final TaskForm task=new TaskForm();
-						mapTaskData(rs, task,component.getComponentId(),taskId);
-						if(component.getTaskFormList()==null){
-							component.setTaskFormList(new ArrayList<TaskForm>());
+						if(componentId!=0){
+							final ComponentForm component=new ComponentForm(); 
+							component.setComponentId(componentId);
+							mapComponentData(rs, release,component);
+							if(taskId!=0){
+								final TaskForm task=new TaskForm();
+								mapTaskData(rs, task,component.getComponentId(),taskId);
+								if(component.getTaskFormList()==null){
+									component.setTaskFormList(new ArrayList<TaskForm>());
+								}
+								component.getTaskFormList().add(task);
+							}
+							relMap.put(releaseId, release);
 						}
-						component.getTaskFormList().add(task);
-						relMap.put(releaseId, release);
-						compMap.put(componentId, component);
 					}
 				} else {
 					//First record occurrence
@@ -93,19 +92,23 @@ public List<ProjectForm> getMyTasks(String userId) {
 					project.setProjectName(rs.getString("PROJ_NAME"));
 					final ReleaseForm release=new ReleaseForm();
 					mapReleaseData(rs, project, release, releaseId);
-					final ComponentForm component=new ComponentForm(); 
-					component.setComponentId(componentId);
-					mapComponentData(rs, release,component);
-					final TaskForm task=new TaskForm();
-					mapTaskData(rs, task,component.getComponentId(),taskId);
-					if(component.getTaskFormList()==null){
-						component.setTaskFormList(new ArrayList<TaskForm>());
+					if(componentId!=0){
+						final ComponentForm component=new ComponentForm(); 
+						component.setComponentId(componentId);
+						mapComponentData(rs, release,component);
+						if(taskId!=0){
+							final TaskForm task=new TaskForm();
+							mapTaskData(rs, task,component.getComponentId(),taskId);
+							if(component.getTaskFormList()==null){
+								component.setTaskFormList(new ArrayList<TaskForm>());
+							}
+							component.getTaskFormList().add(task);
+						}
+						projMap.put(projectId, project);
+						relMap.put(releaseId, release);
+						projectTasks.add(project);
+					
 					}
-					component.getTaskFormList().add(task);
-					projMap.put(projectId, project);
-					relMap.put(releaseId, release);
-					compMap.put(componentId, component);
-					projectTasks.add(project);
 				}
 				
 			}
@@ -126,96 +129,92 @@ public List<ProjectForm> getMyTeamTasks(String supervisorId) {
 	final List<ProjectForm> projectTasks=new ArrayList<ProjectForm>();
 	final Map<Integer,ProjectForm> projMap = new HashMap<Integer, ProjectForm>();
 	final Map<Integer,ReleaseForm> relMap = new HashMap<Integer, ReleaseForm>();
-	final Map<Integer,ComponentForm> compMap = new HashMap<Integer, ComponentForm>();
 
 	try{
-        StringBuffer componentTable =new StringBuffer();
-        List<ReferenceData> userIdList =getMyTeamIds(supervisorId);
-        Statement stmt;
-        ResultSet rs;
+        final List<ReferenceData> userIdList =getMyTeamIds(supervisorId);
         for(int i=0;i<userIdList.size();i++){
-        	componentTable =new StringBuffer();
+        	final StringBuffer componentTable =new StringBuffer();
         	ReferenceData userData=userIdList.get(i);
         
-        	componentTable.append(" SELECT C.*, M.*, T.*,H.*, P.PROJ_NAME, CE.EMP_ID, CE.WORK_DESC, ED.EMP_RESOURCE_NAME FROM (((EDB_PROJECT AS P LEFT JOIN EDB_MILESTONE AS M ON P.PROJ_ID = M.PROJ_ID) ");
+        	componentTable.append(" SELECT C.COMPNT_ID as COMPONENT_ID,C.COMPNT_NAME,C.COMPNT_FUNC_DESC,C.COMPNT_PHASE,C.COMPNT_ST_DT,C.COMPNT_END_DT, M.*, T.*,H.*, P.PROJ_NAME, CE.EMP_ID, CE.WORK_DESC, ED.EMP_RESOURCE_NAME FROM (((EDB_PROJECT AS P LEFT JOIN EDB_MILESTONE AS M ON P.PROJ_ID = M.PROJ_ID) ");
 	        componentTable.append(" LEFT JOIN (EDB_PROJ_COMPNT AS C LEFT JOIN EDB_TASK_MASTER AS T ON C.COMPNT_ID = T.COMPNT_ID) ON M.MLSTN_ID = C.MLSTN_ID) ");
 	        componentTable.append(" LEFT JOIN (EDB_COMPNT_EMP AS CE LEFT JOIN EDB_MSTR_EMP_DTLS AS ED ON CE.EMP_ID = ED.EMP_ID) ON CE.COMPNT_ID=C.COMPNT_ID) LEFT JOIN EDB_TASK_REVW_HISTORY AS H ON T.TASK_ID=H.TASK_ID  WHERE CE.EMP_ID="+userData.getId());
 
-		
-		stmt=getConnection().createStatement();
-		rs=stmt.executeQuery(componentTable.toString());
-		while(rs.next()){
-			final int projectId=rs.getInt("PROJ_ID");
-			final int releaseId = rs.getInt("MLSTN_ID");
-			final int componentId=rs.getInt("COMPNT_ID");
-			final int taskId=rs.getInt("TASK_ID");
+			log.debug("My Team Tasks Query:{}",componentTable.toString());
+			final Statement stmt=getConnection().createStatement();
+			final ResultSet rs=stmt.executeQuery(componentTable.toString());
+			while(rs.next()){
+				final int projectId=rs.getInt("PROJ_ID");
+				final int releaseId = rs.getInt("MLSTN_ID");
+				final int componentId=rs.getInt("COMPONENT_ID");
+				final int taskId=rs.getInt("TASK_ID");
+	
+				
+				if(!projMap.isEmpty() && projMap.containsKey(projectId)){
+					//second record occurrence
+					ProjectForm project=projMap.get(projectId);
+					if(!relMap.isEmpty() && relMap.containsKey(releaseId)){
+						ReleaseForm release=relMap.get(releaseId);
+						if(componentId!=0){
+							final ComponentForm component=new ComponentForm(); 
+							component.setComponentId(componentId);
+							mapComponentData(rs, release,component);
+							if(taskId!=0){
+								final TaskForm task=new TaskForm();
+								mapTaskData(rs, task,component.getComponentId(),taskId);
+								if(component.getTaskFormList()==null){
+									component.setTaskFormList(new ArrayList<TaskForm>());
+								}
+								component.getTaskFormList().add(task);
+							}
 
-			
-			if(!projMap.isEmpty() && projMap.containsKey(projectId)){
-				//second record occurrence
-				ProjectForm project=projMap.get(projectId);
-				if(!relMap.isEmpty() && relMap.containsKey(releaseId)){
-					ReleaseForm release=relMap.get(releaseId);
-					if(!compMap.isEmpty() && compMap.containsKey(componentId)){
-						final ComponentForm component=compMap.get(componentId);
-						final TaskForm taskForm=new TaskForm();
-						taskForm.setTaskId(taskId);
-						mapTaskData(rs, taskForm, componentId,taskId);
-						if(component.getTaskFormList()==null){
-							component.setTaskFormList(new ArrayList<TaskForm>());
 						}
-						component.getTaskFormList().add(taskForm);
+						
 					} else {
+						final ReleaseForm release=new ReleaseForm();
+						mapReleaseData(rs, project, release, releaseId);
+						if(componentId!=0){
+							final ComponentForm component=new ComponentForm(); 
+							component.setComponentId(componentId);
+							mapComponentData(rs, release,component);
+							if(taskId!=0){
+								final TaskForm task=new TaskForm();
+								mapTaskData(rs, task,component.getComponentId(),taskId);
+								if(component.getTaskFormList()==null){
+									component.setTaskFormList(new ArrayList<TaskForm>());
+								}
+								component.getTaskFormList().add(task);
+							}
+							relMap.put(releaseId, release);
+						}
+					}
+				} else {
+					//First record occurrence
+					ProjectForm project=new ProjectForm();
+					project.setProjectId(projectId);
+					project.setProjectName(rs.getString("PROJ_NAME"));
+					final ReleaseForm release=new ReleaseForm();
+					mapReleaseData(rs, project, release, releaseId);
+					mapUserData(rs, release,userData);
+					if(componentId!=0){
 						final ComponentForm component=new ComponentForm(); 
 						component.setComponentId(componentId);
 						mapComponentData(rs, release,component);
-						final TaskForm task=new TaskForm();
-						mapTaskData(rs, task,component.getComponentId(),taskId);
-						if(component.getTaskFormList()==null){
-							component.setTaskFormList(new ArrayList<TaskForm>());
+						if(taskId!=0){
+							final TaskForm task=new TaskForm();
+							mapTaskData(rs, task,component.getComponentId(),taskId);
+							if(component.getTaskFormList()==null){
+								component.setTaskFormList(new ArrayList<TaskForm>());
+							}
+							component.getTaskFormList().add(task);
 						}
-						component.getTaskFormList().add(task);
-						compMap.put(componentId, component);
+						projMap.put(projectId, project);
+						relMap.put(releaseId, release);
+						projectTasks.add(project);
 					}
-				} else {
-					final ReleaseForm release=new ReleaseForm();
-					mapReleaseData(rs, project, release, releaseId);
-					final ComponentForm component=new ComponentForm(); 
-					component.setComponentId(componentId);
-					mapComponentData(rs, release,component);
-					final TaskForm task=new TaskForm();
-					mapTaskData(rs, task,component.getComponentId(),taskId);
-					if(component.getTaskFormList()==null){
-						component.setTaskFormList(new ArrayList<TaskForm>());
-					}
-					component.getTaskFormList().add(task);
-					relMap.put(releaseId, release);
-					compMap.put(componentId, component);
 				}
-			} else {
-				//First record occurrence
-				ProjectForm project=new ProjectForm();
-				project.setProjectId(projectId);
-				project.setProjectName(rs.getString("PROJ_NAME"));
-				final ReleaseForm release=new ReleaseForm();
-				mapReleaseData(rs, project, release, releaseId);
-				mapUserData(rs, release,userData);
-				final ComponentForm component=new ComponentForm(); 
-				component.setComponentId(componentId);
-				mapComponentData(rs, release,component);
-				final TaskForm task=new TaskForm();
-				mapTaskData(rs, task,component.getComponentId(),taskId);
-				if(component.getTaskFormList()==null){
-					component.setTaskFormList(new ArrayList<TaskForm>());
-				}
-				component.getTaskFormList().add(task);
-				projMap.put(projectId, project);
-				relMap.put(releaseId, release);
-				compMap.put(componentId, component);
-				projectTasks.add(project);
+				
 			}
-			
-		}
 		
 		
 		stmt.close();
@@ -229,15 +228,16 @@ public List<ProjectForm> getMyTeamTasks(String supervisorId) {
 }
 	public List<ReferenceData> getMyTeamIds(String supervisorId) {
 		
-		List<ReferenceData> userIdList = new ArrayList<ReferenceData>();
-		String userIds="";
+		final List<ReferenceData> userIdList = new ArrayList<ReferenceData>();
 		try {
 
 					
-			String userIdQuery = " SELECT A.EMP_ID,A.EMP_RESOURCE_NAME FROM (EDB_MSTR_EMP_DTLS AS A" + 
+			String userIdQuery = " SELECT DISTINCT A.EMP_ID,A.EMP_RESOURCE_NAME FROM (EDB_MSTR_EMP_DTLS AS A" + 
 								 " LEFT JOIN EDB_PROJ_EMP AS B ON A.EMP_ID = B.EMP_ID)" +
 					             " LEFT JOIN EDB_PROJECT AS C ON B.PROJ_ID=C.PROJ_ID" +
 					             " WHERE C.PROJ_LEAD='"+supervisorId+"'";
+			
+			log.debug("My Team resources Query:{}",userIdQuery);
 			Statement selectStatement = getConnection().createStatement();
 			ResultSet rs = selectStatement.executeQuery(userIdQuery);
 			

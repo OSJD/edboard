@@ -14,15 +14,15 @@
 		</layout>
 	</appender>
 	
-	<logger name="com.acc.tools.ed" additivity="false">
+	<logger name="com.acc.tools.ed">
       	<level value="debug" />
 		<appender-ref ref="consoleAppender" />
 	</logger>
-	<logger name="org.docx4j" additivity="false">
+	<logger name="org.docx4j">
       	<level value="error" />
 		<appender-ref ref="consoleAppender" />
    </logger>
-	<logger name="org.springframework" additivity="false">
+	<logger name="org.springframework">
       	<level value="error" />
 		<appender-ref ref="consoleAppender" />
    </logger>
@@ -30,7 +30,7 @@
 
 
 	<root >
-		<level value="error" />
+		<level value="debug" />
 		<appender-ref ref="consoleAppender" />
 		<appender-ref ref="fileAppender" />
 	</root>
