@@ -242,7 +242,45 @@
 									<th colspan="4">Code Quality</th>
 									<th colspan="4">Peer Review Comments</th>
 								</tr>
+								<tr>
+									<td colspan="4">
+										<table style="width: 100%;"
+											<tr>	
+	 											<th >Bloker</th><td>0</td><th>CCN</th><td></td>
+	 										</tr>
+											<tr>
+												<th >Cirital</th><td>0</td><th>Total Test Cases</th><td></td>
+											</tr>
+											<tr>
+												<th >Major</th><td>0</td><th>Test Coverage</th><td></td>
+											</tr>
+											<tr>
+												<th >Minor</th><td>0</td>
+											</tr>
+											<tr>
+												<th >Info</th><td>0</td>
+									 		</tr></table>
+									</td>
+									<td colspan="4">
+										<table style="width: 100%;">
+											<tr>
+											   <th>Review Comment</th><td>Developer Update</td>
+											</tr>
+											<tr>
+												<td>Review Comment1</td><td>Developer Update1</td>
+											</tr>
+											<tr>
+												<th>Review Comment2</th><td>Developer Update2</td>
+											</tr>
+											<tr>
+											   <th>Review Comment3</th><td>Developer Update3</td>
+											</tr>
+											
+										</table>
+									</td>
+								</tr>
 								<tr id="taskActionRow" style="display: none">
+								
 									<th colspan="8">Current Date() - Task Details</th>
 									<th style="text-align: right;">Task Action</th>
 									<td><form:select path="taskAction" id="taskAction"
