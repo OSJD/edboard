@@ -3,14 +3,10 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<html>
-<head>
 <script src="<%=request.getContextPath()%>/script/submenu-actions.js"></script>
 <script
 	src="<%=request.getContextPath()%>/script/projectwork-actions.js"></script>
-</head>
-<body>
-
+	
 	<table class="ebdtable">
 		<tr>
 			<th style="width: 70px; font-weight: bold;">Release Name</th>
@@ -213,21 +209,22 @@
 							style="text-align: center; background-image: none; background-color: white;">
 							<table style="width: 100%;">
 								<tr>
-									<th colspan="8">Current Date() - Task Details</th>
+									<th colspan="8" style="text-align: left;font-size: 15px;">Current Date() - Task Details</th>
 								</tr>
 								<tr>
-									<th style="text-align: right; width: 100px">Task Hours</th>
-									<td><form:input type="text" path="taskHrs" id="taskHrs"
-											class="textbox" cssStyle="width:20px;" /></td>
-									<th style="text-align: right;">Today Work</th>
+									<th>Today Work</th>
+									<th>Task Hours</th>
+									<th>Task Status</th>
+									<th>Peer Review by</th>
+								</tr>
+								<tr>
 									<td>
 										<div id="divComment">
-											<form:textarea style="overflow: auto; resize: none" rows="3"
-												id="taskComments" path="taskComments" cols="50"
-												class="textarea" />
+											<form:textarea cssStyle="overflow: auto; resize: none;" rows="5" id="taskComments" path="taskComments" cols="100"	cssClass="textarea"  />
 										</div>
 									</td>
-									<th style="text-align: right;">Task Status</th>
+									<td><form:input type="text" path="taskHrs" id="taskHrs"
+											class="textbox" cssStyle="width:35px;" /></td>
 									<td><form:select path="taskStatus" id="taskStatus"
 											style="width:135px;" multiple="false">
 											<form:option value="" label="---Select---" />
@@ -235,47 +232,47 @@
 											<form:option value="inProgress" label="In Progress" />
 											<form:option value="onHold" label="On Hold" />
 										</form:select></td>
-									<th>Peer Review by</th>
 									<td>Murali Gavarasana</td>
-								</tr>
+								</tr>								
 								<tr>
-									<th colspan="4">Code Quality</th>
-									<th colspan="4">Peer Review Comments</th>
-								</tr>
-								<tr>
-									<td colspan="4">
-										<table style="width: 100%;"
-											<tr>	
-	 											<th >Bloker</th><td>0</td><th>CCN</th><td></td>
-	 										</tr>
-											<tr>
-												<th >Cirital</th><td>0</td><th>Total Test Cases</th><td></td>
-											</tr>
-											<tr>
-												<th >Major</th><td>0</td><th>Test Coverage</th><td></td>
-											</tr>
-											<tr>
-												<th >Minor</th><td>0</td>
-											</tr>
-											<tr>
-												<th >Info</th><td>0</td>
-									 		</tr></table>
-									</td>
 									<td colspan="4">
 										<table style="width: 100%;">
 											<tr>
-											   <th>Review Comment</th><td>Developer Update</td>
+												<td style="width: 25%;">
+													<table style="width: 100%;">
+														<tr><th colspan="4">Code Quality Matrix</th></tr>
+														<tr>	
+				 											<th style="width: 50px;">Bloker</th><td style="width: 50px;">0</td><th style="width: 50px;">CCN</th><td></td>
+				 										</tr>
+														<tr>
+															<th >Cirital</th><td>0</td><th>Total Test Cases</th><td></td>
+														</tr>
+														<tr>
+															<th >Major</th><td>0</td><th>Test Coverage</th><td></td>
+														</tr>
+														<tr>
+															<th >Minor</th><td>0</td>
+														</tr>
+														<tr>
+															<th >Info</th><td>0</td>
+												 		</tr>
+													</table>
+												</td>
+												<td>
+													<table style="width: 100%;">
+														<tr><th colspan="4">Peer Review Details</th></tr>
+														<tr>	
+				 											<th>Review Comment</th><th>Developer Update</th>
+				 										</tr>
+														<tr>
+															<td>0</td><td>1</td>
+														</tr>
+														<tr>
+															<td>0</td><td>1</td>
+														</tr>
+													</table>
+												</td>
 											</tr>
-											<tr>
-												<td>Review Comment1</td><td>Developer Update1</td>
-											</tr>
-											<tr>
-												<th>Review Comment2</th><td>Developer Update2</td>
-											</tr>
-											<tr>
-											   <th>Review Comment3</th><td>Developer Update3</td>
-											</tr>
-											
 										</table>
 									</td>
 								</tr>
@@ -304,6 +301,3 @@
 			</fieldset>
 		</form:form>
 	</div>
-</body>
-</html>
-

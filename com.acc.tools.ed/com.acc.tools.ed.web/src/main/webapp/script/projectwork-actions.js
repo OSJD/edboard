@@ -3,7 +3,7 @@ $(document).ready(
 			
 		$("#addTaskPanel").dialog({
 			autoOpen : false,
-			height : 700,
+			height : 750,
 			width : 1100,
 			modal : true,
 			buttons : {
