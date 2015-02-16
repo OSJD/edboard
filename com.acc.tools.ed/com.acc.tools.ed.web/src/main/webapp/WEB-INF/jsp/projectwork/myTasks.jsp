@@ -209,7 +209,7 @@
 							style="text-align: center; background-image: none; background-color: white;">
 							<table style="width: 100%;">
 								<tr>
-									<th colspan="8" style="text-align: left;font-size: 15px;">Current Date() - Task Details</th>
+									<th colspan="4" style="text-align: left;font-size: 15px;">Current Date() - Task Details</th>
 								</tr>
 								<tr>
 									<th>Today Work</th>
@@ -235,26 +235,41 @@
 									<td>Murali Gavarasana</td>
 								</tr>								
 								<tr>
-									<td colspan="4">
+									<td colspan="4" style="background-image: none;background-color: white;">
 										<table style="width: 100%;">
 											<tr>
 												<td style="width: 25%;">
 													<table style="width: 100%;">
 														<tr><th colspan="4">Code Quality Matrix</th></tr>
 														<tr>	
-				 											<th style="width: 50px;">Bloker</th><td style="width: 50px;">0</td><th style="width: 50px;">CCN</th><td></td>
+				 											<th style="width: 50px;">Bloker</th>
+				 											<td style="width: 50px;">0</td>
+				 											<th style="width: 50px;">CCN</th>
+				 											<td></td>
 				 										</tr>
 														<tr>
-															<th >Cirital</th><td>0</td><th>Total Test Cases</th><td></td>
+															<th >Cirital</th>
+															<td>0</td>
+															<th>Total Test Cases</th>
+															<td></td>
 														</tr>
 														<tr>
-															<th >Major</th><td>0</td><th>Test Coverage</th><td></td>
+															<th >Major</th>
+															<td>0</td>
+															<th>Test Coverage</th>
+															<td></td>
 														</tr>
 														<tr>
-															<th >Minor</th><td>0</td>
+															<th>Minor</th>
+															<td>0</td>
+															<td></td>
+															<td></td>
 														</tr>
 														<tr>
-															<th >Info</th><td>0</td>
+															<th>Info</th>
+															<td>0</td>
+															<td></td>
+															<td></td>
 												 		</tr>
 													</table>
 												</td>
@@ -265,20 +280,21 @@
 				 											<th>Review Comment</th><th>Developer Update</th>
 				 										</tr>
 														<tr>
-															<td>0</td><td>1</td>
+															<td>0</td><td><textarea></textarea></td>
 														</tr>
 														<tr>
-															<td>0</td><td>1</td>
+															<td>0</td><td><textarea></textarea></td>
 														</tr>
+														<tr><td colspan="2"><button>Update Review Comments</button></td></tr>
 													</table>
 												</td>
 											</tr>
 										</table>
 									</td>
 								</tr>
-								<tr id="taskActionRow" style="display: none">
+<%-- 								<tr id="taskActionRow" style="display: none">
 								
-									<th colspan="8">Current Date() - Task Details</th>
+									<th >Current Date() - Task Details</th>
 									<th style="text-align: right;">Task Action</th>
 									<td><form:select path="taskAction" id="taskAction"
 											style="width:135px;" multiple="false">
@@ -293,7 +309,7 @@
 												id="rejComment" path="rejComment" cols="20" class="textarea" />
 										</div>
 									</td>
-								</tr>
+								</tr> --%>
 							</table>
 						</td>
 					</tr>
