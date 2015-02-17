@@ -39,7 +39,7 @@
 								<th style="width: 145px;">Component Name</th>
 								<th style="width: 75px;">Component Phase</th>
 								<th style="width: 280px;">Functional Desc</th>
-								<th style="width: 280px;">Work Desc</th>
+								<th style="width: 280px;">Assigned Work Desc</th>
 								<th style="width: 80px;">Start Date</th>
 								<th style="width: 80px;">End Date</th>
 								<th style="width: 80px;">Status</th>
@@ -48,6 +48,13 @@
 							</tr>
 							<c:forEach items="${release.components}" var="component">
 								<tr>
+									<input type="hidden" id="projName${component.componentId}" value="${project.projectName}" />
+									<input type="hidden" id="releaseName${component.componentId}" value="${release.releaseName}" />
+									<input type="hidden" id="componentName${component.componentId}" value="${component.componentName}" />
+									<input type="hidden" id="assignedWork${component.componentId}" value="${component.workDesc}" />
+									<input type="hidden" id="startDate${component.componentId}" value="${component.startDate}" />
+									<input type="hidden" id="endDate${component.componentId}" value="${component.endDate}" />
+									
 									<td><a href="#" id="${component.componentId}"
 										class="componentRow"><div
 												id="tasktree${component.componentId}"
@@ -151,43 +158,41 @@
 									<th style="width: 100px;">End Date</th>
 								</tr>
 								<tr>
-									<td>Primer Discounting</td>
-									<td>Aug Release aaaa</td>
-									<td>Email component & junits</td>
+									<td><div id="taskProjectName"></div></td>
+									<td><div id="taskReleaseName"></div></td>
+									<td><div id="taskComponentName"></div></td>
 									<td style="height: 50px;">
-										<div style="overflow: auto;">asdasd asdasdasd asdasdasd
-											asdasd asdasda asdasdasd asdasd asdasdasdasdasd asdasd asdasd
-											asdasdasd asdasd asdasdasd asdasd asdasd asdasd asdasd asdasd
-											asdasdas d sdfsdf sdfsdf sdfsdf</div>
+										<div style="overflow: auto;" id="taskAssignedWork"></div>
 									</td>
-									<td>Start Date</td>
-									<td>End Date</td>
+									<td><div id="taskCompStartDate"></div></td>
+									<td><div id="taskCompEndDate"></div></td>
 								</tr>
 							</table>
 						</td>
 					</tr>
 					<tr>
 						<th style="text-align: right;">Task Type</th>
-						<td style="width: 50px;"><form:select path="taskType"
+						<td style="width: 40px;"><form:select path="taskType"
 								id="taskType" multiple="false">
 								<form:option value="" label="---Select---" />
 								<form:option value="as" label="Assigned" />
 								<form:option value="ad" label="Adhoc" />
 								<form:option value="va" label="Value Added" />
 							</form:select></td>
-						<th style="text-align: right; width: 75px;">Task Name</th>
-						<td id="taskNamePosition" style="width: 240px;"><select
-							id="taskNameSelect" style="width: 100px;">
-								<option value=""></option>
-								<option value="0">-- Select --</option>
-								<option value="-1">Create New Task</option>
-						</select>
+						<th style="text-align: right; width: 55px;">Task Name</th>
+						<td id="taskNamePosition" style="width: 255px;">
+							<form:select path="taskName" id="taskNameSelect" class="textbox" multiple="false" cssStyle="width : 120px;">
+								<form:option  value="0" label="--- Select ---" />
+								<form:option  value="-1" label="Create New Task" />
+								<form:options items="${addTaskForm.taskIds}"  itemValue="id" itemLabel="label" />
+							</form:select>						
 							<div id="newTask" style="float: right; display: none;">
 								<form:input type="text" path="taskName" id="taskName"
 									class="textbox" />
 								<form:hidden path="componentId" id="componentId" />
 								<form:hidden path="taskId" id="taskId" />
-							</div></td>
+							</div>
+						</td>
 						<th style="text-align: right; width: 75px;">Task Start Date</th>
 						<td><form:input type="date" path="taskStartDate"
 								id="taskStartDate" class="textbox" cssStyle="width:75px;" /></td>
@@ -197,12 +202,20 @@
 					</tr>
 					<tr>
 						<th style="text-align: right; width: 75px;">Task Description</th>
-						<td colspan="4"><form:textarea type="text" path="taskDesc"
-								id="taskDesc" cssClass="textbox" cols="100" rows="5" /></td>
-						<td colspan="3"><div
-								style="color: red; margin-left: 15px; margin-right: 15px;">Note:Very
-								low level details of task should be documented here with step by
-								step implementation.</div></td>
+						<td colspan="3"><form:textarea type="text" path="taskDesc"
+								id="taskDesc" cssClass="textbox" cols="70" rows="5" /></td>
+						<th style="text-align: right; width: 75px;">Development Artifacts</th>
+						<td colspan="3">
+							<div style="overflow: auto;height: 100px;">
+								<table style="width: 100%;">
+									<tr>
+										<th style="width: 50px;">File Name</th>
+										<td><input></td>
+									</tr>
+								</table>
+							</div>
+							<div style="margin-left: 30%;"><button>Add another File</button></div>
+						</td>
 					</tr>
 					<tr>
 						<td colspan="8"
@@ -274,19 +287,21 @@
 													</table>
 												</td>
 												<td>
-													<table style="width: 100%;">
-														<tr><th colspan="4">Peer Review Details</th></tr>
-														<tr>	
-				 											<th>Review Comment</th><th>Developer Update</th>
-				 										</tr>
-														<tr>
-															<td>0</td><td><textarea></textarea></td>
-														</tr>
-														<tr>
-															<td>0</td><td><textarea></textarea></td>
-														</tr>
-														<tr><td colspan="2"><button>Update Review Comments</button></td></tr>
-													</table>
+													<div style="height:175px; overflow: auto;">
+														<table style="width: 100%;">
+															<tr><th colspan="4">Peer Review Details</th></tr>
+															<tr>	
+					 											<th>Review Comment</th><th>Developer Update</th>
+					 										</tr>
+															<tr>
+																<td>
+																	<div style="width: 325px;height: 60px;overflow: auto;">
+																		Resview Comment 1
+																	</div>
+																</td><td><textarea cols="62" rows="5"></textarea></td>
+															</tr>
+														</table>
+													</div>
 												</td>
 											</tr>
 										</table>

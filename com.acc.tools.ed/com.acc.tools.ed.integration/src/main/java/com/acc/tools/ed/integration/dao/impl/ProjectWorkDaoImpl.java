@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -268,7 +269,8 @@ public List<ProjectForm> getMyTeamTasks(String supervisorId) {
 			pstm.setInt(4, Integer.parseInt(String.valueOf(taskForm.getTaskHrs())));
 			pstm.setString(5, taskForm.getTaskStatus());
 			pstm.setString(6, taskForm.getTaskType());
-			pstm.setString(7, taskForm.getTaskCreateDate());
+			DateTime currentDate=new DateTime(System.currentTimeMillis());
+			pstm.setString(7, currentDate.toString("yyyy-MM-dd"));
 			pstm.setString(8, taskForm.getTaskStartDate());
 			pstm.setString(9, taskForm.getTaskEndDate());
 			pstm.setString(10, taskForm.getTaskComments());

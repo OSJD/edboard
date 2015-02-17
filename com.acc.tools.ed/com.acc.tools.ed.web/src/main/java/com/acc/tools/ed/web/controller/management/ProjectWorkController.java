@@ -1,5 +1,6 @@
 package com.acc.tools.ed.web.controller.management;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.acc.tools.ed.integration.dto.ComponentForm;
 import com.acc.tools.ed.integration.dto.EDBUser;
 import com.acc.tools.ed.integration.dto.ProjectForm;
+import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.ReleaseForm;
 import com.acc.tools.ed.integration.dto.TaskForm;
 import com.acc.tools.ed.integration.service.ProjectWorkService;
@@ -49,7 +51,14 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 			}
 		}
 		model.addAttribute("projData", projData);
-		model.addAttribute("addTaskForm", new TaskForm());
+		TaskForm taskForm=new TaskForm();
+		List<ReferenceData> tasks=new LinkedList<ReferenceData>();
+		ReferenceData task=new ReferenceData();
+		task.setId("123");
+		task.setLabel("New Task");
+		tasks.add(task);
+		taskForm.setTaskIds(tasks);
+		model.addAttribute("addTaskForm", taskForm);
 		return "/projectwork/index";
 	}
 	
@@ -71,7 +80,15 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 			}
 		}
 		model.addAttribute("projData", projData);
-		model.addAttribute("addTaskForm", new TaskForm());
+		TaskForm taskForm=new TaskForm();
+		List<ReferenceData> tasks=new LinkedList<ReferenceData>();
+		ReferenceData task=new ReferenceData();
+		task.setId("123");
+		task.setLabel("New Task");
+		tasks.add(task);
+		taskForm.setTaskIds(tasks);
+		model.addAttribute("addTaskForm", taskForm);
+
 		return "/projectwork/myTasks";
 	}
 	
@@ -106,7 +123,7 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 	@RequestMapping(value = "/addTask.do")
 	public  String addTask(@ModelAttribute("addTaskForm")TaskForm taskform,Model model) {
 		
-		LOG.debug("addTask:[{}]",taskform.getTaskName());
+		LOG.debug("addTask:{} | Today Work:{}",taskform.getTaskName(),taskform.getTaskComments());
 		getProjectWorkService().addTasks(taskform);
 		TaskForm taskData=projectWorkService.retrieveTasks();
 		taskform.setTaskId(taskData.getTaskId());

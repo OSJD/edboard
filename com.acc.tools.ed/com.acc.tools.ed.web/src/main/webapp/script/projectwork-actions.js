@@ -3,7 +3,7 @@ $(document).ready(
 			
 		$("#addTaskPanel").dialog({
 			autoOpen : false,
-			height : 750,
+			height : 780,
 			width : 1100,
 			modal : true,
 			buttons : {
@@ -100,6 +100,38 @@ $(document).ready(
 		$(".addTaskPopup").unbind("click").on("click", function() {
 			var componentId=$(this).attr("id");
 			var taskTypeDisplay=$(this).attr("taskType");
+			$("#taskProjectName").html($("#projName"+componentId).val());
+			$("#taskReleaseName").html($("#releaseName"+componentId).val());
+			$("#taskComponentName").html($("#componentName"+componentId).val());
+			$("#taskAssignedWork").html($("#assignedWork"+componentId).val());
+			var startDate=$("#startDate"+componentId).val();
+			var endDate=$("#endDate"+componentId).val();
+			$("#taskCompStartDate").html(startDate);
+			$("#taskCompEndDate").html(endDate);
+			
+			$( "#taskStartDate" ).datepicker({
+				showOn: 'button',
+				buttonText: 'Show Date',
+				buttonImageOnly: true,
+				buttonImage: 'resources/cal.gif',
+				dateFormat: 'mm/dd/yy',
+				constrainInput: true,
+				minDate:startDate,
+				maxDate:endDate
+			});
+			$( "#taskEndDate" ).datepicker({
+				showOn: 'button',
+				buttonText: 'Show Date',
+				buttonImageOnly: true,
+				buttonImage: 'resources/cal.gif',
+				dateFormat: 'mm/dd/yy',
+				constrainInput: true,
+				minDate:startDate,
+				maxDate:endDate
+			});
+			
+			
+			
 			if(taskTypeDisplay=="teamTasks")
 			{
 				$("#taskActionRow").show();
@@ -158,41 +190,13 @@ $(document).ready(
 });
 
 
-$( "#taskCreateDate" ).datepicker({
-	 onSelect: function (date) {
-       var date2 = $('#startDate').datepicker('getDate');
-       date2.setDate(date2.getDate() + 1);
-       $('#endDate').datepicker('setDate', date2);
-       //sets minDate to dt1 date + 1
-       $('#endDate').datepicker('option', 'minDate', date2);
-   }
-});
-
-$( "#taskStartDate" ).datepicker({
-	 onSelect: function (date) {
-        var date2 = $('#startDate').datepicker('getDate');
-        date2.setDate(date2.getDate() + 1);
-        $('#endDate').datepicker('setDate', date2);
-        //sets minDate to dt1 date + 1
-        $('#endDate').datepicker('option', 'minDate', date2);
-    }
-});
-$( "#taskEndDate" ).datepicker({
-	 onClose: function () {
-        var dt1 = $('#startDate').datepicker('getDate');
-        var dt2 = $('#endDate').datepicker('getDate');
-        if (dt2 <= dt1) {
-            var minDate = $('#endDate').datepicker('option', 'minDate');
-            $('#endDate').datepicker('setDate', minDate);
-        }
-    }
-});
 
 $("#taskNameSelect").unbind("change").on("change",function(){
 	if($("#taskNameSelect").val()=='-1'){
 		$("#newTask").show();
 	} else {
 		$("#newTask").hide();
+		alert("AJAX call to get the task details");
 	}
 }); 
 

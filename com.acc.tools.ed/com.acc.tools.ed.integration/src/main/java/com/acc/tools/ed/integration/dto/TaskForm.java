@@ -1,6 +1,7 @@
 package com.acc.tools.ed.integration.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class TaskForm implements Serializable {
 
@@ -8,6 +9,7 @@ public class TaskForm implements Serializable {
 
 	private int taskId;
 	private int componentId;
+	private List<ReferenceData> taskIds;
 	private String taskName;
 	private String taskDesc;
 	private int taskHrs;
@@ -159,6 +161,14 @@ public class TaskForm implements Serializable {
 
 	public void setTaskComments(String taskComments) {
 		this.taskComments = taskComments;
+	}
+
+	public List<ReferenceData> getTaskIds() {
+		return taskIds;
+	}
+
+	public void setTaskIds(List<ReferenceData> taskIds) {
+		this.taskIds = taskIds;
 	}
 	
 
