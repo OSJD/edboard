@@ -12,24 +12,25 @@ public class ResourceWeekWorkPlan implements Serializable{
 	
 	private String day;
 	private String date;
-	private int hours;
+	private String hours;
 	public String getDay() {
 		return day;
 	}
 	public void setDay(String day) {
 		this.day = day;
 	}
-	public int getHours() {
-		return hours;
-	}
-	public void setHours(int hours) {
-		this.hours = hours;
-	}
+	
 	public String getDate() {
 		return date;
 	}
 	public void setDate(String date) {
 		this.date = date;
+	}
+	public String getHours() {
+		return hours;
+	}
+	public void setHours(String hours) {
+		this.hours = hours;
 	}
 
 }

@@ -3,7 +3,7 @@
 		<form id="addReleaseForm">
 			<fieldset>
 				<legend>Add Release</legend>
-				<table class="ebdtable" id="release">
+				<table class="ebdtable" id="release" style="width: 100%;">
 					<tr>
 						<th style="text-align: right; height: 25px;">Project Name</th>
 						<td><div id="projName"></div></td>

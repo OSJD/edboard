@@ -34,7 +34,7 @@ public interface ProjectManagementDao {
 	public List<MasterEmployeeDetails> getAllEmployees();
 	public List<ReferenceData> getProjectResourceDetails(Integer projectId);
 	public void addReleasePlan(int releaseId, String empId, LocalDate weekDateStart, LocalDate weekDateEnd, List<Long> weekHourList, Long weeklyPlannedHr, boolean isLastWeek);
-	
+	public String getHoursByEmp(String empId,LocalDate dateStart);
 	public List<EditProjectForm> editProject(int projectId);
 	public int checkProjName(String projectName, int progId);
 }

@@ -1,11 +1,15 @@
 package com.acc.tools.ed.integration.service.impl;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +27,13 @@ import com.acc.tools.ed.integration.dto.ReleaseForm;
 import com.acc.tools.ed.integration.dto.ReleasePlan;
 import com.acc.tools.ed.integration.dto.ResourceWeekWorkPlan;
 import com.acc.tools.ed.integration.dto.ResourceWorkPlan;
+import com.acc.tools.ed.integration.dto.WeekDates;
 import com.acc.tools.ed.integration.service.ProjectManagementService;
 
 @Service("projectManagementService")
 public class ProjectManagementServiceImpl implements ProjectManagementService{
 	
-	private final Logger log=LoggerFactory.getLogger(ProjectManagementServiceImpl.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ProjectManagementServiceImpl.class);
 	
 	@Autowired
 	private ProjectManagementDao projectManagementDao;
@@ -57,15 +62,33 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 		projectManagementDao.addReleasePlan(releaseForm.getReleaseId(),empId,weekDateStart, weekDateEnd, weekHourSubList, weeklyPlannedHr, isLastWeek);
 	}
 	
-	public ReleasePlan buildReleasePlan(LocalDate relDateStart,LocalDate relDateEnd,Integer projId) {
+	public ReleasePlan buildReleasePlan(DateTime relDateStart,DateTime relDateEnd,Integer projId) {
 		
 
 		List<ReferenceData> resourceDetails = projectManagementDao.getProjectResourceDetails(projId);
+		Map<String,Map<WeekDates,Map<String,String>>> resourceHoursMap=new HashMap<String, Map<WeekDates,Map<String,String>>>();
+		Map<WeekDates,Map<String,String>> resourceWeekWorkMap=new HashMap<WeekDates, Map<String,String>>();
+		Map<String,String> resourceWeekWork=new HashMap<String,String>(); 
+		resourceWeekWork.put("Mon", "11");
+		resourceWeekWork.put("Tue", "9");
+		resourceWeekWork.put("Wed", "11");
+		resourceWeekWork.put("Thu", "9");
+		resourceWeekWork.put("Fri", "11");
+		resourceWeekWork.put("Sat", "0");
+		resourceWeekWork.put("Sun", "0");
+		WeekDates key=new WeekDates();
+		DateTimeFormatter format = DateTimeFormat.forPattern("MM/dd/yyyy");
+		key.setWeekStartDate(format.parseDateTime("02/02/2015"));
+		key.setWeekEndDate(format.parseDateTime("02/08/2015"));
+		resourceWeekWorkMap.put(key, resourceWeekWork);
+		resourceHoursMap.put("138", resourceWeekWorkMap);
+		resourceHoursMap.put("162", resourceWeekWorkMap);
+		
 		
 		ReleasePlan plan=new ReleasePlan();
 		List<ResourceWorkPlan> resourceWorkPlanList=new LinkedList<ResourceWorkPlan>();
 		plan.setResourceWorkPlan(resourceWorkPlanList);
-		LocalDate dateStart=relDateStart;
+		DateTime dateStart=relDateStart;
 		String tempCurrentWeek = dateStart.weekOfWeekyear().getAsShortText();
 		int weekCount = 1;
 		
@@ -82,7 +105,7 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 					weekCount++;
 					tempCurrentWeek=currentWeek;
 				}
-				buildWeekWorkPlan(weekWorkPlanMap,dateStart,weekCount,employee.getId());
+				buildWeekWorkPlan(weekWorkPlanMap,dateStart,weekCount,employee.getId(),resourceHoursMap.get(employee.getId()));
 
 			  dateStart = dateStart.plusDays(1);
 			}
@@ -98,23 +121,50 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 	}
 	
 	
-	private void buildWeekWorkPlan(Map<String,List<ResourceWeekWorkPlan>> weeksWorkPlanMap,LocalDate dateStart,int weekCount,String empId){
+	private void buildWeekWorkPlan(Map<String,List<ResourceWeekWorkPlan>> weeksWorkPlanMap,
+			DateTime dateStart,int weekCount,String empId,Map<WeekDates,Map<String,String>> resourceWeekWorkMap){
 		if(weeksWorkPlanMap.size()>0 && weeksWorkPlanMap.containsKey("Week-"+weekCount)){
 			final List<ResourceWeekWorkPlan> weekPlanList=weeksWorkPlanMap.get("Week-"+weekCount);
 			ResourceWeekWorkPlan weekPlan=new ResourceWeekWorkPlan();
 			weekPlan.setDay(dateStart.dayOfWeek().getAsShortText());
 			weekPlan.setDate(dateStart.toString("MM/dd/yyyy"));
-			weekPlan.setHours(9);
+			for(Map.Entry<WeekDates,Map<String,String>> weekEntry :resourceWeekWorkMap.entrySet()){
+				if(dateStart.getMillis() >= weekEntry.getKey().getWeekStartDate().getMillis() && dateStart.getMillis() <= weekEntry.getKey().getWeekEndDate().getMillis()){
+					weekPlan.setHours(weekEntry.getValue().get(weekPlan.getDay()));
+				}
+			}
 			weekPlanList.add(weekPlan);
 		} else {
 			final List<ResourceWeekWorkPlan> weekPlanList=new LinkedList<ResourceWeekWorkPlan>();
 			ResourceWeekWorkPlan weekPlan=new ResourceWeekWorkPlan();
 			weekPlan.setDay(dateStart.dayOfWeek().getAsShortText());
 			weekPlan.setDate(dateStart.toString("MM/dd/yyyy"));
-			weekPlan.setHours(9);
+			for(Map.Entry<WeekDates,Map<String,String>> weekEntry :resourceWeekWorkMap.entrySet()){
+				if(dateStart.getMillis() >= weekEntry.getKey().getWeekStartDate().getMillis() && dateStart.getMillis() <= weekEntry.getKey().getWeekEndDate().getMillis()){
+					weekPlan.setHours(weekEntry.getValue().get(weekPlan.getDay()));
+				}
+			}
 			weekPlanList.add(weekPlan);
 			weeksWorkPlanMap.put("Week-"+weekCount, weekPlanList);
 		}
+	}
+	
+	public String getHoursByEmp(String empId,LocalDate dateStart){
+		try{
+			
+			return projectManagementDao.getHoursByEmp(empId, dateStart);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+		
+		
+		
+		
+		
+		
 	}
 	
 	public ReferenceData addProject(ProjectForm project) {
@@ -245,7 +295,6 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 		try {
 			ComponentForm component= projectManagementDao.addComponent(projectId,phaseId,componentName, functionalDesc, compStartDate, compEndDate, compResource,relaseId,workDesc);
 			EDBUser user=loginDao.getEmployeeById(compResource);
-			log.debug("Employe Details :{}",user);
 			component.setResourceName(user.getEnterpriseId());
 			component.setWorkDesc(workDesc);
 			return component;

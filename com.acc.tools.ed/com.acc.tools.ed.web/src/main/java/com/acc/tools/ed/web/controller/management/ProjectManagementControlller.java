@@ -6,7 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -126,9 +129,10 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 			Model model) throws ParseException {
 		
 		LOG.debug("Release Start Date:{} End Date:{}",releaseStartDate,releaseEndDate);
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		LocalDate stDate =  new LocalDate(sdf.parse(releaseStartDate));
-		LocalDate etDate =  new LocalDate(sdf.parse(releaseEndDate));
+		DateTimeFormatter format = DateTimeFormat.forPattern("dd/MM/yyyy");
+			
+		DateTime stDate =  format.parseDateTime(releaseStartDate);
+		DateTime etDate =  format.parseDateTime(releaseEndDate);
 
 		ReleasePlan releasePlan=getProjectManagementService().buildReleasePlan(stDate,etDate, Integer.valueOf(projId));
 		model.addAttribute("releasePlan",releasePlan);

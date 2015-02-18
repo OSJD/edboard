@@ -336,7 +336,7 @@ $(document).ready(function(){
 						 */
 						var addReleaseDialog = $("#addrelease-popup").dialog({
 							autoOpen : false,
-							height : 700,
+							height : 720,
 							width : 1100,
 							modal : true,
 							buttons : {

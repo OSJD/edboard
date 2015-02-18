@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import com.acc.tools.ed.integration.dto.ComponentForm;
@@ -31,13 +32,11 @@ public interface ProjectManagementService {
 	public Map<String,String> getProjectDate(String projectId);
 	public ComponentForm addComponent(Integer projectId,Integer phaseId,String componentName,String functionalDesc,String compStartDate,String compEndDate,String compResource,Integer releaseId,String workDesc);
 	public List<MasterEmployeeDetails> getAllEmployees(); 
-
 	public ComponentForm getComponentDetails(String componentName,Integer phaseId,Integer releaseId);
 	public boolean isComponentAssignedToEmployee(Integer componentId,Integer empId);	
 	public void addReleasePlan(ReleaseForm addReleaseForm, String empId,LocalDate dateStart, LocalDate tempDateStart, int dayFromIndex,int dayToIndex, boolean isLastWeek);
-	
 	public List<EditProjectForm> editProject(int projectId);
 	public int checkProjName(String projectName, int progId);
-	
-	public ReleasePlan buildReleasePlan(LocalDate relDateStart,LocalDate relDateEnd,Integer projId);
+	public String getHoursByEmp(String empId,LocalDate dateStart);
+	public ReleasePlan buildReleasePlan(DateTime relDateStart,DateTime relDateEnd,Integer projId);
 }

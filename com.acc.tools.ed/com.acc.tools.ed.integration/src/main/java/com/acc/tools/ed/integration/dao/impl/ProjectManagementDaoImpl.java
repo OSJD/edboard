@@ -815,6 +815,35 @@ public List<ReferenceData> editRelease(String releaseId,String editRelArti,Strin
 			e.printStackTrace();
 		}
 		return flag;
+	}
+
+	public String getHoursByEmp(String empId, LocalDate dateStart) {
+
+		String startDate = dateStart.toString("MM/dd/yyyy");
+		int dayNumber = dateStart.dayOfWeek().get();
+
+		final String query = "SELECT DAY"
+				+ dayNumber
+				+ " from EDB_RELEASE_PLAN WHERE EMP_ID="
+				+ empId
+				+ "  AND WEEK_ST_DT<=cdate('"+startDate+"') And  WEEK_ED_DT >=cdate('"+startDate+"') ";
+		log.debug(" RELEASE PLAN HOURS  :{}", query);
+		try {
+			Statement stmt = getConnection().createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			System.out.println("QU" + query);
+			while (rs.next()) {
+				ReferenceData refData = new ReferenceData();
+				final String dayList = rs.getString("DAY" + dayNumber);
+				refData.setId(dayList);
+				return dayList;
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+
 	}	
 }
 
