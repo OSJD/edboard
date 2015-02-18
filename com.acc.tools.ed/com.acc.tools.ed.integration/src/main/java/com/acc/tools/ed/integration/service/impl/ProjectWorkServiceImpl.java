@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.acc.tools.ed.integration.dao.ProjectWorkDao;
 import com.acc.tools.ed.integration.dto.ProjectForm;
+import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.TaskForm;
 import com.acc.tools.ed.integration.service.ProjectWorkService;
 
@@ -43,6 +44,14 @@ public class ProjectWorkServiceImpl implements ProjectWorkService {
 	public TaskForm retrieveTasks() {
 		
 		return projectWorkDao.retrieveTasks();
+	}
+	
+	public List<ReferenceData> getTasksByComponentId(Integer componentId){
+		return projectWorkDao.getTasksByComponentId(componentId);
+	}
+	
+	public TaskForm getTaskByTaskId(Integer taskId){
+		return projectWorkDao.getTaskByTaskId(taskId);
 	}
 
 }

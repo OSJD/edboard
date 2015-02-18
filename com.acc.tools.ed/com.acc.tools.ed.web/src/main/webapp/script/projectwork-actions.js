@@ -130,7 +130,19 @@ $(document).ready(
 				maxDate:endDate
 			});
 			
-			
+			$.ajax({
+				type : "POST",
+				url : "./getTaskIdsByComponentId.do",
+				dataType:'json',
+				data : {componentId:componentId},
+				success : function(tasks) {
+					for(var index in tasks){
+						$("#taskNameSelect").append("<option value='"+tasks[index].id+"'>"+tasks[index].label+"</option>")
+					}
+				},
+				error : function(data) {
+				}
+			});
 			
 			if(taskTypeDisplay=="teamTasks")
 			{
@@ -192,11 +204,25 @@ $(document).ready(
 
 
 $("#taskNameSelect").unbind("change").on("change",function(){
-	if($("#taskNameSelect").val()=='-1'){
+	var taskId=$("#taskNameSelect").val();
+	if(taskId=='-1'){
 		$("#newTask").show();
 	} else {
 		$("#newTask").hide();
-		alert("AJAX call to get the task details");
+		alert(taskId);
+		$.ajax({
+			type : "POST",
+			url : "./getTaskByTaskId.do",
+			dataType:'json',
+			data : {taskId:taskId},
+			success : function(task) {
+				$("#taskDesc").val(task.taskDesc);
+				$("#taskDesc").attr("disabled", "disabled"); 
+			},
+			error : function(data) {
+				alert(data.error);
+			}
+		});
 	}
 }); 
 

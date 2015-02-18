@@ -1,6 +1,5 @@
 package com.acc.tools.ed.web.controller.management;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -36,61 +35,36 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 	public String resourceManagement(@ModelAttribute("edbUser")EDBUser edbUser,Model model) {
 
 		List<ProjectForm> projData =projectWorkService.getMyTasks(edbUser.getEmployeeId());
-		for(ProjectForm pf:projData){
-			LOG.debug("Project Name:[{}]",pf.getProjectName());
-			for(ReleaseForm rf:pf.getReleases()){
-				LOG.debug("\tRelease Name:[{}]",rf.getReleaseName());
-				for(ComponentForm cf:rf.getComponents()){
-					LOG.debug("\t\tComponent Name:[{}]",cf.getComponentName());
-					if(cf.getTaskFormList()!=null && cf.getTaskFormList().size()>0){
-						for(TaskForm tf:cf.getTaskFormList()){
-							LOG.debug("\t\t\tTaskName Name:[{}]",tf.getTaskName());
-						}
-					}
-				}
-			}
-		}
 		model.addAttribute("projData", projData);
-		TaskForm taskForm=new TaskForm();
-		List<ReferenceData> tasks=new LinkedList<ReferenceData>();
-		ReferenceData task=new ReferenceData();
-		task.setId("123");
-		task.setLabel("New Task");
-		tasks.add(task);
-		taskForm.setTaskIds(tasks);
-		model.addAttribute("addTaskForm", taskForm);
+		model.addAttribute("addTaskForm", new TaskForm());
 		return "/projectwork/index";
 	}
 	
 	@RequestMapping(value = "/myTasks.do")
 	public String myTasks(@ModelAttribute("edbUser")EDBUser edbUser,Model model) {
+		
 		List<ProjectForm> projData =projectWorkService.getMyTasks(edbUser.getEmployeeId());
-		for(ProjectForm pf:projData){
-			LOG.debug("Project Name:[{}]",pf.getProjectName());
-			for(ReleaseForm rf:pf.getReleases()){
-				LOG.debug("\tRelease Name:[{}]",rf.getReleaseName());
-				for(ComponentForm cf:rf.getComponents()){
-					LOG.debug("\t\tComponent Name:[{}]",cf.getComponentName());
-					if(cf.getTaskFormList()!=null && cf.getTaskFormList().size()>0){					
-						for(TaskForm tf:cf.getTaskFormList()){
-							LOG.debug("\t\t\tTaskName Name:[{}]",tf.getTaskName());
-						}
-					}
-				} 
-			}
-		}
 		model.addAttribute("projData", projData);
-		TaskForm taskForm=new TaskForm();
-		List<ReferenceData> tasks=new LinkedList<ReferenceData>();
-		ReferenceData task=new ReferenceData();
-		task.setId("123");
-		task.setLabel("New Task");
-		tasks.add(task);
-		taskForm.setTaskIds(tasks);
-		model.addAttribute("addTaskForm", taskForm);
+		model.addAttribute("addTaskForm", new TaskForm());
 
 		return "/projectwork/myTasks";
 	}
+	
+	@RequestMapping(value = "/getTaskIdsByComponentId.do")
+	public @ResponseBody List<ReferenceData> getTaskIdsByComponentId(
+			@ModelAttribute("componentId") Integer componentId,
+			Model model){
+		return projectWorkService.getTasksByComponentId(componentId);
+	}
+
+	
+	@RequestMapping(value = "/getTaskByTaskId.do")
+	public @ResponseBody TaskForm getTaskByTaskId(
+			@ModelAttribute("taskId") Integer taskId,
+			Model model){
+		return projectWorkService.getTaskByTaskId(taskId);
+	}
+	
 	
 	@RequestMapping(value = "/teamTasks.do")
 	public String teamTasks(@ModelAttribute("edbUser")EDBUser edbUser,Model model) {

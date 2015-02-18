@@ -180,11 +180,10 @@
 								<form:option value="va" label="Value Added" />
 							</form:select></td>
 						<th style="text-align: right; width: 55px;">Task Name</th>
-						<td id="taskNamePosition" style="width: 255px;">
+						<td id="taskNamePosition" style="width: 260px;">
 							<form:select path="taskName" id="taskNameSelect" class="textbox" multiple="false" cssStyle="width : 120px;">
 								<form:option  value="0" label="--- Select ---" />
 								<form:option  value="-1" label="Create New Task" />
-								<form:options items="${addTaskForm.taskIds}"  itemValue="id" itemLabel="label" />
 							</form:select>						
 							<div id="newTask" style="float: right; display: none;">
 								<form:input type="text" path="taskName" id="taskName"

@@ -2,8 +2,8 @@ package com.acc.tools.ed.integration.dao;
 
 import java.util.List;
 
-import com.acc.tools.ed.integration.dto.ComponentForm;
 import com.acc.tools.ed.integration.dto.ProjectForm;
+import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.TaskForm;
 
 public interface ProjectWorkDao {
@@ -15,4 +15,6 @@ public interface ProjectWorkDao {
 	public List<TaskForm> editTasks(int taskId);
 	public void saveTasks(TaskForm taskForm);
 	public TaskForm retrieveTasks();
+	public List<ReferenceData> getTasksByComponentId(Integer componentId);
+	public TaskForm getTaskByTaskId(Integer taskId);
 }

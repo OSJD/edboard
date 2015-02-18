@@ -2,8 +2,8 @@ package com.acc.tools.ed.integration.service;
 
 import java.util.List;
 
-import com.acc.tools.ed.integration.dto.ComponentForm;
 import com.acc.tools.ed.integration.dto.ProjectForm;
+import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.TaskForm;
 
 public interface ProjectWorkService {
@@ -15,6 +15,8 @@ public interface ProjectWorkService {
 	public List<TaskForm> editTasks(int taskId);
 	public void saveTasks(TaskForm taskForm);
 	public TaskForm retrieveTasks();
+	public List<ReferenceData> getTasksByComponentId(Integer componentId);
+	public TaskForm getTaskByTaskId(Integer taskId);
 
 }
 

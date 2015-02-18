@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -406,5 +407,50 @@ public List<ProjectForm> getMyTeamTasks(String supervisorId) {
 		}
 
 		return taskForm;
+	}
+	
+	public List<ReferenceData> getTasksByComponentId(Integer componentId){
+		
+		final List<ReferenceData> tasks=new LinkedList<ReferenceData>();
+		
+		try {
+
+			final String relTable="SELECT TASK_ID,TASK_NAME FROM EDB_TASK_MASTER WHERE COMPNT_ID="+componentId;
+			Statement selectStatement = getConnection().createStatement();
+			ResultSet rs = selectStatement.executeQuery(relTable);
+			while (rs.next()) {
+				ReferenceData task=new ReferenceData();
+				task.setId(""+rs.getInt("TASK_ID"));
+				task.setLabel(rs.getString("TASK_NAME"));
+				tasks.add(task);
+			}
+				
+		} catch (Exception e) {
+			log.error("Error in getTasksByComponentId:",e);
+		}
+		return tasks;
+	}
+	
+	public TaskForm getTaskByTaskId(Integer taskId){
+		
+		TaskForm taskform=null;
+		try {
+
+			final String relTable="SELECT TASK_ID,TASK_NAME,TASK_DESC FROM EDB_TASK_MASTER WHERE TASK_ID="+taskId;
+			log.debug("getTaskById Query :{}",relTable);
+			Statement selectStatement = getConnection().createStatement();
+			ResultSet rs = selectStatement.executeQuery(relTable);
+			while (rs.next()) {
+				taskform=new TaskForm();
+				taskform.setTaskId(rs.getInt("TASK_ID"));
+				taskform.setTaskName(rs.getString("TASK_NAME"));
+				taskform.setTaskDesc(rs.getString("TASK_DESC"));
+				
+			}
+				
+		} catch (Exception e) {
+			log.error("Error in getTasksByComponentId:",e);
+		}
+		return taskform;
 	}
 }
