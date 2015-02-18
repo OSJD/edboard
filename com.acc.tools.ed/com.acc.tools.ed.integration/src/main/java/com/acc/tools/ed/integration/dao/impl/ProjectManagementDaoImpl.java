@@ -10,11 +10,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -26,6 +29,7 @@ import com.acc.tools.ed.integration.dto.MasterEmployeeDetails;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.ReleaseForm;
+import com.acc.tools.ed.integration.dto.WeekDates;
 
 /**
  * 
@@ -37,6 +41,41 @@ import com.acc.tools.ed.integration.dto.ReleaseForm;
 public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectManagementDao{ 
 	
 	Logger log=LoggerFactory.getLogger(ProjectManagementDaoImpl.class);
+	
+	
+	public Map<String,List<WeekDates>> getVacationDetailsByEmployeeIds(List<ReferenceData> employeeIds){
+		final Map<String,List<WeekDates>> vacationDetailsMap=new LinkedHashMap<String, List<WeekDates>>();
+		StringBuilder empIds=new StringBuilder();
+		 for(ReferenceData data :employeeIds){
+			 empIds.append(data.getId()).append(",");
+		 }
+
+		final String query="select EMP_ID,VACTN_STRT_DT,VACTN_END_DT from EDB_VACTN_CALNDR WHERE STATUS='Approved' AND EMP_ID IN ("+empIds.substring(0, empIds.lastIndexOf(",")).toString()+")";
+		log.debug("getVacationDetailsByEmployeeIds Query:{}",query);
+		try {
+			Statement stmt=getConnection().createStatement();
+			ResultSet rs=stmt.executeQuery(query);
+			while(rs.next()){
+				final WeekDates dates=new WeekDates();
+				final Integer employeeId=rs.getInt("EMP_ID");
+        		dates.setWeekStartDate(new DateTime(rs.getDate("VACTN_STRT_DT").getTime()));
+        		dates.setWeekEndDate(new DateTime(rs.getDate("VACTN_END_DT").getTime()));
+        		if(!vacationDetailsMap.isEmpty() && vacationDetailsMap.containsKey(""+employeeId)){
+        			vacationDetailsMap.get(employeeId).add(dates);
+        		} else {
+        			final List<WeekDates> dateList=new ArrayList<WeekDates>();
+        			dateList.add(dates);
+        			vacationDetailsMap.put(""+employeeId,dateList);
+        		}
+
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return vacationDetailsMap;
+	}
 
 	public List<ReferenceData> getAllProjectIds(){
 		
@@ -253,6 +292,8 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
                                 
                                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                                 Date stDate =  sdf.parse(rs.getString("MLSTN_ST_DT"));
+
+
                                 sdf.applyPattern("MM/dd/yyyy");
                                 release.setReleaseStartDate(sdf.format(stDate));
                                 

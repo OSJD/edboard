@@ -11,6 +11,7 @@ import com.acc.tools.ed.integration.dto.MasterEmployeeDetails;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.ReleaseForm;
+import com.acc.tools.ed.integration.dto.WeekDates;
 
 public interface ProjectManagementDao {
 	
@@ -37,4 +38,5 @@ public interface ProjectManagementDao {
 	public String getHoursByEmp(String empId,LocalDate dateStart);
 	public List<EditProjectForm> editProject(int projectId);
 	public int checkProjName(String projectName, int progId);
+	public Map<String,List<WeekDates>> getVacationDetailsByEmployeeIds(List<ReferenceData> employeeIds);
 }
