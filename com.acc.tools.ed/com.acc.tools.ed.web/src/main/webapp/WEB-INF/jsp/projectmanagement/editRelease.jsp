@@ -1,29 +1,32 @@
-	<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-		<p class="validateTips">All form fields are required.</p>
-		<form:form commandName="editReleaseForm" action="editRelease.do">
+	<div id="editrelease-popup" title="Edit Release">	
+	<form id="editReleaseForm">
 			<fieldset>
-				<legend>Edit Release</legend>
-				<table class="ebdtable" id="release">
+				<legend>Add Release</legend>
+				<table class="ebdtable" id="release" style="width: 100%;">
 					<tr>
 						<th style="text-align: right; height: 25px;">Project Name</th>
-						<td>${projectForm.projectName}</div></td>
+						<td><div id="editProjName"></div></td>
 						<th style="text-align: right;">Proj. Start Date</th>
-						<td>${projectForm.startDate}</div></td>
+						<td><div id="editProjStartDate"></div></td>
 						<th style="text-align: right;">Proj. End Date</th>
-						<td>${projectForm.endDate}</div></td>
+						<td><div id="editProjEndDate"></div></td>
 					</tr>
 					<tr>
 						<th style="text-align: right;">Release Name</th>
-						<td><form:input path="releaseName" cssClass="textbox" /></td>
+						<td><input type="text" id="editReleaseName" name="releaseName" class="textbox" /></td>
 						<th style="text-align: right;">Rel. Start Date</th>
-						<td style="width: 200px;"><form:input path="releaseStartDate" id="releaseStartDate" cssClass="textbox" /></td>
+						<td style="width: 200px;">
+							<input type="text" id="editReleaseStartDateId" name="editReleaseStartDate" class="textbox" />							
+						</td>
 						<th style="text-align: right;">Rel. End Date</th>
-						<td><form:input path="releaseEndDate" id="releaseEndDate" cssClass="textbox" /></td>
+						<td>
+							<input type="text" id="editReleaseEndDate" name="editReleaseEndDate" class="textbox" />
+						</td>
 					</tr>						
 					<tr>
 						<th style="text-align: right;">Release Artifacts</th>
 						<td  colspan="5">
-							<form:textarea path="releaseArtifacts" cssStyle="overflow: auto; resize: none;width: 800px;" cssClass="textarea"/>  
+							<textarea style="overflow: auto; resize: none;width: 800px;" rows="6" name="releaseArtifacts" id="editReleaseArtifacts"	 class="textarea" ></textarea>  
 						</td>
 					</tr>	
 					<tr>
@@ -32,7 +35,9 @@
 								<span class="ui-button-text">Get Release Plan</span>
 				 			</a>
 			 			</td>
-					</tr>	
+					</tr>
+					<tr id="addReleasePlan"><td colspan="6"><span style="color: red;">Please Click on "Create Release Plan" button to add release plan.</span></td></tr>	
 				</table>
 			</fieldset>
-		</form:form>
+		</form>
+	</div>

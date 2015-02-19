@@ -418,22 +418,19 @@ $(document).ready(function(){
 						$("#editRelease").button().unbind("click").on("click", function() {
 							var releaseName=$("#releases option:selected").text();
 							var releaseId = $("#releases option:selected").val();
-							var projectId = $("#projects").val();
+							var projectName = $("#projects option:selected").text();
 							
 							if(releaseId=="SR"){
 								alert("Please select Release!");
 							} else {
-								$.ajax({
-									url : "./getReleaseDetails.do",
-									data : {releaseId:releaseId,projectId:projectId},									
-									success : function(response) {
-										$("#editrelease-popup").html(response);
-										editReleaseDialog.dialog("open");
-									},
-									error : function(data) {	
-										alert("Application error! Please call help desk. Error:"+data.status);
-									}
-								});	
+								$("#editProjName").html(projectName);
+								$("#editProjStartDate").html($("#prjStartDate").html());
+								$("#editProjEndDate").html($("#prjEndDate").html());	
+								$("#editReleaseName").val(releaseName);
+								$("#editReleaseStartDateId").val($("#relStartDate").html());
+								$("#editReleaseEndDate").val($("#relEndDate").html());
+								$("#editReleaseArtifacts").val($("#relArti").html());
+								editReleaseDialog.dialog("open");
 							}
 						});
 
@@ -517,13 +514,14 @@ $(document).ready(function(){
 						
 						//Fetch release plan
 						$("#getReleasePlan").unbind("click").on("click",function(){
-							alert('hello');
-							var releaseStDt=$("#releaseStartDate").val();
-							var releaseEndDt=$("#releaseEndDate").val();
-							var releaseId = $("#releases").val();
+							var releaseStartDate=$("#editReleaseStartDateId").val();
+							var releaseEndDate=$("#editReleaseEndDate").val();
+							var releaseId = $("#releases option:selected").val();
 							$.ajax({
 								url : "./getReleasePlan.do",
-								data : "releaseStartDate="+releaseStDt+"&releaseEndDate="+releaseEndDt+"&releaseId="+releaseId,									
+								data : {releaseStartDate:releaseStartDate,
+										releaseEndDate:releaseEndDate,
+										releaseId : releaseId},									
 								success : function(response) {
 									$('#addReleasePlan').html(response);
 								},

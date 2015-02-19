@@ -147,7 +147,7 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 			Model model) throws ParseException {
 		
 		LOG.debug("Release Start Date:{} End Date:{}",releaseStartDate,releaseEndDate);
-		DateTimeFormatter format = DateTimeFormat.forPattern("dd/MM/yyyy");
+		DateTimeFormatter format = DateTimeFormat.forPattern("MM/dd/yyyy");
 			
 		DateTime stDate =  format.parseDateTime(releaseStartDate);
 		DateTime etDate =  format.parseDateTime(releaseEndDate);

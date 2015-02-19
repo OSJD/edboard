@@ -296,8 +296,8 @@
 				</tr>
 				<tr>		
 					<td style="font-weight: bold;">Start Date</td>
-					<td style="background-color: #eaead9;"><div id="relStartDate">
-							${viewProjRelDetails.releases[0].releaseStartDate}</div></td>
+					<td style="background-color: #eaead9;">
+						<div id="relStartDate">${viewProjRelDetails.releases[0].releaseStartDate}</div></td>
 				</tr>
 				<tr>
 					<td style="font-weight: bold;">End Date</td>
