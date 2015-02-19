@@ -11,7 +11,7 @@
 				<select id="projects" class="textbox">
 					<option value="0">Select Project</option>
 				    <c:forEach items="${projectList}" var="project">
-				        <option value="${project.id}" <%-- <c:if test="${project.selected==true}">selected</c:if> --%> >${project.label}</option>
+				        <option value="${project.id}" <c:if test="${project.selected==true}">selected</c:if>>${project.label}</option>
 				    </c:forEach>
 				</select>
 			</td>
