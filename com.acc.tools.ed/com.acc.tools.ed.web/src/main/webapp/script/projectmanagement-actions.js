@@ -515,6 +515,23 @@ $(document).ready(function(){
 							});	
 						});
 						
+						//Fetch release plan
+						$("#getReleasePlan").unbind("click").on("click",function(){
+							alert('hello');
+							var releaseStDt=$("#releaseStartDate").val();
+							var releaseEndDt=$("#releaseEndDate").val();
+							var releaseId = $("#releases").val();
+							$.ajax({
+								url : "./getReleasePlan.do",
+								data : "releaseStartDate="+releaseStDt+"&releaseEndDate="+releaseEndDt+"&releaseId="+releaseId,									
+								success : function(response) {
+									$('#addReleasePlan').html(response);
+								},
+								error : function(data) {	
+									$("#mainContainer").html("Application error! Please call help desk. Error:"+data.status);
+								}
+							});	
+						});
 						/*
 						 * On selecting a project from drop down, 
 						 * this function will fetch the corresponding releases.

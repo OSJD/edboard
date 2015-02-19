@@ -59,6 +59,18 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 		projectManagementDao.addReleasePlan(releaseForm.getReleaseId(),empId,weekDateStart, weekDateEnd, weekHourSubList, weeklyPlannedHr, isLastWeek);
 	}
 	
+	public ReleasePlan fetchReleasePlan(DateTime relDateStart,DateTime relDateEnd,Integer releaseId) {
+		final ReleasePlan releasePlan=new ReleasePlan();
+		final Map<Integer, List<WeekDates>> resourceHoursMap=projectManagementDao.getReleasePlan(releaseId);
+		for(Map.Entry<Integer, List<WeekDates>> resourceHoursEntry : resourceHoursMap.entrySet()){
+			LOG.debug("Resource Id:",resourceHoursEntry.getKey());
+			for(WeekDates week:resourceHoursEntry.getValue()){
+				LOG.debug("Day1:{} | Day2:{} | Day3:{} | Day4:{} | Day5:{} | Day6:{} | Day7:{} ",new Object[]{week.getDay1(),week.getDay2(),week.getDay3(),week.getDay4(),week.getDay5(),week.getDay6(),week.getDay7()});
+			}
+		}
+		
+		return releasePlan;
+	}
 	
 	public ReleasePlan buildReleasePlan(DateTime relDateStart,DateTime relDateEnd,Integer projId) {
 		
@@ -158,23 +170,6 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 		}
 	}
 	
-	public String getHoursByEmp(String empId,LocalDate dateStart){
-		try{
-			
-			return projectManagementDao.getHoursByEmp(empId, dateStart);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			return null;
-		}
-		
-		
-		
-		
-		
-		
-	}
 	
 	public ReferenceData addProject(ProjectForm project) {
 		try {

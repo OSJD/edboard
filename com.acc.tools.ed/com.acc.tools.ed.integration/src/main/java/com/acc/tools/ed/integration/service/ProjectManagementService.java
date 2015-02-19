@@ -37,6 +37,6 @@ public interface ProjectManagementService {
 	public void addReleasePlan(ReleaseForm addReleaseForm, String empId,LocalDate dateStart, LocalDate tempDateStart, int dayFromIndex,int dayToIndex, boolean isLastWeek);
 	public List<EditProjectForm> editProject(int projectId);
 	public int checkProjName(String projectName, int progId);
-	public String getHoursByEmp(String empId,LocalDate dateStart);
 	public ReleasePlan buildReleasePlan(DateTime relDateStart,DateTime relDateEnd,Integer projId);
+	public ReleasePlan fetchReleasePlan(DateTime relDateStart,DateTime relDateEnd,Integer releaseId);
 }

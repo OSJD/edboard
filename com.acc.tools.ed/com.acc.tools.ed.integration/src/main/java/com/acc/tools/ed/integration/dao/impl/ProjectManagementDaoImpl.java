@@ -11,13 +11,12 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -858,32 +857,45 @@ public List<ReferenceData> editRelease(String releaseId,String editRelArti,Strin
 		return flag;
 	}
 
-	public String getHoursByEmp(String empId, LocalDate dateStart) {
+	public Map<Integer,List<WeekDates>> getReleasePlan(Integer releaseId) {
+		
+        final Map<Integer,List<WeekDates>> resourceHoursMap=new HashMap<Integer, List<WeekDates>>();
 
-		String startDate = dateStart.toString("MM/dd/yyyy");
-		int dayNumber = dateStart.dayOfWeek().get();
 
-		final String query = "SELECT DAY"
-				+ dayNumber
-				+ " from EDB_RELEASE_PLAN WHERE EMP_ID="
-				+ empId
-				+ "  AND WEEK_ST_DT<=cdate('"+startDate+"') And  WEEK_ED_DT >=cdate('"+startDate+"') ";
+		final String query = "SELECT * FROM EDB_RELEASE_PLAN WHERE MLSTN_ID="+releaseId;
 		log.debug(" RELEASE PLAN HOURS  :{}", query);
 		try {
 			Statement stmt = getConnection().createStatement();
 			ResultSet rs = stmt.executeQuery(query);
-			System.out.println("QU" + query);
 			while (rs.next()) {
-				ReferenceData refData = new ReferenceData();
-				final String dayList = rs.getString("DAY" + dayNumber);
-				refData.setId(dayList);
-				return dayList;
+				WeekDates dates = new WeekDates();
+				final int employeeId=rs.getInt("EMP_ID");
+				dates.setWeekStartDate(new DateTime(rs.getDate("WEEK_ST_DT").getTime()));
+				dates.setWeekEndDate(new DateTime(rs.getDate("WEEK_ED_DT").getTime()));
+				dates.setDay1(rs.getInt("DAY1"));
+				dates.setDay2(rs.getInt("DAY2"));
+				dates.setDay3(rs.getInt("DAY3"));
+				dates.setDay4(rs.getInt("DAY4"));
+				dates.setDay5(rs.getInt("DAY5"));
+				dates.setDay6(rs.getInt("DAY6"));
+				dates.setDay7(rs.getInt("DAY7"));
+				if(!resourceHoursMap.isEmpty() && resourceHoursMap.containsKey(employeeId)){
+					List<WeekDates> weekdates=resourceHoursMap.get(employeeId);
+					if(weekdates==null){
+						weekdates=new LinkedList<WeekDates>();
+					}
+					weekdates.add(dates);
+				} else {
+					final List<WeekDates> weekdates=new LinkedList<WeekDates>();
+					weekdates.add(dates);
+					resourceHoursMap.put(employeeId, weekdates);
+				}
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return resourceHoursMap;
 
 	}	
 }

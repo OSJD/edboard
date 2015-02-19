@@ -139,6 +139,23 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		return "/projectmanagement/releasePlan";
 	}	
 	
+	@RequestMapping(value = "/getReleasePlan.do")
+	public String getReleasePlan(
+			@RequestParam("releaseStartDate") String releaseStartDate,
+			@RequestParam("releaseEndDate") String releaseEndDate,
+			@RequestParam("releaseId") Integer releaseId,
+			Model model) throws ParseException {
+		
+		LOG.debug("Release Start Date:{} End Date:{}",releaseStartDate,releaseEndDate);
+		DateTimeFormatter format = DateTimeFormat.forPattern("dd/MM/yyyy");
+			
+		DateTime stDate =  format.parseDateTime(releaseStartDate);
+		DateTime etDate =  format.parseDateTime(releaseEndDate);
+
+		ReleasePlan releasePlan=getProjectManagementService().fetchReleasePlan(stDate,etDate, releaseId);
+		model.addAttribute("releasePlan",releasePlan);
+		return "/projectmanagement/releasePlan";
+	}	
 	
 	
 	
