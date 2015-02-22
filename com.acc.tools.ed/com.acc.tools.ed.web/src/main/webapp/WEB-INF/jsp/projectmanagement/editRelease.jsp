@@ -16,11 +16,11 @@
 						<td><input type="text" id="editReleaseName" name="releaseName" class="textbox" /></td>
 						<th style="text-align: right;">Rel. Start Date</th>
 						<td style="width: 200px;">
-							<input type="text" id="editReleaseStartDateId" name="editReleaseStartDate" class="textbox" />							
+							<input type="text" id="editReleaseStartDateId" name="releaseStartDate" class="textbox" />							
 						</td>
 						<th style="text-align: right;">Rel. End Date</th>
 						<td>
-							<input type="text" id="editReleaseEndDate" name="editReleaseEndDate" class="textbox" />
+							<input type="text" id="editReleaseEndDate" name="releaseEndDate" class="textbox" />
 						</td>
 					</tr>						
 					<tr>
@@ -36,7 +36,7 @@
 				 			</a>
 			 			</td>
 					</tr>
-					<tr id="addReleasePlan"><td colspan="6"><span style="color: red;">Please Click on "Create Release Plan" button to add release plan.</span></td></tr>	
+					<tr id="viewReleasePlan"><td colspan="6"><span style="color: red;">Please Click on "Create Release Plan" button to add release plan.</span></td></tr>	
 				</table>
 			</fieldset>
 		</form>

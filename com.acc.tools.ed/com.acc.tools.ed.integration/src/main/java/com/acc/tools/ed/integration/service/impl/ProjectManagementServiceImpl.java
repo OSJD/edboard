@@ -59,17 +59,73 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 		projectManagementDao.addReleasePlan(releaseForm.getReleaseId(),empId,weekDateStart, weekDateEnd, weekHourSubList, weeklyPlannedHr, isLastWeek);
 	}
 	
-	public ReleasePlan fetchReleasePlan(DateTime relDateStart,DateTime relDateEnd,Integer releaseId) {
-		final ReleasePlan releasePlan=new ReleasePlan();
-		final Map<Integer, List<WeekDates>> resourceHoursMap=projectManagementDao.getReleasePlan(releaseId);
-		for(Map.Entry<Integer, List<WeekDates>> resourceHoursEntry : resourceHoursMap.entrySet()){
-			LOG.debug("Resource Id:{}",resourceHoursEntry.getKey());
-			for(WeekDates week:resourceHoursEntry.getValue()){
-				LOG.debug("Day1:{} | Day2:{} | Day3:{} | Day4:{} | Day5:{} | Day6:{} | Day7:{} ",new Object[]{week.getDay1(),week.getDay2(),week.getDay3(),week.getDay4(),week.getDay5(),week.getDay6(),week.getDay7()});
+	public ReleasePlan fetchReleasePlan(DateTime relDateStart,DateTime relDateEnd,Integer releaseId,Integer projId) {
+
+		final Map<Integer,Map<DateTime,Integer>> resourceHoursMap=projectManagementDao.getReleasePlan(releaseId);
+		final List<ReferenceData> resourceDetails = projectManagementDao.getProjectResourceDetails(projId);
+		final Map<String,List<WeekDates>> vacationDetails=projectManagementDao.getVacationDetailsByEmployeeIds(resourceDetails);
+
+		final ReleasePlan plan=new ReleasePlan();
+		final List<ResourceWorkPlan> resourceWorkPlanList=new LinkedList<ResourceWorkPlan>();
+		plan.setResourceWorkPlan(resourceWorkPlanList);
+		DateTime dateStart=relDateStart;
+		String tempCurrentWeek = dateStart.weekOfWeekyear().getAsShortText();
+		int weekCount = 1;
+		
+
+		for(ReferenceData employee:resourceDetails){
+			final ResourceWorkPlan resourceWorkPlan=new ResourceWorkPlan();
+			resourceWorkPlan.setEmployeeId(employee.getId());
+			resourceWorkPlan.setEmployeeName(employee.getLabel());
+			final Map<String, List<ResourceWeekWorkPlan>> weekWorkPlanMap=resourceWorkPlan.getResourceWeekWorkPlan();
+			resourceWorkPlan.setResourceWeekWorkPlan(weekWorkPlanMap);
+			while(dateStart.isBefore(relDateEnd) || dateStart.equals(relDateEnd)){
+				final String currentWeek=dateStart.weekOfWeekyear().getAsShortText();			
+				if(!tempCurrentWeek.equalsIgnoreCase(currentWeek)){
+					weekCount++;
+					tempCurrentWeek=currentWeek;
+				}
+				rebuildWeekWorkPlan(weekWorkPlanMap,dateStart,weekCount,resourceHoursMap.get(Integer.parseInt(employee.getId())),vacationDetails.get(employee.getId()));
+
+			  dateStart = dateStart.plusDays(1);
 			}
+			dateStart=relDateStart;
+			weekCount=1;
+			tempCurrentWeek = dateStart.weekOfWeekyear().getAsShortText();
+			resourceWorkPlanList.add(resourceWorkPlan);
+			plan.setReleasePlanHeader(resourceWorkPlan);
 		}
 		
-		return releasePlan;
+		return plan;
+	}
+	
+	private void rebuildWeekWorkPlan(Map<String,List<ResourceWeekWorkPlan>> weeksWorkPlanMap,
+			DateTime dateStart,int weekCount,Map<DateTime,Integer> planedDates,List<WeekDates> vacationDates){
+		if(weeksWorkPlanMap.size()>0 && weeksWorkPlanMap.containsKey("Week-"+weekCount)){
+			final List<ResourceWeekWorkPlan> weekPlanList=weeksWorkPlanMap.get("Week-"+weekCount);
+			ResourceWeekWorkPlan weekPlan=new ResourceWeekWorkPlan();
+			weekPlan.setDay(dateStart.dayOfWeek().getAsShortText());
+			weekPlan.setDate(dateStart.toString("MM/dd/yyyy"));
+			if(planedDates!=null && !planedDates.isEmpty() && planedDates.containsKey(dateStart)){
+				weekPlan.setHours(""+planedDates.get(dateStart));	
+			} else {
+				vacationDaysToWeekPlanMapping(vacationDates,weekPlan,dateStart);
+			}
+			
+			weekPlanList.add(weekPlan);
+		} else {
+			final List<ResourceWeekWorkPlan> weekPlanList=new LinkedList<ResourceWeekWorkPlan>();
+			ResourceWeekWorkPlan weekPlan=new ResourceWeekWorkPlan();
+			weekPlan.setDay(dateStart.dayOfWeek().getAsShortText());
+			weekPlan.setDate(dateStart.toString("MM/dd/yyyy"));
+			if(planedDates!=null && !planedDates.isEmpty() && planedDates.containsKey(dateStart)){
+				weekPlan.setHours(""+planedDates.get(dateStart));	
+			} else {
+				vacationDaysToWeekPlanMapping(vacationDates,weekPlan,dateStart);
+			}
+			weekPlanList.add(weekPlan);
+			weeksWorkPlanMap.put("Week-"+weekCount, weekPlanList);
+		}
 	}
 	
 	public ReleasePlan buildReleasePlan(DateTime relDateStart,DateTime relDateEnd,Integer projId) {
@@ -98,7 +154,7 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 					weekCount++;
 					tempCurrentWeek=currentWeek;
 				}
-				buildWeekWorkPlan(weekWorkPlanMap,dateStart,weekCount,employee.getId(),vacationDetails.get(employee.getId()));
+				buildWeekWorkPlan(weekWorkPlanMap,dateStart,weekCount,vacationDetails.get(employee.getId()));
 
 			  dateStart = dateStart.plusDays(1);
 			}
@@ -113,58 +169,44 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 		return plan;
 	}
 	
+	private void vacationDaysToWeekPlanMapping(List<WeekDates> vacationDetails,ResourceWeekWorkPlan weekPlan,DateTime dateStart){
+		if(vacationDetails!=null && !vacationDetails.isEmpty()){
+			for(WeekDates vacationDates :vacationDetails){
+				if(dateStart.getMillis() >= vacationDates.getWeekStartDate().getMillis() && dateStart.getMillis() <= vacationDates.getWeekEndDate().getMillis()){
+					weekPlan.setHours("-1"); //-1 -> Vacation , -2 -> Public Holiday
+				} else {
+					if(weekPlan.getDay().equalsIgnoreCase("Sun") || weekPlan.getDay().equalsIgnoreCase("Sat")){
+						weekPlan.setHours("0");
+					} else {
+						weekPlan.setHours("9");
+					}
+				}
+			}
+		} else {
+			if(weekPlan.getDay().equalsIgnoreCase("Sun") || weekPlan.getDay().equalsIgnoreCase("Sat")){
+				weekPlan.setHours("0");
+			} else {
+				weekPlan.setHours("9");
+			}
+		}
+	}
+	
 	
 	private void buildWeekWorkPlan(Map<String,List<ResourceWeekWorkPlan>> weeksWorkPlanMap,
-			DateTime dateStart,int weekCount,String empId,List<WeekDates> vacationDetails){
+			DateTime dateStart,int weekCount,List<WeekDates> vacationDetails){
 		if(weeksWorkPlanMap.size()>0 && weeksWorkPlanMap.containsKey("Week-"+weekCount)){
 			final List<ResourceWeekWorkPlan> weekPlanList=weeksWorkPlanMap.get("Week-"+weekCount);
 			ResourceWeekWorkPlan weekPlan=new ResourceWeekWorkPlan();
 			weekPlan.setDay(dateStart.dayOfWeek().getAsShortText());
 			weekPlan.setDate(dateStart.toString("MM/dd/yyyy"));
-			if(vacationDetails!=null && !vacationDetails.isEmpty()){
-				for(WeekDates vacationDates :vacationDetails){
-					if(dateStart.getMillis() >= vacationDates.getWeekStartDate().getMillis() && dateStart.getMillis() <= vacationDates.getWeekEndDate().getMillis()){
-						weekPlan.setHours("-1"); //-1 -> Vacation , -2 -> Public Holiday
-					} else {
-						if(weekPlan.getDay().equalsIgnoreCase("Sun") || weekPlan.getDay().equalsIgnoreCase("Sat")){
-							weekPlan.setHours("0");
-						} else {
-							weekPlan.setHours("9");
-						}
-					}
-				}
-			} else {
-				if(weekPlan.getDay().equalsIgnoreCase("Sun") || weekPlan.getDay().equalsIgnoreCase("Sat")){
-					weekPlan.setHours("0");
-				} else {
-					weekPlan.setHours("9");
-				}
-			}
+			vacationDaysToWeekPlanMapping(vacationDetails,weekPlan,dateStart);
 			weekPlanList.add(weekPlan);
 		} else {
 			final List<ResourceWeekWorkPlan> weekPlanList=new LinkedList<ResourceWeekWorkPlan>();
 			ResourceWeekWorkPlan weekPlan=new ResourceWeekWorkPlan();
 			weekPlan.setDay(dateStart.dayOfWeek().getAsShortText());
 			weekPlan.setDate(dateStart.toString("MM/dd/yyyy"));
-			if(vacationDetails!=null && !vacationDetails.isEmpty()){
-				for(WeekDates vacationDates :vacationDetails){
-					if(dateStart.getMillis() >= vacationDates.getWeekStartDate().getMillis() && dateStart.getMillis() <= vacationDates.getWeekEndDate().getMillis()){
-						weekPlan.setHours("-1"); //-1 -> Vacation , -2 -> Public Holiday
-					} else {
-						if(weekPlan.getDay().equalsIgnoreCase("Sun") || weekPlan.getDay().equalsIgnoreCase("Sat")){
-							weekPlan.setHours("0");
-						} else {
-							weekPlan.setHours("9");
-						}
-					}
-				}
-			} else {
-				if(weekPlan.getDay().equalsIgnoreCase("Sun") || weekPlan.getDay().equalsIgnoreCase("Sat")){
-					weekPlan.setHours("0");
-				} else {
-					weekPlan.setHours("9");
-				}
-			}
+			vacationDaysToWeekPlanMapping(vacationDetails,weekPlan,dateStart);
 			weekPlanList.add(weekPlan);
 			weeksWorkPlanMap.put("Week-"+weekCount, weekPlanList);
 		}
@@ -212,9 +254,8 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 		return "";
 	}
 	
-	public String deleteRelease(String releaseId) {
-		projectManagementDao.deleteRelease(releaseId);
-		return "";
+	public Integer deleteRelease(Integer releaseId) {
+		return projectManagementDao.deleteRelease(releaseId);
 	}
 	
 	public int addEmployees(Collection<MasterEmployeeDetails> empDetails) {
@@ -248,7 +289,7 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 		}
 	}
 	
-	public List<ReferenceData> editRelease(String releaseId, String editRelArti,
+	public List<ReferenceData> editRelease(Integer releaseId, String editRelArti,
 			String editRelStartDate, String editRelEndDate) {
 		try {
 			
@@ -340,6 +381,13 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 			e.printStackTrace();
 			return 0;
 		}
+	}
+	public int deleteReleasePlan(int releaseId) {
+		return projectManagementDao.deleteReleasePlan(releaseId);
+	}
+	
+	public ProjectForm getReleaseDetails(Integer releaseId){
+		return projectManagementDao.getReleaseData(releaseId);
 	}
 	
 	

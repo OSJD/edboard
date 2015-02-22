@@ -20,6 +20,7 @@ import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.ReleaseForm;
 import com.acc.tools.ed.integration.dto.TaskForm;
+import com.acc.tools.ed.integration.dto.VacationForm;
 
 
 @Service("projectWorkDao")
@@ -27,7 +28,33 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 	
 	private static final Logger log = LoggerFactory.getLogger(ProjectWorkDaoImpl.class);
 	
-public List<ProjectForm> getMyTasks(String userId) {
+	
+	public int addVacation(VacationForm vacationForm){
+		
+		int status =0;
+		try {
+			
+			String addTaskQuery = "insert into EDB_VACTN_CALNDR(EMP_ID,VACTN_TYP,VACTN_STRT_DT,VACTN_END_DT,COMNTS,STATUS,SUP_ID,SUP_COMNTS) values (?,?,?,?,?,?,?,?)";
+			PreparedStatement pstm = getConnection().prepareStatement(addTaskQuery);
+			pstm.setInt(1, vacationForm.getEmployeeId());
+			pstm.setString(2, vacationForm.getVacationType());
+			pstm.setString(3, vacationForm.getStartDate());
+			pstm.setString(4, vacationForm.getEndDate());
+			pstm.setString(5, vacationForm.getComments());
+			pstm.setString(6, vacationForm.getStatus());
+			pstm.setInt(7, vacationForm.getSupervisorId());
+			pstm.setString(8, vacationForm.getApproverComments());
+			pstm.executeUpdate();
+			pstm.close();
+
+			
+		} catch (Exception e) {
+			log.error("Error Inserting into Vacation Table:{}",e);
+		}
+		return status;
+	}
+	
+	public List<ProjectForm> getMyTasks(String userId) {
 		
 		final List<ProjectForm> projectTasks=new ArrayList<ProjectForm>();
 		final Map<Integer,ProjectForm> projMap = new HashMap<Integer, ProjectForm>();

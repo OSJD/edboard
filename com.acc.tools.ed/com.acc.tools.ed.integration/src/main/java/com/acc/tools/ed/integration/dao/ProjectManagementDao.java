@@ -3,6 +3,7 @@ package com.acc.tools.ed.integration.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import com.acc.tools.ed.integration.dto.ComponentForm;
@@ -22,9 +23,9 @@ public interface ProjectManagementDao {
 	public List<ReferenceData> getProjectReleaseIds(String projectId);
 	public ProjectForm getProjectPlanDetails(Integer releaseId, Integer projectId);
 	public List<ReferenceData> editProject(String projectId,String editPrjDesc,String editPrjStartDate,String editPrjEndDate);
-	public List<ReferenceData> editRelease(String releaseId, String editRelArti,String editRelStartDate, String editRelEndDate);
+	public List<ReferenceData> editRelease(Integer releaseId, String editRelArti,String editRelStartDate, String editRelEndDate);
 	public String deleteProject(String projectId);
-	public String deleteRelease(String releaseId);
+	public Integer deleteRelease(Integer releaseId);
 	public List<ReferenceData> getProgramList();
 	public List<ReferenceData> getResourceList();
 	public List<ReferenceData> getPrjLeadList();
@@ -35,8 +36,10 @@ public interface ProjectManagementDao {
 	public List<MasterEmployeeDetails> getAllEmployees();
 	public List<ReferenceData> getProjectResourceDetails(Integer projectId);
 	public void addReleasePlan(int releaseId, String empId, LocalDate weekDateStart, LocalDate weekDateEnd, List<Long> weekHourList, Long weeklyPlannedHr, boolean isLastWeek);
-	public Map<Integer,List<WeekDates>> getReleasePlan(Integer releaseId);
+	public int deleteReleasePlan(int releaseId);
+	public Map<Integer,Map<DateTime,Integer>> getReleasePlan(Integer releaseId);
 	public List<EditProjectForm> editProject(int projectId);
 	public int checkProjName(String projectName, int progId);
 	public Map<String,List<WeekDates>> getVacationDetailsByEmployeeIds(List<ReferenceData> employeeIds);
+	public ProjectForm getReleaseData(Integer releaseId);
 }

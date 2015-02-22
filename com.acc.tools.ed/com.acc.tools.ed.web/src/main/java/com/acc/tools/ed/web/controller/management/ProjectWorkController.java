@@ -19,6 +19,7 @@ import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.ReleaseForm;
 import com.acc.tools.ed.integration.dto.TaskForm;
+import com.acc.tools.ed.integration.dto.VacationForm;
 import com.acc.tools.ed.integration.service.ProjectWorkService;
 import com.acc.tools.ed.web.controller.common.AbstractEdbBaseController;
 
@@ -128,6 +129,23 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 		getProjectWorkService().saveTasks(taskform);
 		model.addAttribute("addTaskForm", taskform);
 		return "/projectwork/newTask";
+	}
+	
+	@RequestMapping(value = "/addVacation.do")
+	public @ResponseBody String addVacation(
+			@ModelAttribute("vacationForm") VacationForm vacationForm,
+			@ModelAttribute("edbUser") EDBUser edbUser,
+			Model model){
+		LOG.debug("Vacation Type:{}",vacationForm.getVacationType());
+		vacationForm.setEmployeeId(Integer.parseInt(edbUser.getEmployeeId()));
+		vacationForm.setStatus("Submitted");
+		if(vacationForm.getVacationType()!="-4"){
+			projectWorkService.addVacation(vacationForm);			
+		} else {
+			System.out.println("-------------------------------------------->holiday");
+		}
+
+		return "success";
 	}
 	
 

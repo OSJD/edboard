@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -56,15 +55,19 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 			ResultSet rs=stmt.executeQuery(query);
 			while(rs.next()){
 				final WeekDates dates=new WeekDates();
-				final Integer employeeId=rs.getInt("EMP_ID");
+				final String employeeId=rs.getString("EMP_ID");
         		dates.setWeekStartDate(new DateTime(rs.getDate("VACTN_STRT_DT").getTime()));
         		dates.setWeekEndDate(new DateTime(rs.getDate("VACTN_END_DT").getTime()));
-        		if(!vacationDetailsMap.isEmpty() && vacationDetailsMap.containsKey(""+employeeId)){
-        			vacationDetailsMap.get(employeeId).add(dates);
+        		if(!vacationDetailsMap.isEmpty() && vacationDetailsMap.containsKey(employeeId)){
+        			List<WeekDates> dateList=vacationDetailsMap.get(employeeId);
+        			if(dateList==null){
+        				dateList=new ArrayList<WeekDates>();
+        			}
+        			dateList.add(dates);
         		} else {
         			final List<WeekDates> dateList=new ArrayList<WeekDates>();
         			dateList.add(dates);
-        			vacationDetailsMap.put(""+employeeId,dateList);
+        			vacationDetailsMap.put(employeeId,dateList);
         		}
 
 			}
@@ -98,6 +101,35 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 		return projectList;
 	}
 	
+	public ProjectForm getReleaseData(Integer releaseId){
+		final String query="select M.*,P.* from EDB_PROJECT AS P LEFT JOIN EDB_MILESTONE AS M ON P.PROJ_ID = M.PROJ_ID WHERE M.MLSTN_ID="+releaseId;
+		log.debug("RELEASE QUERY :[{}]",query);
+		final ProjectForm projectForm=new ProjectForm();
+		final List<ReleaseForm> releases=new ArrayList<ReleaseForm>();
+		final ReleaseForm releaseForm=new ReleaseForm();
+		releases.add(releaseForm);
+		projectForm.setReleases(releases);
+		
+		try {
+			Statement stmt=getConnection().createStatement();
+			ResultSet rs=stmt.executeQuery(query);
+			while(rs.next()){
+				projectForm.setProjectId(rs.getInt("PROJ_ID"));
+				projectForm.setProjectName(rs.getString("PROJ_NAME"));
+				projectForm.setStartDate(new DateTime(rs.getDate("PROJ_ST_DT").getTime()));
+				projectForm.setEndDate(new DateTime(rs.getDate("PROJ_ET_DT").getTime()));
+				releaseForm.setReleaseName(rs.getString("MLSTN_NAME"));
+				releaseForm.setReleaseArtifacts(rs.getString("MLSTN_ARTIFACTS"));
+				releaseForm.setReleaseDesc(rs.getString("MLSTN_DESC"));
+				releaseForm.setReleaseStartDate(new DateTime(rs.getDate("MLSTN_ST_DT").getTime()).toString("MM/dd/yyyy"));
+				releaseForm.setReleaseEndDate(new DateTime(rs.getDate("MLSTN_END_DT").getTime()).toString("MM/dd/yyyy"));
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return projectForm;
+	}
 	public List<ReferenceData> getProjectReleaseIds(String projectId){
 		List<ReferenceData> projectReleaseList=new ArrayList<ReferenceData>();
 		final String query="select MLSTN_ID,MLSTN_NAME from EDB_MILESTONE where PROJ_ID="+projectId+"";
@@ -391,7 +423,7 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 		
 	}
 	
-public List<ReferenceData> editRelease(String releaseId,String editRelArti,String editRelStartDate,String editRelEndDate){
+public List<ReferenceData> editRelease(Integer releaseId,String editRelArti,String editRelStartDate,String editRelEndDate){
 		
 		List<ReferenceData> response = new ArrayList<ReferenceData>();
 
@@ -402,7 +434,7 @@ public List<ReferenceData> editRelease(String releaseId,String editRelArti,Strin
 				preparedStatement.setString(1, editRelArti);
 				preparedStatement.setString(2, editRelStartDate);
 				preparedStatement.setString(3, editRelEndDate);
-				preparedStatement.setString(4, releaseId);
+				preparedStatement.setInt(4, releaseId);
 				preparedStatement.executeUpdate();
 				preparedStatement.close();
 				
@@ -456,21 +488,22 @@ public List<ReferenceData> editRelease(String releaseId,String editRelArti,Strin
 	
 
 
-	public String deleteRelease(String releaseId) {
+	public Integer deleteRelease(Integer releaseId) {
 		
+		Integer status=0;
 		try {
 
 			final String relTable="DELETE FROM EDB_MILESTONE WHERE MLSTN_ID = ?";
 			PreparedStatement  relStatement = getConnection().prepareStatement(relTable);
-			relStatement.setString(1, releaseId);
-			relStatement.executeUpdate();
+			relStatement.setInt(1, releaseId);
+			status=relStatement.executeUpdate();
 			relStatement.close();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	
-		return "";
+		return status;
 	}
 	
 	public List<ReferenceData> getProgramList() {
@@ -857,9 +890,9 @@ public List<ReferenceData> editRelease(String releaseId,String editRelArti,Strin
 		return flag;
 	}
 
-	public Map<Integer,List<WeekDates>> getReleasePlan(Integer releaseId) {
+	public Map<Integer,Map<DateTime,Integer>> getReleasePlan(Integer releaseId) {
 		
-        final Map<Integer,List<WeekDates>> resourceHoursMap=new HashMap<Integer, List<WeekDates>>();
+        final Map<Integer,Map<DateTime,Integer>> resourceHoursMap=new HashMap<Integer, Map<DateTime,Integer>>();
 
 
 		final String query = "SELECT * FROM EDB_RELEASE_PLAN WHERE MLSTN_ID="+releaseId;
@@ -868,27 +901,34 @@ public List<ReferenceData> editRelease(String releaseId,String editRelArti,Strin
 			Statement stmt = getConnection().createStatement();
 			ResultSet rs = stmt.executeQuery(query);
 			while (rs.next()) {
-				WeekDates dates = new WeekDates();
 				final int employeeId=rs.getInt("EMP_ID");
-				dates.setWeekStartDate(new DateTime(rs.getDate("WEEK_ST_DT").getTime()));
-				dates.setWeekEndDate(new DateTime(rs.getDate("WEEK_ED_DT").getTime()));
-				dates.setDay1(rs.getInt("DAY1"));
-				dates.setDay2(rs.getInt("DAY2"));
-				dates.setDay3(rs.getInt("DAY3"));
-				dates.setDay4(rs.getInt("DAY4"));
-				dates.setDay5(rs.getInt("DAY5"));
-				dates.setDay6(rs.getInt("DAY6"));
-				dates.setDay7(rs.getInt("DAY7"));
+				final DateTime startDate=new DateTime(rs.getDate("WEEK_ST_DT").getTime());
+				final int day1= rs.getInt("DAY1");
+				final int day2= rs.getInt("DAY2");
+				final int day3= rs.getInt("DAY3");
+				final int day4= rs.getInt("DAY4");
+				final int day5= rs.getInt("DAY5");
+				final int day6= rs.getInt("DAY6");
+				final int day7= rs.getInt("DAY7");
 				if(!resourceHoursMap.isEmpty() && resourceHoursMap.containsKey(employeeId)){
-					List<WeekDates> weekdates=resourceHoursMap.get(employeeId);
-					if(weekdates==null){
-						weekdates=new LinkedList<WeekDates>();
-					}
-					weekdates.add(dates);
+					Map<DateTime,Integer> dateHours=resourceHoursMap.get(employeeId);
+					dateHours.put(startDate,day1);
+					dateHours.put(startDate.plusDays(1), day2);
+					dateHours.put(startDate.plusDays(2), day3);
+					dateHours.put(startDate.plusDays(3), day4);
+					dateHours.put(startDate.plusDays(4), day5);
+					dateHours.put(startDate.plusDays(5), day6);
+					dateHours.put(startDate.plusDays(6), day7);
 				} else {
-					final List<WeekDates> weekdates=new LinkedList<WeekDates>();
-					weekdates.add(dates);
-					resourceHoursMap.put(employeeId, weekdates);
+					final Map<DateTime,Integer> dateHours=new HashMap<DateTime,Integer>();
+					dateHours.put(startDate,day1);
+					dateHours.put(startDate.plusDays(1), day2);
+					dateHours.put(startDate.plusDays(2), day3);
+					dateHours.put(startDate.plusDays(3), day4);
+					dateHours.put(startDate.plusDays(4), day5);
+					dateHours.put(startDate.plusDays(5), day6);
+					dateHours.put(startDate.plusDays(6), day7);					
+					resourceHoursMap.put(employeeId, dateHours);
 				}
 			}
 
@@ -897,6 +937,21 @@ public List<ReferenceData> editRelease(String releaseId,String editRelArti,Strin
 		}
 		return resourceHoursMap;
 
-	}	
+	}
+
+	public int deleteReleasePlan(int releaseId) {
+		
+		int status=0;
+		try {
+			final String prjTable="DELETE FROM EDB_RELEASE_PLAN WHERE MLSTN_ID= ?";
+			PreparedStatement  preparedStatement = getConnection().prepareStatement(prjTable);
+			preparedStatement.setInt(1, releaseId);
+			status=preparedStatement.executeUpdate();
+			preparedStatement.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return status;
+	}
 }
 

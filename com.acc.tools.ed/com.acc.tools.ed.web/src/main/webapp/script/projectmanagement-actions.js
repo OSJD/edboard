@@ -405,7 +405,55 @@ $(document).ready(function(){
 							modal : true,
 							buttons : {
 								"Edit Release" : function() {
-									alert('hello');
+									var projectId=$("#projects").val();
+									var releaseId = $("#releases option:selected").val();
+									var releaseForm = $('#editReleaseForm').serializeArray();
+									var resources = $("input[id^='resource']").length;
+									var jsonString = "{";
+									$.each(releaseForm,
+									    function(i, v) {
+											 if(v.name=="releaseStartDate" || v.name=="releaseEndDate"){																															
+												jsonString=jsonString+" \""+v.name+"\":\""+v.value+"\",";
+											 } else {
+												jsonString=jsonString+" \""+v.name+"\":\""+v.value+"\",";
+											 }
+									 });
+									jsonString=jsonString+"\"resourcesAndHours\" : {";
+									
+									for(var i=0; i<resources;i++){										
+										jsonString=jsonString+"\""+$("#resource"+i).val()+"\": [";
+										$("input[id^='resDayHour']").each(function(index, obj){
+											if(obj.id.indexOf("resDayHour"+i)==0){
+												jsonString=jsonString+obj.value+",";
+											}
+										});
+										jsonString=jsonString.substring(0,jsonString.lastIndexOf(","));
+										jsonString=jsonString+"],";
+									}
+									jsonString=jsonString.substring(0,jsonString.lastIndexOf(","))+"},";
+
+									jsonString=jsonString+"\"releaseId\":\""+releaseId+"\",";
+									jsonString=jsonString+"\"projectId\":\""+projectId+"\"";
+									jsonString=jsonString+"}";
+									alert(jsonString);
+									$.ajax({
+										type : "POST",
+										url : "./editRelease.do",
+										data :jsonString ,												
+										contentType : 'application/json; charset=utf-8',
+										dataType : 'json',		
+										beforeSend:function(){
+										  },
+										success : function(response) {
+											//alert(response);
+											
+											editReleaseDialog.dialog("close");		
+										},
+										error : function(data) {	
+											alert("Application error! Please call help desk. Error:"+data.status);
+										}
+									});	
+								
 								},
 								Cancel : function() {
 									editReleaseDialog.dialog("close");
@@ -416,21 +464,76 @@ $(document).ready(function(){
 						
 						
 						$("#editRelease").button().unbind("click").on("click", function() {
-							var releaseName=$("#releases option:selected").text();
 							var releaseId = $("#releases option:selected").val();
-							var projectName = $("#projects option:selected").text();
-							
 							if(releaseId=="SR"){
 								alert("Please select Release!");
 							} else {
-								$("#editProjName").html(projectName);
-								$("#editProjStartDate").html($("#prjStartDate").html());
-								$("#editProjEndDate").html($("#prjEndDate").html());	
-								$("#editReleaseName").val(releaseName);
-								$("#editReleaseStartDateId").val($("#relStartDate").html());
-								$("#editReleaseEndDate").val($("#relEndDate").html());
-								$("#editReleaseArtifacts").val($("#relArti").html());
-								editReleaseDialog.dialog("open");
+								$.ajax({
+									type : "POST",
+									url : "./getReleaseDetails.do",
+									data :{releaseId:releaseId} ,												
+									dataType : 'json',		
+									beforeSend:function(){
+									  },
+									success : function(response) {
+										var projectName="";
+										var projStartDate="";
+										var projEndDate="";
+										var releaseName=""
+										var relStartDate="";
+										var relEndDate="";
+										var relArti="";
+										for(var field in response){
+											if(field=="projectName"){
+												projectName=response[field];
+											} else if(field=="startDate"){
+												projStartDate=response[field];
+											} else if(field=="endDate"){
+												projEndDate=response[field];
+											} else if(field="release"){
+												releaseName=response[field].releaseName;
+												relStartDate=response[field].releaseStartDate;
+												relEndDate=response[field].releaseEndDate;
+												relArti=response[field].releaseArtifacts;
+											}
+										}
+										
+										$("#editProjName").html(projectName);
+										$("#editProjStartDate").html(projStartDate);
+										$("#editProjEndDate").html(projEndDate);	
+										$("#editReleaseName").val(releaseName);
+										$("#editReleaseStartDateId").val(relStartDate);
+										$("#editReleaseEndDate").val(relEndDate);
+										$("#editReleaseArtifacts").val(relArti);
+										editReleaseDialog.dialog("open");
+										$( "#editReleaseStartDateId" ).datepicker({
+											showOn: 'button',
+											buttonText: 'Show Date',
+											buttonImageOnly: true,
+											buttonImage: 'resources/cal.gif',
+											dateFormat: 'mm/dd/yy',
+											constrainInput: true,
+											minDate:projStartDate,
+											maxDate:projEndDate
+										 }); 
+										
+										$( "#editReleaseEndDate" ).datepicker({
+											showOn: 'button',
+											buttonText: 'Show Date',
+											buttonImageOnly: true,
+											buttonImage: 'resources/cal.gif',
+											dateFormat: 'mm/dd/yy',
+											constrainInput: true,
+											minDate:projStartDate,
+											maxDate:projEndDate
+										});
+										
+										editReleaseDialog.dialog("open");		
+									},
+									error : function(data) {	
+										alert("Application error! Please call help desk. Error:"+data.status);
+									}
+								});	
 							}
 						});
 
@@ -517,13 +620,15 @@ $(document).ready(function(){
 							var releaseStartDate=$("#editReleaseStartDateId").val();
 							var releaseEndDate=$("#editReleaseEndDate").val();
 							var releaseId = $("#releases option:selected").val();
+							var projectId=$("#projects option:selected").val();
 							$.ajax({
 								url : "./getReleasePlan.do",
 								data : {releaseStartDate:releaseStartDate,
 										releaseEndDate:releaseEndDate,
-										releaseId : releaseId},									
+										releaseId : releaseId,
+										projectId:projectId},									
 								success : function(response) {
-									$('#addReleasePlan').html(response);
+									$('#viewReleasePlan').html(response);
 								},
 								error : function(data) {	
 									$("#mainContainer").html("Application error! Please call help desk. Error:"+data.status);
@@ -566,24 +671,28 @@ $(document).ready(function(){
 						 * this function will fetch Project and Release details.
 						 */
 						
-						$("#releases").unbind("change").on("change", function() {
+						$("#viewProjectPlan").button().unbind("click").on("click", function() {
 							var selectedProject=$("#projects").val();
 							var selectedRelease=$("#releases").val();
-							var jsonRequest="{ \"projectId\" : \""+selectedProject+"\", \"releaseId\" : \""+selectedRelease+"\"}";
-							$.ajax({
-								type : "POST",
-								url : "./viewProjectReleaseDetails.do",
-								data : jsonRequest,
-								contentType : 'application/json; charset=utf-8',
-								beforeSend:function(){
-								  },
-								success : function(response) {
-									$("#viewProjectAndReleaseDetails").html(response);
-								},
-								error : function(data) {	
-									$("#mainContainer").html("Application error! Please call help desk.  Error:"+data.status);
-								}
-							});	
+							if(selectedProject==0 && selectedRelease==0){
+								alert("Please select project and Release to view the project plan!.");
+							} else {
+								var jsonRequest="{ \"projectId\" : \""+selectedProject+"\", \"releaseId\" : \""+selectedRelease+"\"}";
+								$.ajax({
+									type : "POST",
+									url : "./viewProjectReleaseDetails.do",
+									data : jsonRequest,
+									contentType : 'application/json; charset=utf-8',
+									beforeSend:function(){
+									  },
+									success : function(response) {
+										$("#viewProjectAndReleaseDetails").html(response);
+									},
+									error : function(data) {	
+										$("#mainContainer").html("Application error! Please call help desk.  Error:"+data.status);
+									}
+								});
+							}
 						});
 						
 						$("#existingProgram").unbind("change").on("change",function(){

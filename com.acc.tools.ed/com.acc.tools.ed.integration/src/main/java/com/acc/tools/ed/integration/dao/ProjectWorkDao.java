@@ -5,6 +5,7 @@ import java.util.List;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.TaskForm;
+import com.acc.tools.ed.integration.dto.VacationForm;
 
 public interface ProjectWorkDao {
 
@@ -17,4 +18,5 @@ public interface ProjectWorkDao {
 	public TaskForm retrieveTasks();
 	public List<ReferenceData> getTasksByComponentId(Integer componentId);
 	public TaskForm getTaskByTaskId(Integer taskId);
+	public int addVacation(VacationForm vacationForm);
 }

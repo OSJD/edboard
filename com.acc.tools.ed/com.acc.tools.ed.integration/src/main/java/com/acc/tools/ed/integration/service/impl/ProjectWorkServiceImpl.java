@@ -9,6 +9,7 @@ import com.acc.tools.ed.integration.dao.ProjectWorkDao;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.TaskForm;
+import com.acc.tools.ed.integration.dto.VacationForm;
 import com.acc.tools.ed.integration.service.ProjectWorkService;
 
 @Service("projectWorkService")
@@ -16,6 +17,10 @@ public class ProjectWorkServiceImpl implements ProjectWorkService {
 	
 	@Autowired
 	private ProjectWorkDao projectWorkDao;
+	
+	public int addVacation(VacationForm vacationForm){
+		return projectWorkDao.addVacation(vacationForm);
+	}
 	
 	public List<ProjectForm> getMyTasks(String userId){
 		return projectWorkDao.getMyTasks(userId);

@@ -32,6 +32,7 @@
 			<td><a href="#" class="button" id="addRelease" style="width: 100px;">Add Release</a></td>
 			<td><a href="#" class="button" id="editRelease" style="width: 100px;">Edit Release</a></td>
 			<td><a href="#" class="button" id="deleteRelease" style="width: 100px;">Delete Release</a></td>
+			<td><a href="#" class="button" id="viewProjectPlan" style="width: 100px;">View Project Plan</a></td>
 			<td><a href="#" class="button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id="addMPP" style="width: 100px;">
 					<span class="ui-button-text">Upload MPP</span>
 				 </a></td>

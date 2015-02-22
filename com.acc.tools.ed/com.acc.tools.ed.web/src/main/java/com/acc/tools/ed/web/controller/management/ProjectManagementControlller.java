@@ -109,16 +109,18 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 	}
 	
 	@RequestMapping(value = "/getReleaseDetails.do")
-	public String getReleaseDetails(
+	public @ResponseBody Map<String,Object> getReleaseDetails(
 			@RequestParam("releaseId") Integer releaseId,
-			@RequestParam("projectId") Integer projectId,
 			Model model) {
 		
-		LOG.debug("Release Id:[{}]",releaseId);
-		ProjectForm planData = getProjectManagementService().getProjectPlanDetails(releaseId, projectId);
-		model.addAttribute("editReleaseForm", planData.getReleases().get(0));
-		model.addAttribute("projectForm", planData);
-		return "/projectmanagement/editRelease";
+		LOG.debug("Fetch Release details for  Id:[{}]",releaseId);
+		ProjectForm projectForm = getProjectManagementService().getReleaseDetails(releaseId);
+		Map<String,Object> jsonMap=new HashMap<String, Object>();
+		jsonMap.put("projectName", projectForm.getProjectName());
+		jsonMap.put("startDate", projectForm.getStartDate().toString("MM/dd/yyyy"));
+		jsonMap.put("endDate", projectForm.getEndDate().toString("MM/dd/yyyy"));
+		jsonMap.put("release", projectForm.getReleases().get(0));
+		return jsonMap;
 	}
 	
 	@RequestMapping(value = "/createReleasePlan.do")
@@ -144,6 +146,7 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 			@RequestParam("releaseStartDate") String releaseStartDate,
 			@RequestParam("releaseEndDate") String releaseEndDate,
 			@RequestParam("releaseId") Integer releaseId,
+			@RequestParam("projectId") Integer projectId,
 			Model model) throws ParseException {
 		
 		LOG.debug("Release Start Date:{} End Date:{}",releaseStartDate,releaseEndDate);
@@ -152,7 +155,7 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		DateTime stDate =  format.parseDateTime(releaseStartDate);
 		DateTime etDate =  format.parseDateTime(releaseEndDate);
 
-		ReleasePlan releasePlan=getProjectManagementService().fetchReleasePlan(stDate,etDate, releaseId);
+		ReleasePlan releasePlan=getProjectManagementService().fetchReleasePlan(stDate,etDate, releaseId,projectId);
 		model.addAttribute("releasePlan",releasePlan);
 		return "/projectmanagement/releasePlan";
 	}	
@@ -199,7 +202,57 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		         }			  					 
 		     getProjectManagementService().addReleasePlan(addReleaseForm,empId,dateStart,tempDateStart.minusDays(1),dayFromIndex,dayToIndex,true);     
 		     
-			 }
+		}
+		
+		
+		return refData;
+	}
+	
+	
+	@RequestMapping(value = "/editRelease.do")
+	public @ResponseBody ReferenceData editRelease(
+			@RequestBody  ReleaseForm editReleaseForm,
+			Model model) throws ParseException {
+		final ReferenceData refData = new ReferenceData();
+		refData.setId(""+editReleaseForm.getReleaseId());
+		refData.setLabel(editReleaseForm.getReleaseName());
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+		LocalDate dateStart =  new LocalDate(sdf.parse(editReleaseForm.getReleaseStartDate()));
+		LocalDate dateEnd =  new LocalDate(sdf.parse(editReleaseForm.getReleaseEndDate()));	
+		LOG.debug("Edit Release Id:[{}] Start Date:[{}] End Date:[{}]",new Object[]{editReleaseForm.getReleaseId(),editReleaseForm.getReleaseStartDate(),editReleaseForm.getReleaseEndDate()});
+		LocalDate releaseStrtDate = dateStart;
+		LocalDate tempDateStart = dateStart;
+		LocalDate tempDateEnd = dateEnd;	
+		String weekOfYear=dateStart.weekOfWeekyear().getAsShortText();
+		int dayFromIndex;
+		int dayToIndex;				
+		
+		getProjectManagementService().editRelease(editReleaseForm.getReleaseId(),editReleaseForm.getReleaseArtifacts(),editReleaseForm.getReleaseStartDate(),editReleaseForm.getReleaseEndDate());
+		int status=getProjectManagementService().deleteReleasePlan(editReleaseForm.getReleaseId());
+		if(status>0){
+		    for ( String empId : editReleaseForm.getResourcesAndHours().keySet()) {
+		    	dayFromIndex = 0;
+		    	dayToIndex = 0;
+		    	tempDateStart = releaseStrtDate;
+		    	dateStart = releaseStrtDate;
+		    	weekOfYear=dateStart.weekOfWeekyear().getAsShortText();
+			  	while(tempDateStart.isBefore(tempDateEnd) || tempDateStart.equals(tempDateEnd)){
+												
+					if(weekOfYear.equalsIgnoreCase(tempDateStart.weekOfWeekyear().getAsShortText()))										
+						 dayToIndex++;	
+					else{										 
+					    getProjectManagementService().addReleasePlan(editReleaseForm, empId,dateStart,tempDateStart.minusDays(1),dayFromIndex,dayToIndex,false);				    
+						 weekOfYear=tempDateStart.weekOfWeekyear().getAsShortText();
+						 dateStart = tempDateStart;
+						 dayFromIndex = dayToIndex++;
+					    }
+					 
+					tempDateStart = tempDateStart.plusDays(1);
+			    }			  					 
+			  	getProjectManagementService().addReleasePlan(editReleaseForm,empId,dateStart,tempDateStart.minusDays(1),dayFromIndex,dayToIndex,true);     
+			     
+			}
+		}
 		
 		
 		return refData;
@@ -217,7 +270,7 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		return getProjectManagementService().editProject(projectId, editPrjDesc, editPrjStartDate, editPrjEndDate);
 	}
 	
-	@RequestMapping(value = "/editRelease.do")
+/*	@RequestMapping(value = "/editRelease.do")
 	public @ResponseBody List<ReferenceData> editRelease(
 			@RequestParam("editRelArti") String editRelArti,
 			@RequestParam("editRelStartDate") String editRelStartDate,
@@ -227,7 +280,7 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		LOG.debug("Release Name:[{--}] EDIT RELEASE NAME Name:[{}]",editRelArti+","+editRelStartDate+","+releaseId);
 		
 		return getProjectManagementService().editRelease(releaseId, editRelArti, editRelStartDate, releaseEndDate);
-	}	
+	}	*/
 	
 	@RequestMapping(value = "/deleteProject.do")
 	public String deleteProject(
@@ -244,7 +297,7 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 	
 	@RequestMapping(value = "/deleteRelease.do")
 	public String deleteRelease(
-			@RequestParam("releaseId") String releaseId,
+			@RequestParam("releaseId") Integer releaseId,
 			Model model) {
 		LOG.debug("Project Name:[{--}] DELETE RELEASE NAME Name:[{}]", releaseId);
 		

@@ -23,9 +23,11 @@ public interface ProjectManagementService {
 	public List<ReferenceData> getProjectReleaseIds(String projectId);
 	public ProjectForm getProjectPlanDetails(Integer releaseId, Integer projectId);
 	public List<ReferenceData> editProject(String projectId,String editPrjDesc,String editPrjStartDate,String editPrjEndDate);
-	public List<ReferenceData> editRelease(String releaseId, String editRelArti,String editRelStartDate, String editRelEndDate);
+	public List<ReferenceData> editRelease(Integer releaseId, String editRelArti,String editRelStartDate, String editRelEndDate);
 	public String deleteProject(String projectId);
-	public String deleteRelease(String releaseId);
+	public Integer deleteRelease(Integer releaseId);
+	public ProjectForm getReleaseDetails(Integer releaseId);
+	public int deleteReleasePlan(int releaseId);
 	public List<ReferenceData> getProgramList();
 	public List<ReferenceData> getResourceList();
 	public List<ReferenceData> getPrjLeadList();
@@ -38,5 +40,5 @@ public interface ProjectManagementService {
 	public List<EditProjectForm> editProject(int projectId);
 	public int checkProjName(String projectName, int progId);
 	public ReleasePlan buildReleasePlan(DateTime relDateStart,DateTime relDateEnd,Integer projId);
-	public ReleasePlan fetchReleasePlan(DateTime relDateStart,DateTime relDateEnd,Integer releaseId);
+	public ReleasePlan fetchReleasePlan(DateTime relDateStart,DateTime relDateEnd,Integer releaseId,Integer projId);
 }

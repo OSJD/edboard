@@ -10,13 +10,13 @@
 <%@ include file="/WEB-INF/jsp/includes/document-header.jsp"%>
 </head>
 <body id="mainBody">
-	<table style="width: 100%;">
+	<table style="width: 100%;height: 100%;">
 		<!-- header -->
 		<%@ include file="/WEB-INF/jsp/includes/header.jsp"%>
 		<!-- main container -->
 		<tr>
 			<td>
-				<div id="tabs" style="width:100%; padding-right: 0px;">
+				<div id="tabs" style="width:100%;height:100%; padding-right: 0px;">
 					<!-- MAIN MENU -->
 					<%@ include file="/WEB-INF/jsp/includes/menu.jsp"%>
 

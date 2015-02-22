@@ -1,4 +1,3 @@
-<script src="<%=request.getContextPath()%>/script/submenu-actions.js"></script>
 <!-- SUB MENU-->
 <%@ include file="/WEB-INF/jsp/resourcemanagement/submenu.jsp"%>
 
