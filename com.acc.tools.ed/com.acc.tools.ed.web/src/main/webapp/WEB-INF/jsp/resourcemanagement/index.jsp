@@ -1,3 +1,4 @@
+<%@ include file="/WEB-INF/jsp/includes/document-header.jsp"%>
 <!-- SUB MENU-->
 <%@ include file="/WEB-INF/jsp/resourcemanagement/submenu.jsp"%>
 

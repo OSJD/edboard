@@ -1,4 +1,4 @@
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <script src="<%=request.getContextPath()%>/script/calendar-actions.js"></script>
 
 <table class="ebdtable" style="width: 100%;height: 733px;">
@@ -18,17 +18,21 @@
 									<option value="-1">Vacation</option>
 									<option value="-2">Sick Leave</option>
 									<option value="-3">Optional Holiday</option>
-									<option value="-4">Public Holiday</option>
+									<c:if test="${edbUser.role =='Admin'}">
+										<option value="-4">Public Holiday</option>
+									</c:if>
 								</select>
 							</td>
 						</tr>
-						<tr>
-							<th>Location</th>
-							<td>
-								<input type="radio" name="location" id="offShoreLocation" value="1" disabled="disabled"> Off Shore
-								<input type="radio" name="location" id="onShoreLocation" value="2" disabled="disabled"> On Shore
-							</td>
-						</tr>
+						<c:if test="${edbUser.role =='Admin'}">
+							<tr>
+								<th>Location</th>
+								<td>
+									<input type="radio" name="location" id="offShoreLocation" value="1" disabled="disabled"> Off Shore
+									<input type="radio" name="location" id="onShoreLocation" value="2" disabled="disabled"> On Shore
+								</td>
+							</tr>
+						</c:if>
 						<tr>
 							<th>Start Date</th>
 							<td>
@@ -54,7 +58,16 @@
 					</table>
 				</form>
 			</div>	
-			<div style="height: 720px;">Display applied Vaction Detail status</div>		
+			<div style="float:left; height: 720px;overflow: auto;width: 100%;margin-top: 10px;">
+				<table style="width: 100%;">
+					<tr>
+						<th>Upcoming Vacations & Holidays</th>
+					</tr>
+					<tr>
+						<td></td>
+					</tr>
+				</table>
+			</div>		
 		</td>
 		<th style="background-image: none;background-color: white;"></th>
 	</tr>

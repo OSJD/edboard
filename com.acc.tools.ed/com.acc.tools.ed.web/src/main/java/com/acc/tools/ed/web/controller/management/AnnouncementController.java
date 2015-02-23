@@ -58,12 +58,6 @@ public class AnnouncementController {
     return "/projectwork/announcements";
   }
 
-  @RequestMapping({"/calendar.do"})
-  public String calendar(Model model)
-  {
-    return "/projectwork/calendar";
-  }
-
   @RequestMapping(value="/settings.do")
   public String settings(Model model)
   {

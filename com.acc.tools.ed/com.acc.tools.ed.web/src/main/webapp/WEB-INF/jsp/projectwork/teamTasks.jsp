@@ -3,13 +3,9 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<html>
-<head>
-<script src="<%=request.getContextPath()%>/script/submenu-actions.js"></script>
+<%@ include file="/WEB-INF/jsp/includes/document-header.jsp"%>
 <script src="<%=request.getContextPath()%>/script/projectwork-actions.js"></script>
-</head>
-<body>
-
+<%@ include file="/WEB-INF/jsp/projectwork/addTaskPopup.jsp"%>
 	<table class="ebdtable" style="width: 100%;">
 		<tr>
 			<th style="width: 70px; font-weight: bold;">Release Name</th>
@@ -133,83 +129,3 @@
 			</c:forEach>
 		</c:forEach>
 	</table>
-	<input type="hidden" id="popupDisplay"/>
-	<!-- Add Task Popup -->
-	<div id="addTaskPanel" title="Add Tasks" edbUser="${edbUser.employeeId}">
-	<form:form commandName="addTaskForm" action="addTask.do">
-		<fieldset>
-			<legend>Add Tasks</legend>
-			<div>
-				<table class="addTask">
-					<tr>
-						<th style="text-align: right;">Task Type</th>
-						<td><select name="taskType">
-								<option value=""></option>
-								<option value="AG">Assigned</option>
-								<option value="AD">Adhoc</option>
-								<option value="VA">Value Added</option>
-						</select></td>
-					</tr>
-					<tr>
-					<th style="text-align: right;">Task Name</th>
-					<td id="taskTD" colspan="3">
-					<form:select path="existingTask"  style="width:135px;" multiple="false">
-									<form:option value="0" label="--- Select ---" />
-    								<form:option value="-1" label="Create New Task" />
-								</form:select>
-					
-					<div id="newTask" style="display: none;">
-							<form:input type="text" path="newTaskName" class="textbox" />
-							<form:hidden path="newTaskId"/>								
-					</div>	
-					</td>							
-					</tr>
-					<tr>
-						<th style="text-align: right;">Description</th>
-						<td><input type="text" id="taskDesc" name="taskDesc" value="" /></td>
-					</tr>
-					<tr>
-						<th style="text-align: right;">Task Hours</th>
-						<td colspan="2"><input type="text" id="taskHrs"
-							name="taskHrs" value="" />&nbsp;&nbsp; Hrs</td>
-					</tr>
-					<tr>
-						<th style="text-align: right;">Task Status</th>
-						<td><select name="taskStatus">
-								<option value=""></option>
-								<option value="completed">Completed</option>
-								<option value="inProgress">In Progress</option>
-								<option value="onHold">On Hold</option>
-						</select></td>
-					</tr>
-					<tr>
-						<jstl:choose>
-							<jstl:when
-								test="${(edbUser.role =='SUPERVISOR') || (edbUser.role =='Lead') || (edbUser.role =='MANAGER')}">
-								<th style="text-align: right;">Task Action</th>
-								<td><form:select path="taskAction" id="taskAction"  style="width:135px;" multiple="false" >
-									<form:option value="" label="---Select---" />
-									<form:option value="approved" label="Approved" />
-    								<form:option value="rejected" label="Rejected" />
-								</form:select></td>
-								<td>
-									<div id="div1" style="display: none;">
-										<form:textarea style="overflow: auto; resize: none" rows="3" id="rejComment" path="rejComment"
-									cols="20" class="textarea" />
-									</div>
-								</td>
-							</jstl:when>
-							<jstl:otherwise>
-								<td><form:textarea style="overflow: auto; resize: none" id="rejComment" rows="3" path="rejComment"
-									cols="20" class="textarea" /></td>
-							</jstl:otherwise>
-						</jstl:choose>
-					</tr>
-				</table>
-			</div>	
-		</fieldset>
-		</form:form>
-	</div>					
-</body>
-</html>
-

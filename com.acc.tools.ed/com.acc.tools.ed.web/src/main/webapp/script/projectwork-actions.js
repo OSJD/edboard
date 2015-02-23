@@ -1,7 +1,7 @@
 $(document).ready(
 		function() {
 			
-		$("#addTaskPanel").dialog({
+		var addTaskDialog=$("#addTaskPanel").dialog({
 			autoOpen : false,
 			height : 780,
 			width : 1100,
@@ -60,17 +60,15 @@ $(document).ready(
 							$("#projectWorkMenu").click();
 
 						},
-						complete:
-							function(data)
-							{
-							$("#addTaskPanel").dialog("close");
+						complete:function(data){
+							addTaskDialog.dialog("close");
 							reset();
-							}
+						}
 					});
 					}
 				},
 				Cancel : function() {
-					$("#addTaskPanel").dialog("close");
+					addTaskDialog.dialog("close");
 					reset();
 				},
 			},
@@ -157,15 +155,15 @@ $(document).ready(
 				$("#taskCommentRow").show();
 			}
 			$("#popupDisplay").val('add');
-			$("#addTaskPanel").data('param', componentId).dialog('open');
-			
+			$("#addTaskPanel").data('param', componentId);
+			addTaskDialog.dialog('open');
 		});
 		
 		
 		$(".componentData").hide();	
 		$(".compData").hide();	
 		$(".taskData").hide();
-		$(".releaseRow").on("click",function(){
+		$(".releaseRow").unbind("click").on("click",function(){
 			var releaseId=$(this).attr("id");
 			$("#release"+releaseId).toggle(function(){
 				if($("#release"+releaseId).is(":visible")){
@@ -180,7 +178,7 @@ $(document).ready(
 				}
 			});
 		});
-		$(".devRow").on("click",function(){
+		$(".devRow").unbind("click").on("click",function(){
 			var devId=($(this).attr("id")).replace(/\s+/g, '');
 			$("#devdev"+devId).toggle(function(){
 				if($("#devdev"+devId).is(":visible")){
@@ -189,7 +187,7 @@ $(document).ready(
 					$("#devtree"+devId).html("[+]");
 			});
 		});
-		$(".componentRow").on("click",function(){
+		$(".componentRow").unbind("click").on("click",function(){
 			var componentId=$(this).attr("id");
 			$("#component"+componentId).toggle(function(){
 				if($("#component"+componentId).is(":visible")){
