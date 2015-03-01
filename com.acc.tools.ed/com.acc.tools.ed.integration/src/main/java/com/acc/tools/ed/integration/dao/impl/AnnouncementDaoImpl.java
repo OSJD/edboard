@@ -220,7 +220,7 @@ public class AnnouncementDaoImpl extends AbstractEdbDao implements AnnouncementD
 		
 	}
 	
-	public boolean isQuizAttempted(int announcementId,String empId){
+	public boolean isQuizAttempted(int announcementId,Integer empId){
 		
 		final String query="SELECT count(*) as ATTEMPT FROM EDB_SURVY_RSLTS WHERE ANCMNT_ID="+announcementId+" AND EMP_ID="+empId;
 		boolean isQuizAttempted=false;
@@ -252,7 +252,7 @@ public class AnnouncementDaoImpl extends AbstractEdbDao implements AnnouncementD
 	    try {
 			final String survyEvlTable = "insert into EDB_SURVY_EVLUTN(EMP_ID,EMP_NM,ANCMNT_ID,QSTNER_ID,EMP_RES) values (?,?,?,?,?)";
 			PreparedStatement preparedStatement = getConnection().prepareStatement(survyEvlTable);
-			preparedStatement.setString(1, user.getEmployeeId());
+			preparedStatement.setInt(1, user.getEmployeeId());
 			preparedStatement.setString(2, user.getEnterpriseId());
 			preparedStatement.setInt(3, question.getAnnouncementId());
 			preparedStatement.setInt(4, question.getQuestionId());
@@ -272,7 +272,7 @@ public class AnnouncementDaoImpl extends AbstractEdbDao implements AnnouncementD
 			
 			final String survyResltTable = "insert into EDB_SURVY_RSLTS(EMP_ID,EMP_NM,ANCMNT_ID,SCORE,TM_TKN) values (?,?,?,?,?)";
 			PreparedStatement preparedStatement = getConnection().prepareStatement(survyResltTable);
-			preparedStatement.setString(1, user.getEmployeeId());
+			preparedStatement.setInt(1, user.getEmployeeId());
 			preparedStatement.setString(2, user.getEnterpriseId());
 			preparedStatement.setInt(3, announcementId);
 			preparedStatement.setInt(4, score);

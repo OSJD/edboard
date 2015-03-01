@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import com.acc.tools.ed.integration.dao.ProjectManagementDao;
 import com.acc.tools.ed.integration.dto.ComponentForm;
-import com.acc.tools.ed.integration.dto.EditProjectForm;
 import com.acc.tools.ed.integration.dto.MasterEmployeeDetails;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
@@ -47,7 +46,7 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 		 for(ReferenceData data :employeeIds){
 			 empIds.append(data.getId()).append(",");
 		 }
-
+		log.debug("Employee Ids :{}",empIds.toString());
 		final String query="select EMP_ID,VACTN_STRT_DT,VACTN_END_DT from EDB_VACTN_CALNDR WHERE STATUS='Approved' AND EMP_ID IN ("+empIds.substring(0, empIds.lastIndexOf(",")).toString()+")";
 		log.debug("getVacationDetailsByEmployeeIds Query:{}",query);
 		try {
@@ -116,8 +115,8 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 			while(rs.next()){
 				projectForm.setProjectId(rs.getInt("PROJ_ID"));
 				projectForm.setProjectName(rs.getString("PROJ_NAME"));
-				projectForm.setStartDate(new DateTime(rs.getDate("PROJ_ST_DT").getTime()));
-				projectForm.setEndDate(new DateTime(rs.getDate("PROJ_ET_DT").getTime()));
+				projectForm.setStartDate(new DateTime(rs.getDate("PROJ_ST_DT").getTime()).toString("MM/dd/yyyy"));
+				projectForm.setEndDate(new DateTime(rs.getDate("PROJ_ET_DT").getTime()).toString("MM/dd/yyyy"));
 				releaseForm.setReleaseName(rs.getString("MLSTN_NAME"));
 				releaseForm.setReleaseArtifacts(rs.getString("MLSTN_ARTIFACTS"));
 				releaseForm.setReleaseDesc(rs.getString("MLSTN_DESC"));
@@ -176,8 +175,8 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 				preparedStatement.setString(2, project.getProjectName());
 				preparedStatement.setString(3, project.getProjectDescription());
 				preparedStatement.setString(4, project.getProjectLead());
-				preparedStatement.setString(5, project.getStartDate().toString("yyyy-MM-dd"));
-				preparedStatement.setString(6, project.getEndDate().toString("yyyy-MM-dd"));
+				preparedStatement.setString(5, project.getStartDate());
+				preparedStatement.setString(6, project.getEndDate());
 				preparedStatement.setString(7, project.getPhases().toString());
 				preparedStatement.setInt(8, project.getExistingProgram());
 				preparedStatement.executeUpdate();
@@ -185,17 +184,7 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 				refData.setLabel(project.getProjectName());
 				refData.setSelected(true);
 				preparedStatement.close();
-				
-				//Set Project to Employee relationship
-				final String projEmpTable="insert into EDB_PROJ_EMP(PROJ_ID,EMP_ID) values (?,?)";
-				PreparedStatement  projEmpStmt = getConnection().prepareStatement(projEmpTable);
-				for(ReferenceData employeeRefData:project.getResources()){
-					projEmpStmt.setInt(1, project.getProjectId());
-					projEmpStmt.setString(2, employeeRefData.getId());
-					projEmpStmt.addBatch();
-				}
-				projEmpStmt.executeBatch();
-				projEmpStmt.close();
+				addProjectToEmp(project);
 				
 			}catch(Exception e)	{
 				log.error("Error inserting employee table :",e);
@@ -204,6 +193,37 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 				return refData;
 			}
 		return refData;
+	}
+	
+	private void addProjectToEmp(ProjectForm project) throws SQLException, IOException{
+		//Set Project to Employee relationship
+		final String projEmpTable="insert into EDB_PROJ_EMP(PROJ_ID,EMP_ID) values (?,?)";
+		PreparedStatement  projEmpStmt = getConnection().prepareStatement(projEmpTable);
+		for(ReferenceData employeeRefData:project.getResources()){
+			projEmpStmt.setInt(1, project.getProjectId());
+			projEmpStmt.setString(2, employeeRefData.getId());
+			projEmpStmt.addBatch();
+		}
+		projEmpStmt.executeBatch();
+		projEmpStmt.close();
+	}
+	
+	private int deleteProjectToEmp(Integer projectId) {
+		
+		int status=0;
+		try {
+			
+			final String prjTable="DELETE FROM EDB_PROJ_EMP WHERE PROJ_ID = ?";
+			PreparedStatement  preparedStatement = getConnection().prepareStatement(prjTable);
+			preparedStatement.setInt(1, projectId);
+			status=preparedStatement.executeUpdate();
+			preparedStatement.close();
+			
+		} catch (Exception e) {
+			log.error("Delete Project error:",e);
+		}
+	
+		return status;
 	}
 	
 	
@@ -292,8 +312,8 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
                             String phases = rs.getString("PROJ_PHSE");
                             projectPlanData.setPhases(Arrays.asList(phases.replace("[", "").replace("]", "").trim().split(",")));
                             
-                            projectPlanData.setStartDate(new DateTime(rs.getTimestamp("PROJ_ST_DT").getTime()));
-                            projectPlanData.setEndDate(new DateTime(rs.getTimestamp("PROJ_ET_DT").getTime()));
+                            projectPlanData.setStartDate(new DateTime(rs.getTimestamp("PROJ_ST_DT").getTime()).toString("MM/dd/yyyy"));
+                            projectPlanData.setEndDate(new DateTime(rs.getTimestamp("PROJ_ET_DT").getTime()).toString("MM/dd/yyyy"));
                             
                             String leadId=rs.getString("PROJ_LEAD");
                             //Get Lead name
@@ -367,8 +387,9 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 		List<ReferenceData> projectResourceList = new ArrayList<ReferenceData>();
 		try {
 		final String projResourceQuery="SELECT E.EMP_ID,E.EMP_RESOURCE_NAME FROM EDB_MSTR_EMP_DTLS E, EDB_PROJ_EMP PE 	WHERE E.EMP_ID=PE.EMP_ID AND PE.PROJ_ID="+projectId;
-		 PreparedStatement  resourcePreStmt = getConnection().prepareStatement(projResourceQuery);
-		 ResultSet resRs = resourcePreStmt.executeQuery();
+		log.debug("Project Resolurces Query:{}",projResourceQuery);
+		PreparedStatement  resourcePreStmt = getConnection().prepareStatement(projResourceQuery);
+		ResultSet resRs = resourcePreStmt.executeQuery();
 		                          
 		 while(resRs.next()){ 
 			 ReferenceData refData=new ReferenceData();
@@ -384,46 +405,47 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 	
 
 	
-	public List<ReferenceData> editProject(String projectId,String editPrjDesc,String editPrjStartDate,String editPrjEndDate){
+	public List<ReferenceData> editProject(ProjectForm project){
 		
-		List<ReferenceData> response = new ArrayList<ReferenceData>();
-
+		final List<ReferenceData> data=new ArrayList<ReferenceData>();
+		int status=0;
 		try{
 				//Project table
-				final String employeeTable="UPDATE EDB_PROJECT SET PROJ_DESC = ?, PROJ_ST_DT =?, PROJ_ET_DT=? WHERE PROJ_ID =?";
-				PreparedStatement  preparedStatement = getConnection().prepareStatement(employeeTable);
-				preparedStatement.setString(1, editPrjDesc);
-				preparedStatement.setString(2, editPrjStartDate);
-				preparedStatement.setString(3, editPrjEndDate);
-				preparedStatement.setString(4, projectId);
-				preparedStatement.executeUpdate();
+				final String employeeTable="UPDATE EDB_PROJECT SET PROJ_NAME=?,PROJ_DESC = ?, PROJ_ST_DT =?, PROJ_ET_DT=?,PROJ_LEAD=?,PROJ_PHSE=? WHERE PROJ_ID =?";
+				final PreparedStatement  preparedStatement = getConnection().prepareStatement(employeeTable);
+				preparedStatement.setString(1, project.getProjectName());
+				preparedStatement.setString(2, project.getProjectDescription());
+				preparedStatement.setString(3, project.getStartDate());
+				preparedStatement.setString(4, project.getEndDate());
+				preparedStatement.setString(5, project.getProjectLead());
+				preparedStatement.setString(6, project.getPhases().toString());
+				preparedStatement.setInt(7, project.getProjectId());
+				status=preparedStatement.executeUpdate();
+				log.debug("Edit Project table status:{}",status);
 				preparedStatement.close();
-				
-				final String projectTable="SELECT * FROM EDB_PROJECT WHERE PROJ_ID ="+projectId+"";
-				Statement selectStatement = getConnection().createStatement();
-				
-				ResultSet rs=selectStatement.executeQuery(projectTable);
-				while(rs.next()){
-					ReferenceData refDataResp=new ReferenceData();
-					//refDataResp.setEditPrjDescResp(rs.getString("PROJ_DESC"));
-					
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-					Date stDate =  sdf.parse(rs.getString("PROJ_ST_DT"));
-					Date etDate =  sdf.parse(rs.getString("PROJ_ET_DT"));
-					sdf.applyPattern("MM/dd/yyyy");
-					//refDataResp.setEditPrjStartDateResp(sdf.format(stDate));
-					//refDataResp.setEditPrjEndDateResp(sdf.format(etDate));
-					response.add(refDataResp);
+				if(status!=0){
+					List<ReferenceData> taggedEmp=getProjectResourceDetails(project.getProjectId());
+					int developersCount=taggedEmp.size();
+					taggedEmp.retainAll(project.getSelectedResources());
+					if(taggedEmp.size()==0 && project.getSelectedResources().size()==developersCount){
+						log.debug("No Change in developers for this project");
+					} else {
+						final int dStatus=deleteProjectToEmp(project.getProjectId());
+						if(dStatus!=0){
+							addProjectToEmp(project);
+						}
+					}
+
 				}
 				
 			}catch(Exception e)	{
-				e.printStackTrace();
+				log.debug("Error updating project table:",e);
 			}
-		return response;
+		return data;
 		
 	}
 	
-public List<ReferenceData> editRelease(Integer releaseId,String editRelArti,String editRelStartDate,String editRelEndDate){
+	public List<ReferenceData> editRelease(Integer releaseId,String editRelArti,String editRelStartDate,String editRelEndDate){
 		
 		List<ReferenceData> response = new ArrayList<ReferenceData>();
 
@@ -462,6 +484,44 @@ public List<ReferenceData> editRelease(Integer releaseId,String editRelArti,Stri
 		
 	}
 
+	public boolean isProjectExist(String projectName){
+		boolean isExist=false;
+		try{
+			String projectTable="SELECT PROJ_ID FROM EDB_PROJECT WHERE PROJ_NAME = '"+projectName+"'";
+			Statement selectStatement = getConnection().createStatement();
+			ResultSet rs=selectStatement.executeQuery(projectTable);
+			
+			while(rs.next()){
+				if(rs.getInt("PROJ_ID")>0){
+					isExist=true;
+				}
+			}
+			
+		}catch(Exception e){
+			
+		}
+		return isExist;
+	}
+
+
+	public int releaseCountByProjectId(String projectId){
+		
+		int count=0;
+		try{
+			String releaseTable="SELECT count(*) AS REL_CNT FROM EDB_MILESTONE WHERE PROJ_ID = "+projectId;
+			Statement selectStatement = getConnection().createStatement();
+			ResultSet rs=selectStatement.executeQuery(releaseTable);
+			
+			while(rs.next()){
+				count=rs.getInt("REL_CNT");
+			}
+			log.debug("Release count for project id:{} is -> {}",projectId,count);
+		}catch(Exception e){
+			
+		}
+		return count;
+	}
+
 	public String deleteProject(String projectId) {
 		
 		try {
@@ -470,17 +530,10 @@ public List<ReferenceData> editRelease(Integer releaseId,String editRelArti,Stri
 			PreparedStatement  preparedStatement = getConnection().prepareStatement(prjTable);
 			preparedStatement.setString(1, projectId);
 			preparedStatement.executeUpdate();
-			
-			final String relTable="DELETE FROM EDB_MILESTONE WHERE PROJ_ID = ?";
-			PreparedStatement  relStatement = getConnection().prepareStatement(relTable);
-			relStatement.setString(1, projectId);
-			relStatement.executeUpdate();
-			
 			preparedStatement.close();
-			relStatement.close();
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("Delete Project error:",e);
 		}
 	
 		return "";
@@ -602,7 +655,7 @@ public List<ReferenceData> editRelease(Integer releaseId,String editRelArti,Stri
 	}
 	
 	public ComponentForm addComponent(Integer projectId,Integer phaseId,String componentName,String functionalDesc,
-			String compStartDate,String compEndDate,String compResource, Integer releaseId, String workDesc) {
+			String compStartDate,String compEndDate,Integer compResource, Integer releaseId, String workDesc) {
 		
 		ComponentForm compDet=null;
 		try{
@@ -623,15 +676,15 @@ public List<ReferenceData> editRelease(Integer releaseId,String editRelArti,Stri
 						
 						compDet = getComponentDetails(phaseId, componentName,releaseId);
 						
-						if(compDet!=null && compDet.getComponentId()!=0 && !isComponentAssignedToEmployee(compDet.getComponentId(), Integer.parseInt(compResource))){
-							compDet.setResourceId(Integer.parseInt(compResource));
+						if(compDet!=null && compDet.getComponentId()!=0 && !isComponentAssignedToEmployee(compDet.getComponentId(), compResource)){
+							compDet.setResourceId(compResource);
 							insertCompEmp(compDet.getComponentId(), phaseId, componentName,compResource,releaseId,workDesc);
 						} else {
 							throw new RuntimeException("Component '"+componentName+"' with "+phaseId+" phase is already assigned to resource "+compResource);
 						}
 					} else {
 						if(compDet.getComponentId()!=0){
-							compDet.setResourceId(Integer.parseInt(compResource));
+							compDet.setResourceId(compResource);
 							insertCompEmp(compDet.getComponentId(), phaseId, componentName,compResource,releaseId,workDesc);
 						}
 					}
@@ -701,7 +754,7 @@ public List<ReferenceData> editRelease(Integer releaseId,String editRelArti,Stri
 		return componentAssigned;
 	}
 
-	private void insertCompEmp(Integer componentId, Integer phaseId, String componentName, String compResource, Integer releaseId, String workDesc) {
+	private void insertCompEmp(Integer componentId, Integer phaseId, String componentName, Integer compResource, Integer releaseId, String workDesc) {
 		
 		try{
 
@@ -709,7 +762,7 @@ public List<ReferenceData> editRelease(Integer releaseId,String editRelArti,Stri
 			PreparedStatement  preparedStatement1 = getConnection().prepareStatement(insertCompEmp);
 			preparedStatement1.setInt(1, componentId);
 			preparedStatement1.setInt(2, phaseId);
-			preparedStatement1.setInt(3, Integer.parseInt(compResource));
+			preparedStatement1.setInt(3, compResource);
 			preparedStatement1.setString(4, workDesc);
 			preparedStatement1.executeUpdate();
 			preparedStatement1.close();
@@ -817,57 +870,46 @@ public List<ReferenceData> editRelease(Integer releaseId,String editRelArti,Stri
 		
 	}
 	
-	public List<EditProjectForm> editProject(int projectId) {
-		List<EditProjectForm> editProjList = new ArrayList<EditProjectForm>();
-		List<String> resources = new ArrayList<String>();
+	public ProjectForm viewProject(int projectId) {
+
+		final ProjectForm viewProjectData = new ProjectForm();
 		try {
-			String resourceQuery  ="SELECT "+
-					"PRGM_NAME, "+
-					"PROJ_NAME, "+
-					"(SELECT EMP_RESOURCE_NAME  FROM EDB_MSTR_EMP_DTLS WHERE EMP_ID = ( SELECT  PROJ_LEAD FROM EDB_PROJECT  WHERE PROJ_ID  = "+projectId+" )) AS PROJ_LEAD, "+ 
-					"PROJ_ST_DT, "+
-					"PROJ_ET_DT, "+
-					"PROJ_DESC ,"+
-					"PROJ_PHSE "+
-					"FROM EDB_PROJECT PROJ, EDB_PROGRAM PROG WHERE "+  
-					"PROJ.PRGM_ID = PROG.PRGM_ID AND "+
-					"PROJ.PROJ_ID  = "+projectId+" ";
-					
-			final String subQuery = "SELECT EMP_RESOURCE_NAME FROM EDB_MSTR_EMP_DTLS  D ,EDB_PROJ_EMP O WHERE D.EMP_ID IN (SELECT E.EMP_ID FROM "+
-					"EDB_PROJ_EMP E, EDB_PROJECT P WHERE P.PROJ_ID = E.PROJ_ID AND P.PROJ_ID = "+projectId+") AND D.EMP_ID = O.EMP_ID ";
-			System.out.println(subQuery);
+			String projectQuery="SELECT PR.PRGM_NAME AS PRGM_NM,P.*,E.EMP_RESOURCE_NAME AS EMP_NM,E.EMP_ID AS EMPLOYEE_ID FROM ((EDB_MSTR_EMP_DTLS  E LEFT JOIN EDB_PROJ_EMP PE ON E.EMP_ID=PE.EMP_ID) "
+					+ " LEFT JOIN EDB_PROJECT P ON P.PROJ_ID=PE.PROJ_ID) LEFT JOIN EDB_PROGRAM PR ON PR.PRGM_ID=P.PRGM_ID WHERE P.PROJ_ID = "+projectId;
+			
+			log.debug("Project Query ->{}",projectQuery);
+
 			Statement selectStatement = getConnection().createStatement();
-			ResultSet rs = selectStatement.executeQuery(resourceQuery);
-			PreparedStatement  resourceStmt = getConnection().prepareStatement(subQuery);
-            ResultSet resourceRs = resourceStmt.executeQuery();
-            while(resourceRs.next()){ 
-            	resources.add(resourceRs.getString("EMP_RESOURCE_NAME"));
-            }
-            resourceStmt.close();
+			ResultSet rs = selectStatement.executeQuery(projectQuery);
+
 			while (rs.next()) {
-				EditProjectForm editProjectData = new EditProjectForm();
-//				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-//				DateTime stDate =  new DateTime(sdf.parse(rs.getString("PROJ_ST_DT")));
-//				DateTime etDate =  new DateTime(sdf.parse(rs.getString("PROJ_ET_DT")));
-				editProjectData.setNewProgramNameEdit(rs.getString("PRGM_NAME"));
-				editProjectData.setProjectNameEdit(rs.getString("PROJ_NAME"));
-				editProjectData.setProjectLeadEdit(rs.getString("PROJ_LEAD"));
-				editProjectData.setStartDateEdit(rs.getString("PROJ_ST_DT"));
-				editProjectData.setEndDateEdit(rs.getString("PROJ_ET_DT"));
-				editProjectData.setProjectDescriptionEdit(rs.getString("PROJ_DESC"));
+				viewProjectData.setNewProgramName(rs.getString("PRGM_NM"));
+				viewProjectData.setProjectId(rs.getInt("PROJ_ID"));
+				viewProjectData.setProjectName(rs.getString("PROJ_NAME"));
+				viewProjectData.setProjectLead(rs.getString("PROJ_LEAD"));
+				viewProjectData.setStartDate(new DateTime(rs.getDate("PROJ_ST_DT").getTime()).toString("MM/dd/yyyy"));
+				viewProjectData.setEndDate(new DateTime(rs.getDate("PROJ_ET_DT").getTime()).toString("MM/dd/yyyy"));
+				viewProjectData.setProjectDescription(rs.getString("PROJ_DESC"));
 				List<String> phaseList = new ArrayList<String>();
 				String arr[] =  rs.getString("PROJ_PHSE").split("[[,]]+");
 				for(int i=0;i<arr.length;i++){
 					phaseList.add(arr[i]);
 				}
-				editProjectData.setPhasesEdit(phaseList);
-				editProjectData.setSelectedResourcesEdit(resources);
-				editProjList.add(editProjectData);
+				viewProjectData.setPhases(phaseList);
+				List<ReferenceData> resources=viewProjectData.getResources();
+				final ReferenceData data=new ReferenceData(); 
+				if(resources==null){
+					resources=new ArrayList<ReferenceData>();
+				}
+				data.setLabel(rs.getString("EMP_NM"));
+				data.setId(rs.getString("EMPLOYEE_ID"));
+				resources.add(data);
+				viewProjectData.setResources(resources);
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
 		}	
-		return editProjList;
+		return viewProjectData;
 	}
 
 	public int checkProjName(String projectName, int progId) {

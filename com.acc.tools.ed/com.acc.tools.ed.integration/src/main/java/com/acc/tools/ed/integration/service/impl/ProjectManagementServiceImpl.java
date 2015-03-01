@@ -16,7 +16,7 @@ import com.acc.tools.ed.integration.dao.LoginDao;
 import com.acc.tools.ed.integration.dao.ProjectManagementDao;
 import com.acc.tools.ed.integration.dto.ComponentForm;
 import com.acc.tools.ed.integration.dto.EDBUser;
-import com.acc.tools.ed.integration.dto.EditProjectForm;
+import com.acc.tools.ed.integration.dto.JsonResponse;
 import com.acc.tools.ed.integration.dto.MasterEmployeeDetails;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
@@ -41,9 +41,16 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 	public List<ReferenceData> getAllProjectIds(){
 		return projectManagementDao.getAllProjectIds();
 	}
+	
 	public List<ReferenceData> getProjectReleaseIds(String projectId){
 		return projectManagementDao.getProjectReleaseIds(projectId);
 	}
+	
+	public boolean isProjectExist(String projectName){
+		return projectManagementDao.isProjectExist(projectName);
+	}
+	
+	
     /**
      * This method splits resource hours week wise before saving the release plan week wise.
      */
@@ -215,8 +222,15 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 	
 	public ReferenceData addProject(ProjectForm project) {
 		try {
-			
+			final boolean isProjectExist=projectManagementDao.isProjectExist(project.getProjectName());
+			if(!isProjectExist){
 			 return projectManagementDao.addProject(project);
+			} else {
+				ReferenceData errorData=new ReferenceData();
+				errorData.setId("-2");
+				errorData.setLabel("Project with name "+project.getProjectName()+"already exist!");
+				return errorData;				
+			}
 		}catch (Exception e)
 		{
 			ReferenceData errorData=new ReferenceData();
@@ -249,9 +263,18 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 		}
 	}
 	
-	public String deleteProject(String projectId) {
-		projectManagementDao.deleteProject(projectId);
-		return "";
+	public JsonResponse deleteProject(String projectId) {
+		final JsonResponse response=new JsonResponse();
+		final int count=projectManagementDao.releaseCountByProjectId(projectId);
+		if(count==0){
+			projectManagementDao.deleteProject(projectId);
+			response.setErrorCode(0);
+			response.setMessage("Project deleted successfully!");
+		} else {
+			response.setErrorCode(1);
+			response.setMessage("Delete all release before deleting project!");
+		}
+		return response;
 	}
 	
 	public Integer deleteRelease(Integer releaseId) {
@@ -277,16 +300,14 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 		
 	}
 	
-	public List<ReferenceData> editProject(String projectId, String editPrjDesc,
-			String editPrjStartDate, String editPrjEndDate) {
+	public List<ReferenceData> editProject(ProjectForm project) {
 		try {
-			
-			 return projectManagementDao.editProject(projectId, editPrjDesc, editPrjStartDate, editPrjEndDate);
+			 return projectManagementDao.editProject(project);
 		}catch (Exception e)
 		{
-			e.printStackTrace();
-			return null;
+			LOG.error("Error updating Project table",e);
 		}
+		return null;
 	}
 	
 	public List<ReferenceData> editRelease(Integer releaseId, String editRelArti,
@@ -335,7 +356,7 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 	}
 	
 	public ComponentForm addComponent(Integer projectId,Integer phaseId,String componentName,String functionalDesc,
-			String compStartDate,String compEndDate,String compResource, Integer relaseId, String workDesc) {
+			String compStartDate,String compEndDate,Integer compResource, Integer relaseId, String workDesc) {
 
 		try {
 			ComponentForm component= projectManagementDao.addComponent(projectId,phaseId,componentName, functionalDesc, compStartDate, compEndDate, compResource,relaseId,workDesc);
@@ -366,9 +387,9 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 		return projectManagementDao.isComponentAssignedToEmployee(componentId, empId);
 	}
 	
-	public List<EditProjectForm> editProject(int projectId) {
+	public ProjectForm viewProject(int projectId) {
 		try {
-			 return projectManagementDao.editProject(projectId);
+			 return projectManagementDao.viewProject(projectId);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

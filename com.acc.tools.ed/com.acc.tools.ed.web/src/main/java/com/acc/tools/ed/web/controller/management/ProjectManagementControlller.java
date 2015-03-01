@@ -2,6 +2,7 @@ package com.acc.tools.ed.web.controller.management;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.acc.tools.ed.integration.dto.ComponentForm;
-import com.acc.tools.ed.integration.dto.EditProjectForm;
+import com.acc.tools.ed.integration.dto.JsonResponse;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.ReleaseForm;
@@ -42,7 +43,7 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 	public String projectPlan(Model model) {
 		model.addAttribute("addProjectForm", new ProjectForm());
 		model.addAttribute("addReleaseForm", new ReleaseForm());		
-		model.addAttribute("editProjectForm", new EditProjectForm());
+		model.addAttribute("editProjectForm", new ProjectForm());
 		
 		return "/projectmanagement/projectPlan";
 	}
@@ -52,7 +53,7 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 			@ModelAttribute("addProjectForm") ProjectForm addProjectForm,
 			@ModelAttribute("projectList") List<ReferenceData> projectList,
 			Model model) {
-		model.addAttribute("editProjectForm", new EditProjectForm());
+		model.addAttribute("editProjectForm", new ProjectForm());
 		LOG.debug("Project Name:{} | Id:{}", addProjectForm.getProjectName(),addProjectForm.getProjectId());
 		LOG.debug("Existing Program Id:{}", addProjectForm.getExistingProgram());
 		LOG.debug("New Program Name:{} Id:{}", addProjectForm.getNewProgramName(),addProjectForm.getNewProgramId());
@@ -74,20 +75,19 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		return initialProjSetupDeteails;
 	}
 	
-	@RequestMapping(value = "/editProjectSetupDetails.do")
-	public @ResponseBody Map<String,Object> editProjectSetupDetails(@RequestParam("projectId") int projectId, Model model){
+	@RequestMapping(value = "/viewProjectDetails.do")
+	public @ResponseBody Map<String,Object> viewProjectDetails(@RequestParam("projectId") int projectId, Model model){
 		
-		Map<String,Object> initialProjSetupDeteails=new HashMap<String,Object>(); 
+		LOG.debug("View Project details of project Id:{}",projectId);
+		final Map<String,Object> initialProjSetupDeteails=new HashMap<String,Object>(); 
 		initialProjSetupDeteails.put("programList",getProgramList());
 		initialProjSetupDeteails.put("resourceList",getResourceList());
 		initialProjSetupDeteails.put("projectLeadList",getProjectLeadList());
-		List<EditProjectForm> editProjectList = getProjectManagementService().editProject(projectId);
+		ProjectForm projectDetails = getProjectManagementService().viewProject(projectId);
 		
-		for(EditProjectForm EditProjectForm1 : editProjectList){
-			System.out.println(" "+  EditProjectForm1.getSelectedResourcesEdit());
-		}
+		LOG.debug("Project details :{}",projectDetails.toString());
 		
-		initialProjSetupDeteails.put("editProjectList1", editProjectList);
+		initialProjSetupDeteails.put("projectDetails", projectDetails);
 		return initialProjSetupDeteails;
 	}
 	
@@ -117,8 +117,8 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		ProjectForm projectForm = getProjectManagementService().getReleaseDetails(releaseId);
 		Map<String,Object> jsonMap=new HashMap<String, Object>();
 		jsonMap.put("projectName", projectForm.getProjectName());
-		jsonMap.put("startDate", projectForm.getStartDate().toString("MM/dd/yyyy"));
-		jsonMap.put("endDate", projectForm.getEndDate().toString("MM/dd/yyyy"));
+		jsonMap.put("startDate", projectForm.getStartDate());
+		jsonMap.put("endDate", projectForm.getEndDate());
 		jsonMap.put("release", projectForm.getReleases().get(0));
 		return jsonMap;
 	}
@@ -259,39 +259,30 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 	}
 	
 	@RequestMapping(value = "/editProject.do")
-	public @ResponseBody List<ReferenceData> editProject(
-			@RequestParam("editPrjDesc") String editPrjDesc,
-			@RequestParam("editPrjStartDate") String editPrjStartDate,
-			@RequestParam("editPrjEndDate") String editPrjEndDate,
-			@RequestParam("projectId") String projectId,
+	public String editProject(
+			@ModelAttribute("editProjectForm") ProjectForm editProjectForm,
 			Model model) {
-		LOG.debug("Project Name:[{}] EDIT PROJECT NAME Name:[{}]",editPrjDesc+","+editPrjStartDate+","+editPrjEndDate+","+projectId);
-		
-		return getProjectManagementService().editProject(projectId, editPrjDesc, editPrjStartDate, editPrjEndDate);
+		LOG.debug("Project Id:[{}] Desc:[{}] Start date:[{}] End date:[{}] Developers:{}",new Object[]{editProjectForm.getProjectId(), editProjectForm.getProjectDescription(), editProjectForm.getStartDate(), editProjectForm.getEndDate(),editProjectForm.getSelectedResources()});
+		getProjectManagementService().editProject(editProjectForm);
+		model.addAttribute("addProjectForm", new ProjectForm());
+		model.addAttribute("addReleaseForm", new ReleaseForm());		
+		model.addAttribute("editProjectForm", new ProjectForm());
+		model.addAttribute("projectList", getProjectList());
+		return "/projectmanagement/index";
 	}
 	
-/*	@RequestMapping(value = "/editRelease.do")
-	public @ResponseBody List<ReferenceData> editRelease(
-			@RequestParam("editRelArti") String editRelArti,
-			@RequestParam("editRelStartDate") String editRelStartDate,
-			@RequestParam("releaseEdDate") String releaseEndDate,
-			@RequestParam("releaseId") String releaseId,
-			Model model) {
-		LOG.debug("Release Name:[{--}] EDIT RELEASE NAME Name:[{}]",editRelArti+","+editRelStartDate+","+releaseId);
-		
-		return getProjectManagementService().editRelease(releaseId, editRelArti, editRelStartDate, releaseEndDate);
-	}	*/
 	
 	@RequestMapping(value = "/deleteProject.do")
-	public String deleteProject(
+	public @ResponseBody JsonResponse deleteProject(
 			@RequestParam("projectId") String projectId,
 			Model model) {
-		LOG.debug("Project Name:[{--}] DELETE PROJECT NAME Name:[{}]", projectId);
+
+		final JsonResponse response =getProjectManagementService().deleteProject(projectId);
 		
-		getProjectManagementService().deleteProject(projectId);
-		model.addAttribute("addProjectForm", new ProjectForm());
-		model.addAttribute("addReleaseForm", new ReleaseForm());
-		return "/projectmanagement/projectPlan";
+		LOG.debug("Project id to delete :[{}] | Status:[{}]", projectId,response.getMessage());
+
+
+		return response;
 	}
 	
 	
@@ -337,7 +328,7 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 			@RequestParam("functionalDesc") String functionalDesc,
 			@RequestParam("compStartDate") String compStartDate,
 			@RequestParam("compEndDate") String compEndDate,
-			@RequestParam("compResource") String compResource,
+			@RequestParam("compResource") Integer compResource,
 			@RequestParam("releaseId") Integer releaseId,
 			@RequestParam("phaseId") Integer phaseId,
 			@RequestParam("workDesc") String workDesc,

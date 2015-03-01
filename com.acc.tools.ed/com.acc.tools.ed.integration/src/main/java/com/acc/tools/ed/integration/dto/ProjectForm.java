@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.DateTime;
-
 public class ProjectForm implements Serializable{
 
 	/**
@@ -18,12 +16,12 @@ public class ProjectForm implements Serializable{
 	private int projectId;
 	private String projectName;
 	
-	private DateTime endDate;
-	private DateTime startDate;
+	private String endDate;
+	private String startDate;
 	private List<String> phases;
 	private String projectDescription;
 	private List<String> stringResources;
-	private List<String> selectedResources;
+	private List<String> selectedResources=new ArrayList<String>();
 	private List<ReferenceData> resources;
 	private List<ReleaseForm> releases;
 	private String projectLead;
@@ -43,18 +41,7 @@ public class ProjectForm implements Serializable{
 	public void setProjectId(int projectId) {
 		this.projectId = projectId;
 	}
-	public DateTime getEndDate() {
-		return endDate;
-	}
-	public void setEndDate(DateTime endDate) {
-		this.endDate = endDate;
-	}
-	public DateTime getStartDate() {
-		return startDate;
-	}
-	public void setStartDate(DateTime startDate) {
-		this.startDate = startDate;
-	}
+	
 	public String getProjectDescription() {
 		return projectDescription;
 	}
@@ -99,7 +86,6 @@ public class ProjectForm implements Serializable{
 				refData.setId(id);
 				resources.add(refData);
 			}
-			
 		}
 		return resources;
 	}
@@ -130,4 +116,27 @@ public class ProjectForm implements Serializable{
 	public void setSelectedResources(List<String> selectedResources) {
 		this.selectedResources = selectedResources;
 	}
+	public String toString() {
+		return 	getNewProgramName()+"|"+
+		getProjectName()+"|"+
+		getProjectLead()+"|"+
+		getStartDate()+"|"+
+		getEndDate()+"|"+
+		getProjectDescription()+"|"+
+		getPhases()+"|"+
+		getSelectedResources();
+	}
+	public String getEndDate() {
+		return endDate;
+	}
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+	public String getStartDate() {
+		return startDate;
+	}
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+	
 }

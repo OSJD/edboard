@@ -22,24 +22,25 @@ public class LoginDaoImpl extends AbstractEdbDao implements LoginDao{
 		
 			final Connection connection=getConnection();
 			Statement stmt=connection.createStatement();
-			final String loginQuery="SELECT EMP_ID,EMP_EMPLOYEE_ID,EMP_ROLE,EMP_LEVEL FROM EDB_MSTR_EMP_DTLS WHERE EMP_ENTERPRISE_ID='"+name+"'";
+			final String loginQuery="SELECT EMP_ID,EMP_EMPLOYEE_ID,EMP_ROLE,EMP_LEVEL,EMP_SUP_EMP_ID FROM EDB_MSTR_EMP_DTLS WHERE EMP_ENTERPRISE_ID='"+name+"'";
 			log.debug("loginQuery");
 			final ResultSet resultSet = stmt.executeQuery(loginQuery);
 			EDBUser user=null;
 			while (resultSet.next()) {
 				user=new EDBUser();
 				user.setEnterpriseId(name);
-				user.setEmployeeId(resultSet.getString("EMP_ID"));
-				user.setSapId(resultSet.getString("EMP_EMPLOYEE_ID"));
+				user.setEmployeeId(resultSet.getInt("EMP_ID"));
+				user.setSapId(resultSet.getInt("EMP_EMPLOYEE_ID"));
 				user.setRole(resultSet.getString("EMP_ROLE"));
 				user.setLevel(resultSet.getString("EMP_LEVEL"));
+				user.setSupervisorId(resultSet.getInt("EMP_SUP_EMP_ID"));
 			}
 
 		
 		return user;
 	}
 	
-	public EDBUser getEmployeeById(String employeeId) throws IOException, SQLException{
+	public EDBUser getEmployeeById(Integer employeeId) throws IOException, SQLException{
 		
 		final Connection connection=getConnection();
 		Statement stmt=connection.createStatement();
@@ -51,7 +52,7 @@ public class LoginDaoImpl extends AbstractEdbDao implements LoginDao{
 			user=new EDBUser();
 			user.setEnterpriseId(resultSet.getString("EMP_RESOURCE_NAME"));
 			user.setEmployeeId(employeeId);
-			user.setSapId(resultSet.getString("EMP_EMPLOYEE_ID"));
+			user.setSapId(resultSet.getInt("EMP_EMPLOYEE_ID"));
 			user.setRole(resultSet.getString("EMP_ROLE"));
 			user.setLevel(resultSet.getString("EMP_LEVEL"));
 		}

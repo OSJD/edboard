@@ -22,7 +22,7 @@ public class ProjectWorkServiceImpl implements ProjectWorkService {
 		return projectWorkDao.addVacation(vacationForm);
 	}
 	
-	public List<ProjectForm> getMyTasks(String userId){
+	public List<ProjectForm> getMyTasks(Integer userId){
 		return projectWorkDao.getMyTasks(userId);
 	}
 
@@ -30,7 +30,7 @@ public class ProjectWorkServiceImpl implements ProjectWorkService {
 		
 		 projectWorkDao.addTasks(taskForm);
 	}
-	public List<ProjectForm> getMyTeamTasks(String supervisorId){
+	public List<ProjectForm> getMyTeamTasks(Integer supervisorId){
 		return projectWorkDao.getMyTeamTasks(supervisorId);
 	}
 	
@@ -57,6 +57,10 @@ public class ProjectWorkServiceImpl implements ProjectWorkService {
 	
 	public TaskForm getTaskByTaskId(Integer taskId){
 		return projectWorkDao.getTaskByTaskId(taskId);
+	}
+	
+	public List<VacationForm> getVacationDetails(Integer employeeId){
+		return projectWorkDao.getVacationDetails(employeeId);
 	}
 
 }

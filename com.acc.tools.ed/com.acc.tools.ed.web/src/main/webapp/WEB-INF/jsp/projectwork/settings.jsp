@@ -2,11 +2,9 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
-
-<script src="<%=request.getContextPath()%>/script/libs/jquery.sceditor.bbcode.min.js"></script>
-<script src="<%=request.getContextPath()%>/script/libs/jquery-ui-timepicker.js"></script>
+<%@ include file="/WEB-INF/jsp/includes/document-header.jsp"%>
 <script src="<%=request.getContextPath()%>/script/libs/edb-common.js"></script>
-<link rel="stylesheet" href="<%=request.getContextPath()%>/css/jquery-ui-timepicker.css"/>
+
 <script>
 	$(document).ready(function() {
 		var initEditor = function() {

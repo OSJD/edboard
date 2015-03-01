@@ -54,7 +54,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 		return status;
 	}
 	
-	public List<ProjectForm> getMyTasks(String userId) {
+	public List<ProjectForm> getMyTasks(Integer userId) {
 		
 		final List<ProjectForm> projectTasks=new ArrayList<ProjectForm>();
 		final Map<Integer,ProjectForm> projMap = new HashMap<Integer, ProjectForm>();
@@ -153,7 +153,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 	}
 
 
-public List<ProjectForm> getMyTeamTasks(String supervisorId) {
+public List<ProjectForm> getMyTeamTasks(Integer supervisorId) {
 	
 	final List<ProjectForm> projectTasks=new ArrayList<ProjectForm>();
 	final Map<Integer,ProjectForm> projMap = new HashMap<Integer, ProjectForm>();
@@ -255,7 +255,7 @@ public List<ProjectForm> getMyTeamTasks(String supervisorId) {
 	
 	return projectTasks;
 }
-	public List<ReferenceData> getMyTeamIds(String supervisorId) {
+	public List<ReferenceData> getMyTeamIds(Integer supervisorId) {
 		
 		final List<ReferenceData> userIdList = new ArrayList<ReferenceData>();
 		try {
@@ -264,7 +264,7 @@ public List<ProjectForm> getMyTeamTasks(String supervisorId) {
 			String userIdQuery = " SELECT DISTINCT A.EMP_ID,A.EMP_RESOURCE_NAME FROM (EDB_MSTR_EMP_DTLS AS A" + 
 								 " LEFT JOIN EDB_PROJ_EMP AS B ON A.EMP_ID = B.EMP_ID)" +
 					             " LEFT JOIN EDB_PROJECT AS C ON B.PROJ_ID=C.PROJ_ID" +
-					             " WHERE C.PROJ_LEAD='"+supervisorId+"'";
+					             " WHERE C.PROJ_LEAD="+supervisorId;
 			
 			log.debug("My Team resources Query:{}",userIdQuery);
 			Statement selectStatement = getConnection().createStatement();
@@ -479,5 +479,9 @@ public List<ProjectForm> getMyTeamTasks(String supervisorId) {
 			log.error("Error in getTasksByComponentId:",e);
 		}
 		return taskform;
+	}
+	
+	public List<VacationForm> getVacationDetails(Integer employeeId){
+		return null;
 	}
 }

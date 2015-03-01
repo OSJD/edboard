@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.acc.tools.ed.integration.dto.EDBUser;
-import com.acc.tools.ed.integration.dto.EditProjectForm;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.TaskForm;
 import com.acc.tools.ed.integration.service.ILoginService;
@@ -53,7 +52,7 @@ public class LoginController extends AbstractEdbBaseController{
 			model.addAttribute("edbUser", new EDBUser());
 			model.addAttribute("addProjectForm",new ProjectForm());
 			model.addAttribute("addTaskForm",new TaskForm());
-			model.addAttribute("editProjectForm", new EditProjectForm());
+			model.addAttribute("editProjectForm", new ProjectForm());
 		return "/login/index";
 		} else {
 			return "redirect:/login.do";
@@ -82,19 +81,24 @@ public class LoginController extends AbstractEdbBaseController{
 				model.addAttribute("edbUser", user);
 				model.addAttribute("addProjectForm",new ProjectForm());
 				model.addAttribute("addTaskForm",new TaskForm());
-				model.addAttribute("editProjectForm", new EditProjectForm());
+				model.addAttribute("editProjectForm", new ProjectForm());
 				List<ProjectForm> projData=projectWorkService.getMyTasks(user.getEmployeeId());
 				model.addAttribute("projData",projData);
 				LOG.debug("Login - Adding user to session - User Id:[{}] Role:[{}]",user.getEmployeeId(),user.getRole());
 				return "/projectmanagement/index";
 			}else {
 				model.addAttribute("status", "User Not Registered!Please reach out to your supervisor!");
-				return "redirect:/login/loginError";
+				return "redirect:/loginError";
 			}
 		} else {
 			model.addAttribute("status", "Please use EDB application with Windows Admin access!");
-			return "redirect:/login/loginError";
+			return "redirect:/loginError";
 		}
+	}
+	
+	@RequestMapping(value="/loginError.do")
+	public String loginError(Model model){
+		return "/login/index";
 	}
 	
 	@SuppressWarnings("restriction")

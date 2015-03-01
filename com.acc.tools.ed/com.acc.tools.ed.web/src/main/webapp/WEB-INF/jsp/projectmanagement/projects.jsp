@@ -6,7 +6,7 @@
 			<fieldset>
 				<legend>Add Project</legend>
 				<div>
-					<table class="ebdtable" style="width: 10px;">
+					<table class="ebdtable" style="width: 100%;">
 						<tr id="programRow">
 							<th style="text-align: right; height: 25px;">Program</th>
 							<td id="programTD" colspan="3"><form:select path="existingProgram"   multiple="false">
@@ -56,19 +56,19 @@
 						<tr style="height: 93px;">
 							<th style="text-align: right;">Resources</th>
 							
-							<td>
+							<td style="width: 40%;">
 								 <span>Available Resources</span> 
-								<form:select path="stringResources" multiple="true">
+								<form:select path="stringResources" multiple="true" cssStyle="width:240px;">
 								</form:select>
 							</td>
-							<td>
+							<td style="width: 10%;">
 								
 								 <a href="JavaScript:void(0);" id="btn-add" class="button">Add >></a>  <br />
 								 <a href="JavaScript:void(0);" id="btn-remove" class="button"> << Remove</a>
 							</td>
 							<td>
 								<span>Selected Resources</span> 
-								<form:select path="selectedResources" multiple="true" cssStyle="width : 195px;" id="selectedResources1">
+								<form:select path="selectedResources" multiple="true" cssStyle="width:240px;" id="selectedResources1">
 								</form:select>
 							</td>
 						</tr>

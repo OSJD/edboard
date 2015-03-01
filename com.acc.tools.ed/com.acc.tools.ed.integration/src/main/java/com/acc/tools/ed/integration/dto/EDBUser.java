@@ -15,16 +15,17 @@ public class EDBUser implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private String employeeId;
-	private String sapId;
+	private Integer employeeId;
+	private Integer sapId;
 	private String enterpriseId;
 	private String role;
 	private String level;
+	private Integer supervisorId;
 	
-	public String getEmployeeId() {
+	public Integer getEmployeeId() {
 		return employeeId;
 	}
-	public void setEmployeeId(String employeeId) {
+	public void setEmployeeId(Integer employeeId) {
 		this.employeeId = employeeId;
 	}
 	public String getRole() {
@@ -45,11 +46,17 @@ public class EDBUser implements Serializable {
 	public void setLevel(String level) {
 		this.level = level;
 	}
-	public String getSapId() {
+	public Integer getSapId() {
 		return sapId;
 	}
-	public void setSapId(String sapId) {
+	public void setSapId(Integer sapId) {
 		this.sapId = sapId;
+	}
+	public Integer getSupervisorId() {
+		return supervisorId;
+	}
+	public void setSupervisorId(Integer supervisorId) {
+		this.supervisorId = supervisorId;
 	}
 
 

@@ -21,7 +21,7 @@
 			<td><a href="#" class="button" id="addProject" style="width: 100px;">Add Project</a></td>
 			<td><a href="#" class="button" id="editProject" style="width: 100px;">Edit Project</a></td>
 			<td><a href="#" class="button" id="deleteProject" style="width: 100px;">Delete Project</a></td>
-			<td style="background-image: none;background-color: white;border-width: 1px;border-style: solid;border-color: #999999;"><div style="width: 5px;"></div></td>
+			<td style="background-image: none;background-color: white;border-width: 1px;border-style: solid;border-color: #999999;"><div style="width: 285px;"></div></td>
 			<th>Release Name</th>
 			<td>
 				<select id="releases" class="textbox">
@@ -41,11 +41,14 @@
 		</tr>
 	</table>
 	<div id="viewProjectAndReleaseDetails"><!-- Project and Release View -->
-		<div class="boxmsg border-boxmsg" style="width: 580px;color: red;">
+		<div class="boxmsg border-boxmsg" style="width: 700px;color: red;">
 		    Please select <u>Project</u> and <u>Release</u> from the drop down above to view the project plan. <br>
 		    If no projects and release are configured then please add new Project using <u>"Add Project"</u> button
 		    and new Release using <u>"Add Release"</u> button.
 		    <b class="border-notch notch"></b>
 		    <b class="notch"></b>
 		</div>
+	</div>
+	<div id="deleteProject-confirm" title="Empty the recycle bin?">
+  		<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span><div id="projectNameId"></div></p>
 	</div>

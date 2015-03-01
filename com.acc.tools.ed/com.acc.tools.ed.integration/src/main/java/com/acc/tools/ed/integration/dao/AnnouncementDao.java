@@ -18,6 +18,6 @@ public abstract interface AnnouncementDao{
 	public List<ReferenceData> getAllAnnouncementSubjects();
 	public void saveSurveyResponse(SurveyQuestionnaire question,EDBUser user);
 	public void saveSurveyResults(int announcementId ,int score,long timeTaken, EDBUser user);
-	public boolean isQuizAttempted(int announcementId,String empId);
+	public boolean isQuizAttempted(int announcementId,Integer empId);
 	public List<SurveyResults> getSurveyResults(String announcementId);
 }

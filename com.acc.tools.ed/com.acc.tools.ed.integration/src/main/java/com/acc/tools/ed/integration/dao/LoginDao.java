@@ -8,6 +8,6 @@ import com.acc.tools.ed.integration.dto.EDBUser;
 public interface LoginDao {
 	
 	public EDBUser searchuser(String name)throws IOException, SQLException;
-	public EDBUser getEmployeeById(String employeeId) throws IOException, SQLException;
+	public EDBUser getEmployeeById(Integer employeeId) throws IOException, SQLException;
 
 }

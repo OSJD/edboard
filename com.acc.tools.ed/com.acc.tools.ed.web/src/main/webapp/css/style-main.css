@@ -204,6 +204,15 @@ table.ebdtable th {
 	border-color: #999999;
 }
 
+table.ebdtable thead{
+	background: #b5cfd2 url('../resources/cell-blue.jpg');
+	background-repeat: repeat-x;
+	border-width: 1px;
+	padding: 5px;
+	border-style: solid;
+	border-color: #999999;
+}
+
 table.ebdtable td {
 	background: #dcddc0 url('../resources/cell-grey.jpg');
 	background-repeat: repeat-x;

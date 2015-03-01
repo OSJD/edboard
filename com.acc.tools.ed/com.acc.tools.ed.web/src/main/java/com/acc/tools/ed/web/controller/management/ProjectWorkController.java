@@ -131,22 +131,5 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 		return "/projectwork/newTask";
 	}
 	
-	@RequestMapping(value = "/addVacation.do")
-	public @ResponseBody String addVacation(
-			@ModelAttribute("vacationForm") VacationForm vacationForm,
-			@ModelAttribute("edbUser") EDBUser edbUser,
-			Model model){
-		LOG.debug("Vacation Type:{}",vacationForm.getVacationType());
-		vacationForm.setEmployeeId(Integer.parseInt(edbUser.getEmployeeId()));
-		vacationForm.setStatus("Submitted");
-		if(vacationForm.getVacationType()!="-4"){
-			projectWorkService.addVacation(vacationForm);			
-		} else {
-			System.out.println("-------------------------------------------->holiday");
-		}
-
-		return "success";
-	}
-	
 
 }

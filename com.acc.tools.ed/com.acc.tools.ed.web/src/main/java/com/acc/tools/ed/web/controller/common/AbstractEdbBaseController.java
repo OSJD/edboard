@@ -9,7 +9,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import com.acc.tools.ed.integration.dto.EditProjectForm;
+import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.service.ProjectManagementService;
 import com.acc.tools.ed.integration.service.ProjectWorkService;
@@ -172,9 +172,9 @@ public abstract class AbstractEdbBaseController {
 		return this.projectWorkService;
 	}
 	
-	public List<EditProjectForm> editProject(int ProjectId)
+	public ProjectForm editProject(int ProjectId)
 	{
-		return projectManagementService.editProject(ProjectId);
+		return projectManagementService.viewProject(ProjectId);
 	}
 	
 	public int checkProjName(String projectName ,int progId)

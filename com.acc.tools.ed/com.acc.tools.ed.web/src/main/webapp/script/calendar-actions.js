@@ -38,7 +38,10 @@
 								beforeSend : function() {
 								},
 								success : function(response) {
-									alert('hello :'+response);
+									if(response=="success"){
+										alert('Request submitted successfully!');
+									}
+									
 								},
 								error : function(data) {},
 								complete:function(data){
@@ -47,14 +50,5 @@
 							});
 						});
 						
-						$('#calendar').fullCalendar({
-							header: {
-								left: 'prev,next today',
-								center: 'title',
-								right: 'month,basicWeek,basicDay'
-							},
-							defaultDate: '2015-02-12'
-							
-						});
-						
+
 					});
