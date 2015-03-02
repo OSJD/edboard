@@ -9,6 +9,8 @@ $(document)
 
 	$(".subtabs").unbind("click").on("click",function(){
 		
+		
+		
 		var tabId=$(this).attr('id');
 		var mainContainerId="#"+tabId.substring(0, 2)+"MainContainer";
 		$("#"+tabId).parent().css({

@@ -578,13 +578,13 @@ $(document).ready(function(){
 						});
 
 						$("#addRelease").button().unbind("click").on("click", function() {
-							var prjName=$("#projects option:selected").text();
-							var projectId = $("#projects").val();
+							var prjName=$("#mainBody #projects option:selected").text();
+							var projectId = $("#mainBody #projects").val();
 							if(projectId=="0"){
 								alert("Please select Project!");
 							} else {
-								$("#projName").html(prjName);
-								$("#projectId").val(projectId);
+								$("#mainBody #projName").html(prjName);
+								$("#mainBody #projectId").val(projectId);
 								$.ajax({
 									type : "POST",
 									url : "./getPrjDate.do",
@@ -597,16 +597,15 @@ $(document).ready(function(){
 											
 											if(projDateKey=='projectStartDate'){
 												projStartDate=new Date(projDateValue);
-												$("#projStartDate").html(projDateValue);
+												$("#mainBody #projStartDate").html(projDateValue);
 											}
 											if(projDateKey=='projectEndDate'){
 												projEndDate=new Date(projDateValue);
-												$("#projEndDate").html(projDateValue);
+												$("#mainBody #projEndDate").html(projDateValue);
 											}
 											
 										});
-										
-										$( "#releaseStartDate" ).datepicker({
+										$( "#mainBody #releaseStartDate" ).datepicker({
 											showOn: 'button',
 											buttonText: 'Show Date',
 											buttonImageOnly: true,
@@ -617,7 +616,7 @@ $(document).ready(function(){
 											maxDate:projEndDate
 										 }); 
 										
-										$( "#releaseEndDate" ).datepicker({
+										$( "#mainBody #releaseEndDate" ).datepicker({
 											showOn: 'button',
 											buttonText: 'Show Date',
 											buttonImageOnly: true,

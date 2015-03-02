@@ -2,7 +2,7 @@
 
 <%@ include file="/WEB-INF/jsp/includes/document-header.jsp"%>
 <script src="<%=request.getContextPath()%>/script/calendar-actions.js"></script>
-			<div style="float: left;width: 20%;margin-left: 5px;">
+			<div style="float: left;width: 30%;margin-left: 5px;">
 				<form id="vacationForm">
 					<table class="ebdtable" style="width: 100%; margin: 0px;">
 						<tr>
@@ -55,7 +55,7 @@
 					</table>
 				</form>
 			</div>
-			<div style="float: left;width: 70%;margin-left: 5px;height: 733px;overflow: auto;">
+			<div style="float: left;width: 65%;margin-left: 5px;margin-top: 0px;">
 				<table class="ebdtable" style="width: 100%;">
 					<tr>
 						<th colspan="8">Vacation Request Status</th>

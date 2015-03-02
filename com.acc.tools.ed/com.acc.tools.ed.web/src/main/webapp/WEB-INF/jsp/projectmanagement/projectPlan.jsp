@@ -21,7 +21,7 @@
 			<td><a href="#" class="button" id="addProject" style="width: 100px;">Add Project</a></td>
 			<td><a href="#" class="button" id="editProject" style="width: 100px;">Edit Project</a></td>
 			<td><a href="#" class="button" id="deleteProject" style="width: 100px;">Delete Project</a></td>
-			<td style="background-image: none;background-color: white;border-width: 1px;border-style: solid;border-color: #999999;"><div style="width: 285px;"></div></td>
+			<td style="background-image: none;background-color: white;border-width: 1px;border-style: solid;border-color: #999999;"><div style="width: 15px;"></div></td>
 			<th>Release Name</th>
 			<td>
 				<select id="releases" class="textbox">
@@ -35,9 +35,6 @@
 			<td><a href="#" class="button" id="editRelease" style="width: 100px;">Edit Release</a></td>
 			<td><a href="#" class="button" id="deleteRelease" style="width: 100px;">Delete Release</a></td>
 			<td><a href="#" class="button" id="viewProjectPlan" style="width: 100px;">View Project Plan</a></td>
-			<td><a href="#" class="button ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id="addMPP" style="width: 100px;">
-					<span class="ui-button-text">Upload MPP</span>
-				 </a></td>
 		</tr>
 	</table>
 	<div id="viewProjectAndReleaseDetails"><!-- Project and Release View -->

@@ -1,3 +1,4 @@
+<script src="<%=request.getContextPath()%>/script/projectmanagement-actions.js"></script>
 	<div id="addrelease-popup" title="Add New Release">
 		<p class="validateTips">All form fields are required.</p>
 		<form id="addReleaseForm">
