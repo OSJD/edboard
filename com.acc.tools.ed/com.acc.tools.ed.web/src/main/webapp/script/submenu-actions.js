@@ -7,7 +7,7 @@ $(document)
 	 * This function will be used to load sub tab pages
 	 */	
 
-	$(".subtabs").unbind("click").on("click",function(){
+	$("#mainBody").unbind("click").on("click",".subtabs",function(){
 		
 		
 		

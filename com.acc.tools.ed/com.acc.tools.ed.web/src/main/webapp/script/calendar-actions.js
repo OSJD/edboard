@@ -2,6 +2,26 @@
 			.ready(
 					function() {
 						
+						var vacationRequestPopup=$("#vacationRequestPopup").dialog({
+							autoOpen : false,
+							height : 360,
+							width : 430,
+							modal : true,
+							buttons : {
+								"Submit Request" : function() {
+									
+								},
+								Cancel : function() {
+									vacationRequestPopup.dialog("close");
+								},
+							},
+
+						});
+						
+						$("#vacationRequestBtn").on("click",function(){
+							vacationRequestPopup.dialog("open");
+						});
+						
 						$( "#vacationStartDate" ).datepicker({
 							showOn: 'button',
 							buttonText: 'Show Date',
