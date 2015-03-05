@@ -13,7 +13,7 @@
 	<jsp:include page="/WEB-INF/jsp/projectwork/myTasks.jsp" flush="true"></jsp:include>
 </div>
 <div id="vacationRequestPopup" title="Vacation Request Form">
-				<form id="vacationForm">
+				<form id="vacationRequestForm">
 					<table class="ebdtable" style="width: 100%; margin: 0px;">
 						<tr>
 							<th colspan="2" style="text-align: center;">Vacation Request</th>
@@ -69,9 +69,6 @@
 						<tr>
 							<td colspan="2"><textarea name="comments" rows="5" cols="60"
 									class="text"></textarea></td>
-						</tr>
-						<tr>
-							<th colspan="2"><a id="vacationRequestSubmit" href="#">Submit</a></th>
 						</tr>
 
 					</table>

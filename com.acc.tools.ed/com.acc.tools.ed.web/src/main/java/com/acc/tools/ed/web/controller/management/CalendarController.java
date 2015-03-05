@@ -1,5 +1,7 @@
 package com.acc.tools.ed.web.controller.management;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +27,17 @@ public class CalendarController {
 	
 	  @RequestMapping({"/calendar.do"})
 	  public String calendar(Model model,
+			
 			  @ModelAttribute("edbUser") EDBUser edbUser){
 		  
-		  projectWorkService.getVacationDetails(edbUser.getEmployeeId());
+		 List<VacationForm> calendar= projectWorkService.getVacationDetails(edbUser.getEmployeeId());
+		 for(VacationForm vctn: calendar)
+		 {
+			 LOG.debug("Resource Name:[{}]",vctn.getResourceName());
+		 }
 		  
 		model.addAttribute("edbUser", edbUser);
+		model.addAttribute("calendar", calendar);
 		
 	    return "/projectwork/calendar";
 	  }
@@ -41,10 +49,28 @@ public class CalendarController {
 				Model model){
 			LOG.debug("Vacation Type:{}",vacationForm.getVacationType());
 			vacationForm.setEmployeeId(edbUser.getEmployeeId());
+			vacationForm.setResourceName(edbUser.getEnterpriseId());
 			vacationForm.setStatus("Submitted");
 			vacationForm.setSupervisorId(edbUser.getSupervisorId());
 			if(vacationForm.getVacationType()!="-4"){
 				projectWorkService.addVacation(vacationForm);			
+			} else {
+				System.out.println("-------------------------------------------->holiday");
+			}
+
+			return "success";
+		}
+	  
+	  @RequestMapping(value = "/approveVacation.do")
+		public @ResponseBody String approveVacation(
+				@ModelAttribute("vacationForm") VacationForm vacationForm,
+				@ModelAttribute("edbUser") EDBUser edbUser,
+				Model model){
+			LOG.debug("Vacation Type:{} | Status:{}",vacationForm.getVacationType(),vacationForm.getStatus());
+			vacationForm.setEmployeeId(edbUser.getEmployeeId());
+			vacationForm.setSupervisorId(edbUser.getSupervisorId());
+			if(vacationForm.getVacationType()!="-4"){
+				projectWorkService.approveVacation(vacationForm);			
 			} else {
 				System.out.println("-------------------------------------------->holiday");
 			}

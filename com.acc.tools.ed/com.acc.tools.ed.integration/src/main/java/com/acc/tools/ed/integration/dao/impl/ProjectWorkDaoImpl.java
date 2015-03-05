@@ -34,17 +34,39 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 		int status =0;
 		try {
 			
-			String addTaskQuery = "insert into EDB_VACTN_CALNDR(EMP_ID,VACTN_TYP,VACTN_STRT_DT,VACTN_END_DT,COMNTS,STATUS,SUP_ID,SUP_COMNTS) values (?,?,?,?,?,?,?,?)";
+			
+			String addTaskQuery = "insert into EDB_VACTN_CALNDR(EMP_ID,EMP_NM,VACTN_TYP,VACTN_STRT_DT,VACTN_END_DT,COMNTS,STATUS,SUP_ID,SUP_COMNTS) values (?,?,?,?,?,?,?,?,?)";
 			PreparedStatement pstm = getConnection().prepareStatement(addTaskQuery);
 			pstm.setInt(1, vacationForm.getEmployeeId());
-			pstm.setString(2, vacationForm.getVacationType());
-			pstm.setString(3, vacationForm.getStartDate());
-			pstm.setString(4, vacationForm.getEndDate());
-			pstm.setString(5, vacationForm.getComments());
-			pstm.setString(6, vacationForm.getStatus());
-			pstm.setInt(7, vacationForm.getSupervisorId());
-			pstm.setString(8, vacationForm.getApproverComments());
+			pstm.setString(2, vacationForm.getResourceName());
+			pstm.setString(3, vacationForm.getVacationType());
+			pstm.setString(4, vacationForm.getStartDate());
+			pstm.setString(5, vacationForm.getEndDate());
+			pstm.setString(6, vacationForm.getComments());
+			pstm.setString(7, vacationForm.getStatus());
+			pstm.setInt(8, vacationForm.getSupervisorId());
+			pstm.setString(9, vacationForm.getApproverComments());
 			pstm.executeUpdate();
+			pstm.close();
+
+			
+		} catch (Exception e) {
+			log.error("Error Inserting into Vacation Table:{}",e);
+		}
+		return status;
+	}
+	
+public int approveVacation(VacationForm vacationForm){
+		
+		int status =0;
+		try {
+			
+			final String addTaskQuery = "Update EDB_VACTN_CALNDR SET SUP_COMNTS =? , STATUS =? WHERE VACTN_ID=?";
+			PreparedStatement pstm = getConnection().prepareStatement(addTaskQuery);
+			pstm.setString(1, vacationForm.getApproverComments());
+			pstm.setString(2, "Approved");
+			pstm.setInt(3, vacationForm.getVacationId());
+			status = pstm.executeUpdate();
 			pstm.close();
 
 			
@@ -481,7 +503,49 @@ public List<ProjectForm> getMyTeamTasks(Integer supervisorId) {
 		return taskform;
 	}
 	
+	@SuppressWarnings("resource")
 	public List<VacationForm> getVacationDetails(Integer employeeId){
-		return null;
+		
+		{
+		
+			final List<VacationForm> vactionDetails=new ArrayList<VacationForm>();
+			try {
+
+				final String query="SELECT * FROM EDB_VACTN_CALNDR WHERE SUP_ID="+employeeId;
+				log.debug("getTaskById Query :{}",query);
+				Statement selectStatement = getConnection().createStatement();
+				ResultSet rs = selectStatement.executeQuery(query);
+				
+				while (rs.next()) {
+					VacationForm details = new VacationForm();
+					details.setVacationId(rs.getInt("VACTN_ID"));
+					details.setApproverComments(rs.getString("SUP_COMNTS"));
+					details.setComments(rs.getString("COMNTS"));
+					details.setStartDate(rs.getString("VACTN_STRT_DT"));
+					details.setEndDate(rs.getString("VACTN_END_DT"));
+					details.setStatus(rs.getString("STATUS"));
+					details.setVacationType(rs.getString("VACTN_TYP"));
+					String empId= rs.getString("EMP_ID");
+				
+					System.out.println("the emps reporting are::" + empId);
+					final String resourceQuery = "SELECT EMP_RESOURCE_NAME FROM EDB_MSTR_EMP_DTLS WHERE EMP_ID = "+empId;
+					log.debug("get resource name Query :{}",resourceQuery);
+					 selectStatement = getConnection().createStatement();
+					 rs = selectStatement.executeQuery(resourceQuery);
+								
+					while(rs.next())
+					{
+						details.setResourceName(rs.getString("EMP_RESOURCE_NAME"));
+					}
+					vactionDetails.add(details);
+				}
+					
+				return vactionDetails;
+			} catch (Exception e) {
+				log.error("Error in getTasksByComponentId:",e);
+			}
+			return vactionDetails;
+		}
+		
 	}
 }

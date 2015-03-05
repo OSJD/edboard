@@ -22,6 +22,10 @@ public class ProjectWorkServiceImpl implements ProjectWorkService {
 		return projectWorkDao.addVacation(vacationForm);
 	}
 	
+	public int approveVacation(VacationForm vacationForm){
+		return projectWorkDao.approveVacation(vacationForm);
+	}
+	
 	public List<ProjectForm> getMyTasks(Integer userId){
 		return projectWorkDao.getMyTasks(userId);
 	}

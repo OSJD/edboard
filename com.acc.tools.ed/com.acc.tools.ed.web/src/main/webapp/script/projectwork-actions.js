@@ -7,33 +7,33 @@ $(document).ready(
 			height : 420,
 			width : 430,
 			modal : true,
+			buttons:{
+				"Submit":function(){
+					$.ajax({
+						type : "POST",
+						url : "./addVacation.do",
+						data :$("#vacationRequestForm").serialize(),
+						beforeSend : function() {
+						},
+						success : function(response) {
+							if(response=="success"){
+								alert('Request submitted successfully!');
+							}
+							vacationRequestPopup.dialog("close");
+						},
+						error : function(data) {},
+						complete:function(data){
+							
+						}
+					});
+				}
+			}
 		});
 		
 		$("#vacationRequestBtn").on("click",function(){
 			vacationRequestPopup.dialog("open");
 		});
 		
-		
-		$("#vacationRequestSubmit").button().on("click",function(){
-			$.ajax({
-				type : "POST",
-				url : "./addVacation.do",
-				data :$("#vacationForm").serialize(),
-				beforeSend : function() {
-				},
-				success : function(response) {
-					if(response=="success"){
-						alert('Request submitted successfully!');
-					}
-					vacationRequestPopup.dialog("close");
-				},
-				error : function(data) {},
-				complete:function(data){
-					
-				}
-			});
-		});
-			
 		var addTaskDialog=$("#addTaskPanel").dialog({
 			autoOpen : false,
 			height : 780,

@@ -1,4 +1,3 @@
-	<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 	<div id="addproject-popup" title="Add New Project">
 		<p class="validateTips">All form fields are required.</p>
 		<form:form commandName="addProjectForm" action="addProject.do">

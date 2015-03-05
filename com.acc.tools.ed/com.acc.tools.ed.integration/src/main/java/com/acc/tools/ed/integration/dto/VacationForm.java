@@ -9,7 +9,9 @@ public class VacationForm implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	private int vacationId;
 	private int employeeId;
+	private String resourceName;
 	private String vacationType;
 	private String location;
 	private String startDate;
@@ -71,6 +73,18 @@ public class VacationForm implements Serializable{
 	}
 	public void setSupervisorId(int supervisorId) {
 		this.supervisorId = supervisorId;
+	}
+	public String getResourceName() {
+		return resourceName;
+	}
+	public void setResourceName(String resourceName) {
+		this.resourceName = resourceName;
+	}
+	public int getVacationId() {
+		return vacationId;
+	}
+	public void setVacationId(int vacationId) {
+		this.vacationId = vacationId;
 	}
 
 }

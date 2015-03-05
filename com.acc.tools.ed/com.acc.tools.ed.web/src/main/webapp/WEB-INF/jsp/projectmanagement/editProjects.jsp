@@ -1,5 +1,3 @@
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@ include file="/WEB-INF/jsp/includes/document-header.jsp"%>
 <div id="editproject-popup" title="Edit Project">
 
 		<p class="validateTips">All form fields are required.</p>

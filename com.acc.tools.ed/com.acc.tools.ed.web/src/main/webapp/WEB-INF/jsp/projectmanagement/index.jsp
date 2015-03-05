@@ -8,8 +8,14 @@
 <html>
 <head>
 <%@ include file="/WEB-INF/jsp/includes/document-header.jsp"%>
+<script src="<%=request.getContextPath()%>/script/projectmanagement-actions.js"></script>
 </head>
 <body id="mainBody">
+	<%@ include file="/WEB-INF/jsp/projectmanagement/projects.jsp" %>
+	<%@ include file="/WEB-INF/jsp/projectmanagement/editProjects.jsp" %>
+	<%@ include file="/WEB-INF/jsp/projectmanagement/release.jsp" %>
+	<%@ include file="/WEB-INF/jsp/projectmanagement/editRelease.jsp" %>
+	
 	<table style="width: 100%;height: 100%;">
 		<!-- header -->
 		<%@ include file="/WEB-INF/jsp/includes/header.jsp"%>

@@ -20,5 +20,6 @@ public interface ProjectWorkService {
 	public TaskForm getTaskByTaskId(Integer taskId);
 	public int addVacation(VacationForm vacationForm);
 	public List<VacationForm> getVacationDetails(Integer employeeId);
+	public int approveVacation(VacationForm vacationForm);
 }
 

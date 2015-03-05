@@ -30,5 +30,25 @@
 								
 						});
 						
+						$("#vacationApproveSubmit").button().on("click",function(){
+							$.ajax({
+								type : "POST",
+								url : "./approveVacation.do",
+								data :$("#vacationStatusForm").serialize(),
+								beforeSend : function() {
+								},
+								success : function(response) {
+									if(response=="success"){
+										alert('Request status updated successfully!');
+									}
+									vacationRequestPopup.dialog("close");
+								},
+								error : function(data) {},
+								complete:function(data){
+									
+								}
+							});
+						});
+						
 
-					});
+	});
