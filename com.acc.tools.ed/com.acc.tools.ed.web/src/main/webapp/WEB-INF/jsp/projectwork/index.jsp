@@ -52,6 +52,18 @@
 								class="textbox" /></td>
 						</tr>
 						<tr>
+							<th>Backup</th>
+							<td>
+								<select class="text" style="width: 130px;"
+									name="backupResource" id="backupResource">
+										<option value="0">--select--</option>
+										<option value="-1">Dimple</option>
+										<option value="-2">Vidhya</option>
+										<option value="-3">Vinoth</option>
+								</select>
+							</td>
+						</tr>						
+						<tr>
 							<th colspan="2">Comments</th>
 						</tr>
 						<tr>
