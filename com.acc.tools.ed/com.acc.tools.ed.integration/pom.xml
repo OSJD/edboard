@@ -13,6 +13,10 @@
 			<groupId>com.acc.tools.ed</groupId>
 			<artifactId>com.acc.tools.ed.database</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.acc.tools.ed</groupId>
+			<artifactId>com.acc.tools.ed.report</artifactId>
+		</dependency>
 		<!-- spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>

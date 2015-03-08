@@ -12,6 +12,7 @@
 				<th>Resource Name</th>
 				<th>Request Date</th>
 				<th>Vacation Type</th>
+				<th>Back Up</th>
 				<th>Start Date</th>
 				<th>End Date</th>
 				<th>Comments</th>
@@ -22,21 +23,30 @@
 			
 			<tr>
 				<c:forEach var="vacationDetails" items="${calendar}">
+				
+				<tr>
 					<td>E</td>
 					<td>D</td>
 					<td>${vacationDetails.resourceName}<input type="hidden" name="vacationId" value="${vacationDetails.vacationId}"> </td>
 					<td>${vacationDetails.startDate}</td>
 					<td>${vacationDetails.vacationType}</td>
+					<td>backup Name</td>
 					<td>${vacationDetails.startDate}</td>
 					<td>${vacationDetails.endDate}</td>
 					<td>${vacationDetails.comments}</td>
-					<td>${vacationDetails.status}</td>
+					<td><select id="approvalType" class="textbox" path="status" name = "status">
+					<option value="0">Approval Status</option>
+					<option value="Approved">Approved</option>
+					<option value="Rejected">Rejected</option>
+					<option value="onHold">On Hold</option>
+				</select></td>
+					
 					<td>
 						<textarea value="${vacationDetails.approverComments}" name = "approverComments" rows="3" cols="50" id="approverComments"></textarea>
 					</td>
 					<td>
 						<a id="vacationApproveSubmit" href="#">Update</a>
-					</td>
+					</td></tr>
 				</c:forEach>
 			</tr>
 		</table>

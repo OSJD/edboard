@@ -25,7 +25,7 @@ public class CalendarController {
 	@Autowired
 	private ProjectWorkService projectWorkService;
 	
-	  @RequestMapping({"/calendar.do"})
+	 @RequestMapping({"/calendar.do"})
 	  public String calendar(Model model,
 			
 			  @ModelAttribute("edbUser") EDBUser edbUser){
@@ -33,7 +33,7 @@ public class CalendarController {
 		 List<VacationForm> calendar= projectWorkService.getVacationDetails(edbUser.getEmployeeId());
 		 for(VacationForm vctn: calendar)
 		 {
-			 LOG.debug("Resource Name:[{}]",vctn.getResourceName());
+			 LOG.debug("Resource Name:[{}]",vctn.getVacationType());
 		 }
 		  
 		model.addAttribute("edbUser", edbUser);
@@ -49,7 +49,6 @@ public class CalendarController {
 				Model model){
 			LOG.debug("Vacation Type:{}",vacationForm.getVacationType());
 			vacationForm.setEmployeeId(edbUser.getEmployeeId());
-			vacationForm.setResourceName(edbUser.getEnterpriseId());
 			vacationForm.setStatus("Submitted");
 			vacationForm.setSupervisorId(edbUser.getSupervisorId());
 			if(vacationForm.getVacationType()!="-4"){
@@ -66,9 +65,12 @@ public class CalendarController {
 				@ModelAttribute("vacationForm") VacationForm vacationForm,
 				@ModelAttribute("edbUser") EDBUser edbUser,
 				Model model){
-			LOG.debug("Vacation Type:{} | Status:{}",vacationForm.getVacationType(),vacationForm.getStatus());
+			LOG.debug("Vacation Type:{}",vacationForm.getVacationId());
+			LOG.debug("Vacation Status:{}",vacationForm.getStatus());
 			vacationForm.setEmployeeId(edbUser.getEmployeeId());
+			
 			vacationForm.setSupervisorId(edbUser.getSupervisorId());
+			;
 			if(vacationForm.getVacationType()!="-4"){
 				projectWorkService.approveVacation(vacationForm);			
 			} else {

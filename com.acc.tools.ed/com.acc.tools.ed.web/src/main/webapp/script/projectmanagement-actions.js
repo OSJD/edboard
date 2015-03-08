@@ -9,7 +9,6 @@ $(document).ready(function(){
 	
 							/*END -> Page refresh F5 disabled*/
 							
-							
 							$("#projectName").blur(function(){
 					    	var progId=$("#existingProgram option:selected").val();
 							var projectName = $("#projectName").val();
@@ -295,13 +294,13 @@ $(document).ready(function(){
 										dateFormat: 'mm/dd/yy',
 										constrainInput: true
 									 });
+									
+
 									$( "#endDateEdit" ).datepicker({
 										showOn: 'button',
 										buttonText: 'Show Date',
 										buttonImageOnly: true,
 										buttonImage: 'resources/cal.gif',
-										dateFormat: 'mm/dd/yy',
-										constrainInput: true
 									 });
 									editProjectDialog.dialog("open");
 								},
@@ -605,7 +604,7 @@ $(document).ready(function(){
 											}
 											
 										});
-										$( "#mainBody #releaseStartDate" ).datepicker({
+										$( "#releaseStartDate" ).datepicker({
 											showOn: 'button',
 											buttonText: 'Show Date',
 											buttonImageOnly: true,
@@ -616,7 +615,7 @@ $(document).ready(function(){
 											maxDate:projEndDate
 										 }); 
 										
-										$( "#mainBody #releaseEndDate" ).datepicker({
+										$( "#releaseEndDate" ).datepicker({
 											showOn: 'button',
 											buttonText: 'Show Date',
 											buttonImageOnly: true,

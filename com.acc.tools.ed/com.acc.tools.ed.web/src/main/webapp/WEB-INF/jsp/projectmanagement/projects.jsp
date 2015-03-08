@@ -37,8 +37,9 @@
 							<td style="width: 200px;"><form:input type="date" path="startDate"
 								id="startDate" class="textbox" /></td>
 							<th style="text-align: right;">End Date</th>
-							<td><form:input type="date" path="endDate" id="endDate"
-								class="textbox" /></td>
+							<td>
+								<form:input type="date" path="endDate" id="endDate" class="textbox" />
+							</td>
 						</tr>
 						<tr>
 							<th style="text-align: right;">Phase</th>

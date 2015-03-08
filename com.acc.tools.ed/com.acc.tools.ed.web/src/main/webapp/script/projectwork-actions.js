@@ -2,6 +2,26 @@ $(document).ready(
 		function() {
 			
 		/*Calendar Actions*/
+		$("#vacationEndDate").edbdatepicker({
+			//trigger : "#buttonn1"
+			showOn: 'button',
+			buttonText:'Show Date',
+			buttonImageOnly: true,
+			buttonImage: 'resources/cal.gif',
+			dateFormat: 'mm/dd/yy',
+			constranInput: true 
+		});
+
+		
+		$( "#vacationStartDate" ).datepicker({ 
+			showOn: 'button',
+			buttonText:'Show Date',
+			buttonImageOnly: true,
+			buttonImage: 'resources/cal.gif',
+			dateFormat: 'mm/dd/yy',
+			constranInput: true 
+		});
+		
 		var vacationRequestPopup=$("#vacationRequestPopup").dialog({
 			autoOpen : false,
 			height : 420,

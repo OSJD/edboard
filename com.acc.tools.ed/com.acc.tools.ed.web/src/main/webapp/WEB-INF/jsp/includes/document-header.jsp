@@ -20,4 +20,6 @@
 <script src="<%=request.getContextPath()%>/script/libs/jquery.dataTables.js"></script>
 <script src="<%=request.getContextPath()%>/script/libs/jquery.sceditor.bbcode.min.js"></script>
 <script src="<%=request.getContextPath()%>/script/libs/jquery-ui-timepicker.js"></script>
+<script src="<%=request.getContextPath()%>/script/libs/edb-datepicker.js"></script>
+
 

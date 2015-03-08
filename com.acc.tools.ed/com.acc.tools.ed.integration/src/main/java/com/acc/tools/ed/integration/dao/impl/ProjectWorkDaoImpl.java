@@ -61,10 +61,11 @@ public int approveVacation(VacationForm vacationForm){
 		int status =0;
 		try {
 			
-			final String addTaskQuery = "Update EDB_VACTN_CALNDR SET SUP_COMNTS =? , STATUS =? WHERE VACTN_ID=?";
+			final String addTaskQuery = "Update EDB_VACTN_CALNDR SET SUP_COMNTS =? , STATUS =? WHERE ID=?";
 			PreparedStatement pstm = getConnection().prepareStatement(addTaskQuery);
 			pstm.setString(1, vacationForm.getApproverComments());
-			pstm.setString(2, "Approved");
+			log.debug("Status being set:{}",vacationForm.getStatus());
+			pstm.setString(2, vacationForm.getStatus());
 			pstm.setInt(3, vacationForm.getVacationId());
 			status = pstm.executeUpdate();
 			pstm.close();
@@ -511,13 +512,17 @@ public List<ProjectForm> getMyTeamTasks(Integer supervisorId) {
 			final List<VacationForm> vactionDetails=new ArrayList<VacationForm>();
 			try {
 
+				
+				
 				final String query="SELECT * FROM EDB_VACTN_CALNDR WHERE SUP_ID="+employeeId;
 				log.debug("getTaskById Query :{}",query);
 				Statement selectStatement = getConnection().createStatement();
 				ResultSet rs = selectStatement.executeQuery(query);
 				
+				
 				while (rs.next()) {
 					VacationForm details = new VacationForm();
+					
 					details.setVacationId(rs.getInt("VACTN_ID"));
 					details.setApproverComments(rs.getString("SUP_COMNTS"));
 					details.setComments(rs.getString("COMNTS"));
@@ -526,20 +531,29 @@ public List<ProjectForm> getMyTeamTasks(Integer supervisorId) {
 					details.setStatus(rs.getString("STATUS"));
 					details.setVacationType(rs.getString("VACTN_TYP"));
 					String empId= rs.getString("EMP_ID");
-				
+
 					System.out.println("the emps reporting are::" + empId);
 					final String resourceQuery = "SELECT EMP_RESOURCE_NAME FROM EDB_MSTR_EMP_DTLS WHERE EMP_ID = "+empId;
 					log.debug("get resource name Query :{}",resourceQuery);
-					 selectStatement = getConnection().createStatement();
-					 rs = selectStatement.executeQuery(resourceQuery);
+					selectStatement = getConnection().createStatement();
+					ResultSet rsEmpname = selectStatement.executeQuery(query);
+					rsEmpname = selectStatement.executeQuery(resourceQuery);
 								
-					while(rs.next())
+					while(rsEmpname.next())
 					{
-						details.setResourceName(rs.getString("EMP_RESOURCE_NAME"));
+						details.setResourceName(rsEmpname.getString("EMP_RESOURCE_NAME"));
 					}
 					vactionDetails.add(details);
+				
 				}
-					
+				String testquery = "SELECT COUNT(*) as COUNT FROM EDB_VACTN_CALNDR WHERE SUP_ID="+employeeId;
+				selectStatement = getConnection().createStatement();
+				rs = selectStatement.executeQuery(testquery);
+				
+					while (rs.next()) {
+						System.out.println("number of rows returned is ::" + rs.getString("COUNT"));
+				}
+				
 				return vactionDetails;
 			} catch (Exception e) {
 				log.error("Error in getTasksByComponentId:",e);

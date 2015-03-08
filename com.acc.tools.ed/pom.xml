@@ -19,7 +19,7 @@
 
 	<modules>
 		<module>com.acc.tools.ed.database</module>
-		<module>com.acc.tools.ed.sonar</module>		
+		<module>com.acc.tools.ed.sonar</module>
 		<module>com.acc.tools.ed.integration</module>
 		<module>com.acc.tools.ed.web</module>
 		<module>com.acc.tools.ed.server</module>
@@ -30,6 +30,11 @@
 			<dependency>
 				<groupId>com.acc.tools.ed</groupId>
 				<artifactId>com.acc.tools.ed.database</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.acc.tools.ed</groupId>
+				<artifactId>com.acc.tools.ed.report</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<!-- Spring framework -->
