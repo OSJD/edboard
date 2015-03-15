@@ -23,6 +23,8 @@ public class TaskForm implements Serializable {
 	private String newTaskName;
 	private String newTaskId;
 	private String taskComments;
+	private int employeeId;
+	private String employeeName;
 
 
 	public int getTaskId() {
@@ -159,6 +161,22 @@ public class TaskForm implements Serializable {
 
 	public void setTaskComments(String taskComments) {
 		this.taskComments = taskComments;
+	}
+
+	public int getEmployeeId() {
+		return employeeId;
+	}
+
+	public void setEmployeeId(int employeeId) {
+		this.employeeId = employeeId;
+	}
+
+	public String getEmployeeName() {
+		return employeeName;
+	}
+
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
 	}
 
 }

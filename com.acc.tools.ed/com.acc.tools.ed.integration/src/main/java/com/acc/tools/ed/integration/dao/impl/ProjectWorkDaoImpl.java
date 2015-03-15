@@ -76,17 +76,57 @@ public int approveVacation(VacationForm vacationForm){
 		}
 		return status;
 	}
+
+	private Map<Integer,List<TaskForm>> getMyReviewTasks(Integer userId){
+		
+		final Map<Integer,List<TaskForm>> reviewTaskMap=new HashMap<Integer,List<TaskForm>>();
+		
+		try{
+			
+			final StringBuffer taskTable =new StringBuffer();
+			taskTable.append("SELECT T.COMPNT_ID,T.TASK_ID,T.EMP_ID,T.EMP_NM,T.TASK_NAME,T.TASK_DESC FROM (EDB_TASK_MASTER T LEFT JOIN EDB_TASK_REVW R ON T.TASK_ID=R.TASK_ID) LEFT JOIN EDB_TASK_REVW_HISTORY H ON T.TASK_ID=H.TASK_ID ");
+			taskTable.append(" WHERE R.TASK_REVIWER_ID="+userId);
+			log.debug("Review Task Query :{}",taskTable.toString());
+			
+			Statement stmt=getConnection().createStatement();
+			ResultSet rs=stmt.executeQuery(taskTable.toString());
+			
+			while(rs.next()){
+				final TaskForm reviewTask=new TaskForm();
+				final int componentId=rs.getInt("COMPNT_ID");
+				reviewTask.setComponentId(componentId);
+				reviewTask.setTaskId(rs.getInt("TASK_ID"));
+				reviewTask.setEmployeeId(rs.getInt("EMP_ID"));
+				reviewTask.setEmployeeName(rs.getString("EMP_NM"));
+				reviewTask.setTaskName(rs.getString("TASK_NAME"));
+				reviewTask.setTaskDesc(rs.getString("TASK_DESC"));
+				if(!reviewTaskMap.isEmpty() && reviewTaskMap.containsKey(componentId)){
+					reviewTaskMap.get(componentId).add(reviewTask);
+				} else {
+					final List<TaskForm> reviewTasks=new ArrayList<TaskForm>();
+					reviewTasks.add(reviewTask);
+					reviewTaskMap.put(componentId, reviewTasks);
+				}
+			}
+			
+		}catch(Exception e){
+			log.error("Error fetching my review tasks",e);
+		}
+		
+		return reviewTaskMap;
+	}
 	
 	public List<ProjectForm> getMyTasks(Integer userId) {
 		
 		final List<ProjectForm> projectTasks=new ArrayList<ProjectForm>();
 		final Map<Integer,ProjectForm> projMap = new HashMap<Integer, ProjectForm>();
 		final Map<Integer,ReleaseForm> relMap = new HashMap<Integer, ReleaseForm>();
+		final Map<Integer,ComponentForm> compMap=new HashMap<Integer, ComponentForm>();
 
 		try{
 	        final StringBuffer componentTable =new StringBuffer();
 	       
-	        componentTable.append(" SELECT C.COMPNT_ID as COMPONENT_ID,C.COMPNT_NAME,C.COMPNT_FUNC_DESC,C.COMPNT_PHASE,C.COMPNT_ST_DT,C.COMPNT_END_DT, M.*, T.*,H.*, P.PROJ_NAME, CE.EMP_ID, CE.WORK_DESC,ED.EMP_RESOURCE_NAME FROM (((EDB_PROJECT AS P LEFT JOIN EDB_MILESTONE AS M ON P.PROJ_ID = M.PROJ_ID) ");
+	        componentTable.append(" SELECT C.COMPNT_ID as COMPONENT_ID,C.COMPNT_NAME,C.COMPNT_FUNC_DESC,C.COMPNT_PHASE,C.COMPNT_ST_DT,C.COMPNT_END_DT, M.*, T.TASK_ID AS TSK_ID,T.TASK_NAME,T.TASK_DESC,T.TASK_STATUS,T.TASK_TYPE,T.TASK_CT_DT,H.*, P.PROJ_NAME, CE.EMP_ID, CE.WORK_DESC,ED.EMP_RESOURCE_NAME FROM (((EDB_PROJECT AS P LEFT JOIN EDB_MILESTONE AS M ON P.PROJ_ID = M.PROJ_ID) ");
 	        componentTable.append(" LEFT JOIN (EDB_PROJ_COMPNT AS C LEFT JOIN EDB_TASK_MASTER AS T ON C.COMPNT_ID = T.COMPNT_ID) ON M.MLSTN_ID = C.MLSTN_ID) ");
 	        componentTable.append(" LEFT JOIN (EDB_COMPNT_EMP AS CE LEFT JOIN EDB_MSTR_EMP_DTLS AS ED ON CE.EMP_ID = ED.EMP_ID) ON CE.COMPNT_ID=C.COMPNT_ID) LEFT JOIN EDB_TASK_REVW_HISTORY AS H ON T.TASK_ID=H.TASK_ID  WHERE CE.EMP_ID="+userId);
 
@@ -97,7 +137,7 @@ public int approveVacation(VacationForm vacationForm){
 				final int projectId=rs.getInt("PROJ_ID");
 				final int releaseId = rs.getInt("MLSTN_ID");
 				final int componentId=rs.getInt("COMPONENT_ID");
-				final int taskId=rs.getInt("TASK_ID");
+				final int taskId=rs.getInt("TSK_ID");
 
 				
 				if(!projMap.isEmpty() && projMap.containsKey(projectId)){
@@ -106,16 +146,29 @@ public int approveVacation(VacationForm vacationForm){
 					if(!relMap.isEmpty() && relMap.containsKey(releaseId)){
 						ReleaseForm release=relMap.get(releaseId);
 						if(componentId!=0){
-							final ComponentForm component=new ComponentForm(); 
-							component.setComponentId(componentId);
-							mapComponentData(rs, release,component);
-							if(taskId!=0){
-								final TaskForm task=new TaskForm();
-								mapTaskData(rs, task,component.getComponentId(),taskId);
-								if(component.getTaskFormList()==null){
-									component.setTaskFormList(new ArrayList<TaskForm>());
+							if(!compMap.isEmpty() && compMap.containsKey(componentId)){
+								final ComponentForm component=compMap.get(componentId);
+								if(taskId!=0){
+									final TaskForm task=new TaskForm();
+									mapTaskData(rs, task,component.getComponentId(),taskId);
+									if(component.getTaskFormList()==null){
+										component.setTaskFormList(new ArrayList<TaskForm>());
+									}
+									component.getTaskFormList().add(task);
 								}
-								component.getTaskFormList().add(task);
+							} else {
+								final ComponentForm component=new ComponentForm(); 
+								component.setComponentId(componentId);
+								mapComponentData(rs, release,component);
+								if(taskId!=0){
+									final TaskForm task=new TaskForm();
+									mapTaskData(rs, task,component.getComponentId(),taskId);
+									if(component.getTaskFormList()==null){
+										component.setTaskFormList(new ArrayList<TaskForm>());
+									}
+									component.getTaskFormList().add(task);
+								}
+								compMap.put(componentId, component);
 							}
 						}
 
@@ -123,16 +176,29 @@ public int approveVacation(VacationForm vacationForm){
 						final ReleaseForm release=new ReleaseForm();
 						mapReleaseData(rs, project, release, releaseId);
 						if(componentId!=0){
-							final ComponentForm component=new ComponentForm(); 
-							component.setComponentId(componentId);
-							mapComponentData(rs, release,component);
-							if(taskId!=0){
-								final TaskForm task=new TaskForm();
-								mapTaskData(rs, task,component.getComponentId(),taskId);
-								if(component.getTaskFormList()==null){
-									component.setTaskFormList(new ArrayList<TaskForm>());
+							if(!compMap.isEmpty() && compMap.containsKey(componentId)){
+								final ComponentForm component=compMap.get(componentId);
+								if(taskId!=0){
+									final TaskForm task=new TaskForm();
+									mapTaskData(rs, task,component.getComponentId(),taskId);
+									if(component.getTaskFormList()==null){
+										component.setTaskFormList(new ArrayList<TaskForm>());
+									}
+									component.getTaskFormList().add(task);
 								}
-								component.getTaskFormList().add(task);
+							} else {
+								final ComponentForm component=new ComponentForm(); 
+								component.setComponentId(componentId);
+								mapComponentData(rs, release,component);
+								if(taskId!=0){
+									final TaskForm task=new TaskForm();
+									mapTaskData(rs, task,component.getComponentId(),taskId);
+									if(component.getTaskFormList()==null){
+										component.setTaskFormList(new ArrayList<TaskForm>());
+									}
+									component.getTaskFormList().add(task);
+								}
+								compMap.put(componentId, component);
 							}
 							relMap.put(releaseId, release);
 						}
@@ -145,16 +211,29 @@ public int approveVacation(VacationForm vacationForm){
 					final ReleaseForm release=new ReleaseForm();
 					mapReleaseData(rs, project, release, releaseId);
 					if(componentId!=0){
-						final ComponentForm component=new ComponentForm(); 
-						component.setComponentId(componentId);
-						mapComponentData(rs, release,component);
-						if(taskId!=0){
-							final TaskForm task=new TaskForm();
-							mapTaskData(rs, task,component.getComponentId(),taskId);
-							if(component.getTaskFormList()==null){
-								component.setTaskFormList(new ArrayList<TaskForm>());
+						if(!compMap.isEmpty() && compMap.containsKey(componentId)){
+							final ComponentForm component=compMap.get(componentId);
+							if(taskId!=0){
+								final TaskForm task=new TaskForm();
+								mapTaskData(rs, task,component.getComponentId(),taskId);
+								if(component.getTaskFormList()==null){
+									component.setTaskFormList(new ArrayList<TaskForm>());
+								}
+								component.getTaskFormList().add(task);
 							}
-							component.getTaskFormList().add(task);
+						} else {
+							final ComponentForm component=new ComponentForm(); 
+							component.setComponentId(componentId);
+							mapComponentData(rs, release,component);
+							if(taskId!=0){
+								final TaskForm task=new TaskForm();
+								mapTaskData(rs, task,component.getComponentId(),taskId);
+								if(component.getTaskFormList()==null){
+									component.setTaskFormList(new ArrayList<TaskForm>());
+								}
+								component.getTaskFormList().add(task);
+							}
+							compMap.put(componentId, component);
 						}
 						projMap.put(projectId, project);
 						relMap.put(releaseId, release);
@@ -163,6 +242,23 @@ public int approveVacation(VacationForm vacationForm){
 					}
 				}
 				
+			}
+			//Add review task to my task bucket
+			final Map<Integer,List<TaskForm>> reviewTaskMap=getMyReviewTasks(userId);
+			for(ProjectForm project :projectTasks){
+				for(ReleaseForm release:project.getReleases()){
+					for(ComponentForm component:release.getComponents()){
+						final int componentId=component.getComponentId();
+						log.debug("Component Id :{} Name:{} ",componentId,component.getComponentName());
+						if(!reviewTaskMap.isEmpty() && reviewTaskMap.containsKey(componentId)){
+							List<TaskForm> reviewTasks=reviewTaskMap.get(componentId);
+							log.debug("\t Review Task size:{} ",reviewTasks.size());
+							final List<TaskForm> myTasks=component.getTaskFormList();
+							log.debug("\t Work Task size:{} ",myTasks.size());
+							myTasks.addAll(reviewTasks);
+						}
+					}
+				}
 			}
 			
 			
