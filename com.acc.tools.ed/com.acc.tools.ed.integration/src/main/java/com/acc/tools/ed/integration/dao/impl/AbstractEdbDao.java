@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +23,7 @@ import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.ReleaseForm;
 import com.acc.tools.ed.integration.dto.TaskForm;
+import com.acc.tools.ed.integration.dto.TaskLedgerForm;
 
 
 public class AbstractEdbDao {
@@ -87,19 +89,24 @@ public class AbstractEdbDao {
 		}
 	}
 	
+	public void mapTaskLedgerData(ResultSet rs,TaskForm task,List<TaskLedgerForm> taskLedger) throws SQLException{
+		final TaskLedgerForm ledgerForm=new TaskLedgerForm();
+		ledgerForm.setTaskHrs(rs.getInt("TASK_HRS"));
+		ledgerForm.setTaskActivity(rs.getString("TASK_ACTIVITY"));
+		ledgerForm.setTaskActivityDate(new DateTime(rs.getDate("TASK_ACTIVITI_DT").getTime()).toString("MM/dd/yyyy"));
+		taskLedger.add(ledgerForm);
+		task.setTaskLedger(taskLedger);
+	}
+	
 	public void mapTaskData(ResultSet rs,TaskForm taskForm,Integer componentId,Integer taskId) throws SQLException{
 		taskForm.setTaskId(taskId);
 		taskForm.setTaskName(rs.getString("TASK_NAME"));
 		taskForm.setComponentId(componentId);
 		taskForm.setTaskDesc(rs.getString("TASK_DESC"));
-		//taskForm.setTaskHrs(rs.getInt("TASK_HRS"));
 		taskForm.setTaskStatus(rs.getString("TASK_STATUS"));
 		taskForm.setTaskType(rs.getString("TASK_TYPE"));
-		//taskForm.setTaskAction(rs.getString("TASK_ACTIONS"));
 		taskForm.setRejComment(rs.getString("TASK_REVIEW_COMMENTS"));
 		taskForm.setTaskCreateDate(rs.getString("TASK_CT_DT"));
-		//taskForm.setTaskReviewUser(rs.getString("TASK_REVIEW_USER"));
-		//taskForm.setTaskComments(rs.getString("TASK_COMMENTS"));
 	}
 	
 	public void mapReleaseData(ResultSet rs,ProjectForm project,ReleaseForm release,Integer releaseId) throws SQLException{

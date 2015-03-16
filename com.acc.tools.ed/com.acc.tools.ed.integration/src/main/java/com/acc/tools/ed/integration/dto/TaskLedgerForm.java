@@ -10,7 +10,8 @@ public class TaskLedgerForm implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private int taskId;
 	private int taskHrs;
-	private String taskComments;
+	private String taskActivity;
+	private String taskActivityDate;
 	
 	public int getTaskId() {
 		return taskId;
@@ -24,11 +25,19 @@ public class TaskLedgerForm implements Serializable {
 	public void setTaskHrs(int taskHrs) {
 		this.taskHrs = taskHrs;
 	}
-	public String getTaskComments() {
-		return taskComments;
+	public String getTaskActivity() {
+		return taskActivity;
 	}
-	public void setTaskComments(String taskComments) {
-		this.taskComments = taskComments;
+	public void setTaskActivity(String taskActivity) {
+		this.taskActivity = taskActivity;
 	}
+	public String getTaskActivityDate() {
+		return taskActivityDate;
+	}
+	public void setTaskActivityDate(String taskActivityDate) {
+		this.taskActivityDate = taskActivityDate;
+	}
+	
+
 
 }
