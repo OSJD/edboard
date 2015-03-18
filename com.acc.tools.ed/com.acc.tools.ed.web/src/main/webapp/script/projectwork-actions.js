@@ -250,33 +250,6 @@ $(document).ready(
 			});
 		});
 		
-		$(".updateTaskComnt").button().unbind("click").on("click",function(){
-
-
-			var componentId=this.id;
-			
-			var taskComments=$("#taskComments_"+componentId).val();
-			//alert(approverComments);
-			$.ajax({
-				type : "POST",
-				url : "./updateTaskComments.do",
-				data : {
-					componentId:componentId,
-					taskComments:taskComments
-				},
-				success : function(response) {
-					if(response=="success"){
-						alert('Request status updated successfully!');
-					}
-					
-				},
-				error : function(data) {},
-				complete:function(data){
-
-				}
-			});
-		});
-		
 });
 
 

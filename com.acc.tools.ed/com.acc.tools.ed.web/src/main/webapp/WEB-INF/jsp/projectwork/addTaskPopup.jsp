@@ -1,4 +1,15 @@
 	<!-- Add Task Popup -->
+	<script type="text/javascript">
+
+
+var newwindow;
+function poptastic(url)
+{
+	newwindow=window.open(url,'name','height=400,width=200');
+	if (window.focus) {newwindow.focus()}
+}
+
+</script>
 	<div id="addTaskPanel" title="Add Tasks"
 		edbUser="${edbUser.employeeId}">
 		<form:form commandName="addTaskForm" id="addTaskForm">
@@ -83,16 +94,30 @@
 									<th colspan="4" style="text-align: left;font-size: 15px;">Current Date() - Task Details</th>
 								</tr>
 								<tr>
-									<th>Today Work</th>
+									<th style="text-align: left">
+										Activites	
+										<input type="submit" value=" < " class="CommandButton "/>
+					<%-- 					<form:select path="taskActivity"
+											style="width:135px;" multiple="false">
+											<form:option  value="0" label="--- Select ---" />
+											 <c:forEach items="${activityList}" var="activity">
+				      						  <option value="${activity.id}" >${activity.label}</option>
+				   							 </c:forEach>
+										</form:select> --%>
+							
+										<input type="submit" value=" > " class="CommandButton "/>
+										<a href="#" taskType="teamTasks" class="viewComments" id="viewCommentsId" title="ComponentDetails" style="text-align:right"> History</a>
+										<input type="submit" value=" +Comment " class="CommandButton " style="float: right;"/>
+										</div>
+									
+									</th>
 									<th>Task Hours</th>
 									<th>Task Status</th>
 									<th>Peer Review by</th>
 								</tr>
 								<tr>
 									<td>
-										<div id="divComment">
-											<form:textarea cssStyle="overflow: auto; resize: none;" rows="5" id="taskComments" path="taskComments" cols="100"	cssClass="textarea"  />
-										</div>
+										<textarea cols="100" rows="5"></textarea><br>
 									</td>
 									<td><form:input type="text" path="taskHrs" id="taskHrs"
 											class="textbox" cssStyle="width:35px;" /></td>

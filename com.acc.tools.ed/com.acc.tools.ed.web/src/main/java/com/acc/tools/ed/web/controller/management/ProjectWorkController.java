@@ -19,7 +19,6 @@ import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.ReleaseForm;
 import com.acc.tools.ed.integration.dto.TaskForm;
-import com.acc.tools.ed.integration.dto.VacationForm;
 import com.acc.tools.ed.integration.service.ProjectWorkService;
 import com.acc.tools.ed.web.controller.common.AbstractEdbBaseController;
 
@@ -55,6 +54,7 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 	public @ResponseBody List<ReferenceData> getTaskIdsByComponentId(
 			@ModelAttribute("componentId") Integer componentId,
 			Model model){
+		
 		return projectWorkService.getTasksByComponentId(componentId);
 	}
 
@@ -67,29 +67,19 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 	}
 	
 	
+	@RequestMapping(value = "/fetchtaskActivityDetails.do")
+	public @ResponseBody List<ReferenceData> getTaskActivities(
+			@ModelAttribute("taskId") Integer taskId,
+			Model model){
+		model.addAttribute("activityList", getTaskActivities(taskId, model));
+		return projectWorkService.getTaskActivities(taskId);
+	}
+	
+
+	
 	@RequestMapping(value = "/teamTasks.do")
 	public String teamTasks(@ModelAttribute("edbUser")EDBUser edbUser,Model model) {
 		List<ProjectForm> projData =projectWorkService.getMyTeamTasks(edbUser.getEmployeeId());
-		for(ProjectForm pf:projData){
-			LOG.debug("Project Name:[{}]",pf.getProjectName());
-			for(ReleaseForm rf:pf.getReleases()){
-				LOG.debug("\tRelease Name:[{}]",rf.getReleaseName());
-				if(rf.getTeamTasks()!=null && rf.getTeamTasks().size()>0){
-					for(String resource:rf.getTeamTasks().keySet()){
-						List<ComponentForm> cfl= rf.getTeamTasks().get(resource);
-						LOG.debug("\t\tResource Name:{}",resource);
-						for(ComponentForm cf:cfl){
-							LOG.debug("\t\t\tComponent Name:[{}] | Assigned Work:[{}]",new Object[]{cf.getComponentName(),cf.getWorkDesc()});
-							if(cf.getTaskFormList()!=null && cf.getTaskFormList().size()>0){
-								for(TaskForm tf:cf.getTaskFormList()){
-									LOG.debug("\t\t\t\tTaskName Name:[{}]",tf.getTaskName());
-								}
-							}
-						}
-					}
-				}
-			}
-		}
 		model.addAttribute("addTaskForm", new TaskForm());
 		model.addAttribute("projData", projData);
 		return "/projectwork/teamTasks";

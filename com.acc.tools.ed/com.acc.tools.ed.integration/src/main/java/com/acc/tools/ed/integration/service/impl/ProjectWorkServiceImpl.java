@@ -9,6 +9,7 @@ import com.acc.tools.ed.integration.dao.ProjectWorkDao;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.TaskForm;
+import com.acc.tools.ed.integration.dto.TaskLedgerForm;
 import com.acc.tools.ed.integration.dto.VacationForm;
 import com.acc.tools.ed.integration.service.ProjectWorkService;
 
@@ -79,5 +80,9 @@ public class ProjectWorkServiceImpl implements ProjectWorkService {
 	public void deleteVacation(int vacationId)
 	{
 		projectWorkDao.deleteVacation(vacationId);
+	}
+
+	public List<ReferenceData> getTaskActivities(Integer taskId) {
+		return null;
 	}
 }

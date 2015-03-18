@@ -2,12 +2,8 @@ package com.acc.tools.ed.integration.dao.impl;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,17 +36,17 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 		try {
 			
 			
-			String addTaskQuery = "insert into EDB_VACTN_CALNDR(EMP_ID,VACTN_TYP,VACTN_STRT_DT,VACTN_END_DT,COMNTS,STATUS,SUP_ID,SUP_COMNTS) values (?,?,?,?,?,?,?,?)";
+			String addTaskQuery = "insert into EDB_VACTN_CALNDR(EMP_ID,EMP_NM,VACTN_TYP,VACTN_STRT_DT,VACTN_END_DT,COMNTS,STATUS,SUP_ID,SUP_COMNTS) values (?,?,?,?,?,?,?,?,?)";
 			PreparedStatement pstm = getConnection().prepareStatement(addTaskQuery);
 			pstm.setInt(1, vacationForm.getEmployeeId());
-			//pstm.setString(2, vacationForm.getResourceName());
-			pstm.setString(2, vacationForm.getVacationType());
-			pstm.setString(3, vacationForm.getStartDate());
-			pstm.setString(4, vacationForm.getEndDate());
-			pstm.setString(5, vacationForm.getComments());
-			pstm.setString(6, vacationForm.getStatus());
-			pstm.setInt(7, vacationForm.getSupervisorId());
-			pstm.setString(8, vacationForm.getApproverComments());
+			pstm.setString(2, vacationForm.getResourceName());
+			pstm.setString(3, vacationForm.getVacationType());
+			pstm.setString(4, vacationForm.getStartDate());
+			pstm.setString(5, vacationForm.getEndDate());
+			pstm.setString(6, vacationForm.getComments());
+			pstm.setString(7, vacationForm.getStatus());
+			pstm.setInt(8, vacationForm.getSupervisorId());
+			pstm.setString(9, vacationForm.getApproverComments());
 			pstm.executeUpdate();
 			pstm.close();
 
@@ -133,10 +129,9 @@ public int approveVacation(VacationForm vacationForm){
 	        final StringBuffer componentTable =new StringBuffer();
 	       
 	        componentTable.append("SELECT C.COMPNT_ID as COMPONENT_ID,C.COMPNT_NAME,C.COMPNT_FUNC_DESC,C.COMPNT_PHASE,C.COMPNT_ST_DT,C.COMPNT_END_DT, ");
-	        componentTable.append(" M.*, T.TASK_ID AS TSK_ID,T.TASK_NAME,T.TASK_DESC,T.TASK_STATUS,T.TASK_TYPE,T.TASK_CT_DT,H.*, P.PROJ_NAME, CE.EMP_ID, CE.WORK_DESC,ED.EMP_RESOURCE_NAME, TL.TASK_HRS, TL.TASK_ACTIVITY,TL.TASK_ACTIVITI_DT "); 
-	        componentTable.append("	FROM ((((((EDB_PROJECT AS P LEFT JOIN EDB_MILESTONE AS M ON P.PROJ_ID = M.PROJ_ID)  LEFT JOIN EDB_PROJ_COMPNT AS C ON M.MLSTN_ID = C.MLSTN_ID) "); 
+	        componentTable.append(" M.*, T.TASK_ID AS TSK_ID,T.TASK_NAME,T.TASK_DESC,T.TASK_STATUS,T.TASK_TYPE,T.TASK_CT_DT,P.PROJ_NAME, CE.EMP_ID, CE.WORK_DESC,ED.EMP_RESOURCE_NAME "); 
+	        componentTable.append("	FROM ((((EDB_PROJECT AS P LEFT JOIN EDB_MILESTONE AS M ON P.PROJ_ID = M.PROJ_ID)  LEFT JOIN EDB_PROJ_COMPNT AS C ON M.MLSTN_ID = C.MLSTN_ID) "); 
 	        componentTable.append(" LEFT JOIN EDB_COMPNT_EMP AS CE ON CE.COMPNT_ID=C.COMPNT_ID) LEFT JOIN EDB_TASK_MASTER AS T ON CE.COMPNT_ID=T.COMPNT_ID) "); 
-	        componentTable.append(" LEFT JOIN EDB_TASK_LEDGER AS TL ON T.TASK_ID=TL.TASK_ID) LEFT JOIN EDB_TASK_REVW_HISTORY AS H ON T.TASK_ID=H.TASK_ID) ");
 	        componentTable.append(" LEFT JOIN EDB_MSTR_EMP_DTLS AS ED ON  CE.EMP_ID= ED.EMP_ID WHERE CE.EMP_ID="+userId+" AND T.EMP_ID="+userId);
 
 			log.debug("My Tasks Query:{}",componentTable.toString());
@@ -158,26 +153,13 @@ public int approveVacation(VacationForm vacationForm){
 							if(!compMap.isEmpty() && compMap.containsKey(componentId)){
 								final ComponentForm component=compMap.get(componentId);
 								if(taskId!=0){
-									if(!taskMap.isEmpty() && taskMap.containsKey(taskId)){
-										final TaskForm task=taskMap.get(taskId);
-										List<TaskLedgerForm> taskLedger=task.getTaskLedger();
-										if(taskLedger==null){
-											taskLedger=new ArrayList<TaskLedgerForm>();
-										} 
-										mapTaskLedgerData(rs,task,taskLedger);
-										
-									} else{
+									if(!taskMap.isEmpty() && !taskMap.containsKey(taskId)){
 										final TaskForm task=new TaskForm();
 										mapTaskData(rs, task,component.getComponentId(),taskId);
 										if(component.getTaskFormList()==null){
 											component.setTaskFormList(new ArrayList<TaskForm>());
 										}
 										component.getTaskFormList().add(task);
-										List<TaskLedgerForm> taskLedger=task.getTaskLedger();
-										if(taskLedger==null){
-											taskLedger=new ArrayList<TaskLedgerForm>();
-										} 
-										mapTaskLedgerData(rs,task,taskLedger);
 										taskMap.put(taskId, task);
 									}
 								}
@@ -186,26 +168,13 @@ public int approveVacation(VacationForm vacationForm){
 								component.setComponentId(componentId);
 								mapComponentData(rs, release,component);
 								if(taskId!=0){
-									if(!taskMap.isEmpty() && taskMap.containsKey(taskId)){
-										final TaskForm task=taskMap.get(taskId);
-										List<TaskLedgerForm> taskLedger=task.getTaskLedger();
-										if(taskLedger==null){
-											taskLedger=new ArrayList<TaskLedgerForm>();
-										} 
-										mapTaskLedgerData(rs,task,taskLedger);
-										
-									} else{
+									if(!taskMap.isEmpty() && !taskMap.containsKey(taskId)){
 										final TaskForm task=new TaskForm();
 										mapTaskData(rs, task,component.getComponentId(),taskId);
 										if(component.getTaskFormList()==null){
 											component.setTaskFormList(new ArrayList<TaskForm>());
 										}
 										component.getTaskFormList().add(task);
-										List<TaskLedgerForm> taskLedger=task.getTaskLedger();
-										if(taskLedger==null){
-											taskLedger=new ArrayList<TaskLedgerForm>();
-										} 
-										mapTaskLedgerData(rs,task,taskLedger);
 										taskMap.put(taskId, task);
 									}
 								}
@@ -220,26 +189,13 @@ public int approveVacation(VacationForm vacationForm){
 							if(!compMap.isEmpty() && compMap.containsKey(componentId)){
 								final ComponentForm component=compMap.get(componentId);
 								if(taskId!=0){
-									if(!taskMap.isEmpty() && taskMap.containsKey(taskId)){
-										final TaskForm task=taskMap.get(taskId);
-										List<TaskLedgerForm> taskLedger=task.getTaskLedger();
-										if(taskLedger==null){
-											taskLedger=new ArrayList<TaskLedgerForm>();
-										} 
-										mapTaskLedgerData(rs,task,taskLedger);
-										
-									} else{
+									if(!taskMap.isEmpty() && !taskMap.containsKey(taskId)){
 										final TaskForm task=new TaskForm();
 										mapTaskData(rs, task,component.getComponentId(),taskId);
 										if(component.getTaskFormList()==null){
 											component.setTaskFormList(new ArrayList<TaskForm>());
 										}
 										component.getTaskFormList().add(task);
-										List<TaskLedgerForm> taskLedger=task.getTaskLedger();
-										if(taskLedger==null){
-											taskLedger=new ArrayList<TaskLedgerForm>();
-										} 
-										mapTaskLedgerData(rs,task,taskLedger);
 										taskMap.put(taskId, task);
 									}
 								}
@@ -248,26 +204,13 @@ public int approveVacation(VacationForm vacationForm){
 								component.setComponentId(componentId);
 								mapComponentData(rs, release,component);
 								if(taskId!=0){
-									if(!taskMap.isEmpty() && taskMap.containsKey(taskId)){
-										final TaskForm task=taskMap.get(taskId);
-										List<TaskLedgerForm> taskLedger=task.getTaskLedger();
-										if(taskLedger==null){
-											taskLedger=new ArrayList<TaskLedgerForm>();
-										} 
-										mapTaskLedgerData(rs,task,taskLedger);
-										
-									} else{
+									if(!taskMap.isEmpty() && !taskMap.containsKey(taskId)){
 										final TaskForm task=new TaskForm();
 										mapTaskData(rs, task,component.getComponentId(),taskId);
 										if(component.getTaskFormList()==null){
 											component.setTaskFormList(new ArrayList<TaskForm>());
 										}
 										component.getTaskFormList().add(task);
-										List<TaskLedgerForm> taskLedger=task.getTaskLedger();
-										if(taskLedger==null){
-											taskLedger=new ArrayList<TaskLedgerForm>();
-										} 
-										mapTaskLedgerData(rs,task,taskLedger);
 										taskMap.put(taskId, task);
 									}
 								}
@@ -287,26 +230,13 @@ public int approveVacation(VacationForm vacationForm){
 						if(!compMap.isEmpty() && compMap.containsKey(componentId)){
 							final ComponentForm component=compMap.get(componentId);
 							if(taskId!=0){
-								if(!taskMap.isEmpty() && taskMap.containsKey(taskId)){
-									final TaskForm task=taskMap.get(taskId);
-									List<TaskLedgerForm> taskLedger=task.getTaskLedger();
-									if(taskLedger==null){
-										taskLedger=new ArrayList<TaskLedgerForm>();
-									} 
-									mapTaskLedgerData(rs,task,taskLedger);
-									
-								} else{
+								if(!taskMap.containsKey(taskId)){
 									final TaskForm task=new TaskForm();
 									mapTaskData(rs, task,component.getComponentId(),taskId);
 									if(component.getTaskFormList()==null){
 										component.setTaskFormList(new ArrayList<TaskForm>());
 									}
 									component.getTaskFormList().add(task);
-									List<TaskLedgerForm> taskLedger=task.getTaskLedger();
-									if(taskLedger==null){
-										taskLedger=new ArrayList<TaskLedgerForm>();
-									} 
-									mapTaskLedgerData(rs,task,taskLedger);
 									taskMap.put(taskId, task);
 								}
 							}
@@ -315,27 +245,13 @@ public int approveVacation(VacationForm vacationForm){
 							component.setComponentId(componentId);
 							mapComponentData(rs, release,component);
 							if(taskId!=0){
-								if(!taskMap.isEmpty() && taskMap.containsKey(taskId)){
-									final TaskForm task=taskMap.get(taskId);
-									List<TaskLedgerForm> taskLedger=task.getTaskLedger();
-									if(taskLedger==null){
-										taskLedger=new ArrayList<TaskLedgerForm>();
-									} 
-									mapTaskLedgerData(rs,task,taskLedger);
-									
-								} else{
+								if(!taskMap.containsKey(taskId)){
 									final TaskForm task=new TaskForm();
 									mapTaskData(rs, task,component.getComponentId(),taskId);
 									if(component.getTaskFormList()==null){
 										component.setTaskFormList(new ArrayList<TaskForm>());
 									}
 									component.getTaskFormList().add(task);
-									List<TaskLedgerForm> taskLedger=task.getTaskLedger();
-									if(taskLedger==null){
-										taskLedger=new ArrayList<TaskLedgerForm>();
-									} 
-									mapTaskLedgerData(rs,task,taskLedger);
-									
 									taskMap.put(taskId, task);
 								}
 							}
@@ -366,26 +282,6 @@ public int approveVacation(VacationForm vacationForm){
 					}
 				}
 			}
-			
-			//Display logic
-
-			for(ProjectForm project :projectTasks){
-				for(ReleaseForm release:project.getReleases()){
-					for(ComponentForm component:release.getComponents()){
-						final int componentId=component.getComponentId();
-						log.debug("Component Id :{} Name:{} ",componentId,component.getComponentName());
-						for(TaskForm task:component.getTaskFormList()){
-							log.debug("\t Task Name:{}",task.getTaskName());
-							if(task.getTaskLedger()!=null){
-								for(TaskLedgerForm ledger:task.getTaskLedger()){
-									log.debug("\t\t Sub Task:{}",ledger.getTaskActivity());
-								}
-							}
-						}
-					}
-				}
-			}
-
 			
 			stmt.close();
 		}catch(Exception e)	{
@@ -725,7 +621,28 @@ public List<ProjectForm> getMyTeamTasks(Integer supervisorId) {
 		return taskform;
 	}
 	
-	@SuppressWarnings("resource")
+	public List<ReferenceData> getTaskActivities(Integer taskId) {
+		final List<ReferenceData> taskForm = new LinkedList<ReferenceData>();
+		try {
+			final String activityTable = "SELECT TASK_ACTIVITY FROM EDB_TASK_LEDGER WHERE TASK_ID="+ taskId;
+			log.debug("getTaskByTaskActivity Query :{}", activityTable);
+			Statement selectStatement = getConnection().createStatement();
+			ResultSet rs = selectStatement.executeQuery(activityTable);
+			while (rs.next()) {
+				ReferenceData task=new ReferenceData();
+				task.setId(""+rs.getInt("TASK_ID"));
+				task.setLabel(rs.getString("TASK_ACTIVITY"));
+				taskForm.add(task);
+			}
+		} catch (Exception e) {
+			log.error("Error in getTaskByTaskActivity:", e);
+
+		}
+		return taskForm;
+	}
+	
+
+
 	public List<VacationForm> getVacationDetails(Integer employeeId){
 		
 		{
@@ -744,7 +661,7 @@ public List<ProjectForm> getMyTeamTasks(Integer supervisorId) {
 				while (rs.next()) {
 					VacationForm details = new VacationForm();
 					
-					details.setVacationId(rs.getInt("ID"));
+					details.setVacationId(rs.getInt("VACTN_ID"));
 					details.setApproverComments(rs.getString("SUP_COMNTS"));
 					details.setComments(rs.getString("COMNTS"));
 					details.setStartDate(rs.getString("VACTN_STRT_DT"));
@@ -920,11 +837,5 @@ public List<ProjectForm> getMyTeamTasks(Integer supervisorId) {
 		}
 
 	}
-
-	public void mapLegendData(ResultSet rs, TaskLedgerForm taskLedgerForm,
-			Integer componentId, Integer taskId) throws SQLException,
-			ParseException {
-		// TODO Auto-generated method stub
-		
-	}
+	
 }

@@ -301,8 +301,6 @@ $(document).ready(function(){
 										buttonText: 'Show Date',
 										buttonImageOnly: true,
 										buttonImage: 'resources/cal.gif',
-										dateFormat: 'mm/dd/yy',
-										constrainInput: true
 									 });
 									editProjectDialog.dialog("open");
 								},

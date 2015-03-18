@@ -105,7 +105,6 @@ public class AbstractEdbDao {
 		taskForm.setTaskDesc(rs.getString("TASK_DESC"));
 		taskForm.setTaskStatus(rs.getString("TASK_STATUS"));
 		taskForm.setTaskType(rs.getString("TASK_TYPE"));
-		taskForm.setRejComment(rs.getString("TASK_REVIEW_COMMENTS"));
 		taskForm.setTaskCreateDate(rs.getString("TASK_CT_DT"));
 	}
 	
