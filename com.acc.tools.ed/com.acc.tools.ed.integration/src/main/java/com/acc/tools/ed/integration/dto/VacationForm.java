@@ -20,6 +20,22 @@ public class VacationForm implements Serializable{
 	private String status;
 	private int supervisorId;
 	private String approverComments;
+	private String role;
+	private String viewFlag;
+	
+	
+	public String getRole() {
+		return role;
+	}
+	public void setRole(String role) {
+		this.role = role;
+	}
+	public String getViewFlag() {
+		return viewFlag;
+	}
+	public void setViewFlag(String viewFlag) {
+		this.viewFlag = viewFlag;
+	}
 	public String getVacationType() {
 		return vacationType;
 	}

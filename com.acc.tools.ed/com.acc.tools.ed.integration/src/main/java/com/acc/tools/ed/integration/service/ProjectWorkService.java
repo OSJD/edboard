@@ -21,5 +21,8 @@ public interface ProjectWorkService {
 	public int addVacation(VacationForm vacationForm);
 	public List<VacationForm> getVacationDetails(Integer employeeId);
 	public int approveVacation(VacationForm vacationForm);
+	public List<VacationForm> getDeveloperVacationDetails(Integer employeeId);
+	public void deleteVacation(int vacationId);
+	public String editVacation(VacationForm vacationForm);
 }
 

@@ -8,9 +8,17 @@
 		<a href="#" action="./teamTasks.do" id="pwsubtab2" class="subtabs">Team Tasks</a>
 	</div> 
 	</jstl:if>
+	<jstl:if	test="${(edbUser.role =='SUPERVISOR') || (edbUser.role =='Lead')}">
 	<div style="text-align:center; height:18px; width: 100px;border-right: 1px solid black;margin-top: 7px;">
 		<a href="#" action="./calendar.do" id="pwsubtab3" class="subtabs">Calendar</a>
 	</div>	
+	</jstl:if>
+	<jstl:if	test="${(edbUser.role =='Dvlp') }">
+	<div style="text-align:center; height:18px; width: 100px;border-right: 1px solid black;margin-top: 7px;">
+		<a href="#" action="./dvlpCalendar.do" id="pwsubtab3" class="subtabs">Calendar</a>
+	</div>	
+	</jstl:if>
+	
 	<div style="text-align:center; height:18px; width: 120px;border-right: 1px solid black;margin-top: 7px;">
 		<a href="#" action="./announcements.do" id="pwsubtab4" class="subtabs">Announcement</a>
 	</div>

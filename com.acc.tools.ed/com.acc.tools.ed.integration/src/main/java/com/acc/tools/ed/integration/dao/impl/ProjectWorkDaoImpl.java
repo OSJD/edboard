@@ -2,8 +2,12 @@ package com.acc.tools.ed.integration.dao.impl;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,17 +40,17 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 		try {
 			
 			
-			String addTaskQuery = "insert into EDB_VACTN_CALNDR(EMP_ID,EMP_NM,VACTN_TYP,VACTN_STRT_DT,VACTN_END_DT,COMNTS,STATUS,SUP_ID,SUP_COMNTS) values (?,?,?,?,?,?,?,?,?)";
+			String addTaskQuery = "insert into EDB_VACTN_CALNDR(EMP_ID,VACTN_TYP,VACTN_STRT_DT,VACTN_END_DT,COMNTS,STATUS,SUP_ID,SUP_COMNTS) values (?,?,?,?,?,?,?,?)";
 			PreparedStatement pstm = getConnection().prepareStatement(addTaskQuery);
 			pstm.setInt(1, vacationForm.getEmployeeId());
-			pstm.setString(2, vacationForm.getResourceName());
-			pstm.setString(3, vacationForm.getVacationType());
-			pstm.setString(4, vacationForm.getStartDate());
-			pstm.setString(5, vacationForm.getEndDate());
-			pstm.setString(6, vacationForm.getComments());
-			pstm.setString(7, vacationForm.getStatus());
-			pstm.setInt(8, vacationForm.getSupervisorId());
-			pstm.setString(9, vacationForm.getApproverComments());
+			//pstm.setString(2, vacationForm.getResourceName());
+			pstm.setString(2, vacationForm.getVacationType());
+			pstm.setString(3, vacationForm.getStartDate());
+			pstm.setString(4, vacationForm.getEndDate());
+			pstm.setString(5, vacationForm.getComments());
+			pstm.setString(6, vacationForm.getStatus());
+			pstm.setInt(7, vacationForm.getSupervisorId());
+			pstm.setString(8, vacationForm.getApproverComments());
 			pstm.executeUpdate();
 			pstm.close();
 
@@ -740,7 +744,7 @@ public List<ProjectForm> getMyTeamTasks(Integer supervisorId) {
 				while (rs.next()) {
 					VacationForm details = new VacationForm();
 					
-					details.setVacationId(rs.getInt("VACTN_ID"));
+					details.setVacationId(rs.getInt("ID"));
 					details.setApproverComments(rs.getString("SUP_COMNTS"));
 					details.setComments(rs.getString("COMNTS"));
 					details.setStartDate(rs.getString("VACTN_STRT_DT"));
@@ -777,6 +781,150 @@ public List<ProjectForm> getMyTeamTasks(Integer supervisorId) {
 			}
 			return vactionDetails;
 		}
+		
+	}
+	
+	public List<VacationForm> getDeveloperVacationDetails(Integer employeeId){
+
+		{
+
+			final List<VacationForm> vactionDetails=new ArrayList<VacationForm>();
+			try {
+
+
+				final String supIdQuery = "SELECT EMP_SUP_EMP_ID  FROM EDB_MSTR_EMP_DTLS WHERE EMP_ID ="+employeeId;
+				log.debug("getTaskById Query :{}",supIdQuery);
+				Statement selectStatement = getConnection().createStatement();
+				ResultSet supRs = selectStatement.executeQuery(supIdQuery);
+				Integer sup_id =0;
+				while(supRs.next())
+				{
+					sup_id = supRs.getInt("EMP_SUP_EMP_ID");
+
+				}
+
+				if(sup_id!= 0)
+				{
+
+					final String query="SELECT * FROM EDB_VACTN_CALNDR WHERE SUP_ID="+sup_id;
+					log.debug("getTaskById Query :{}",query);
+					selectStatement = getConnection().createStatement();
+					ResultSet rs = selectStatement.executeQuery(query);
+
+
+					while (rs.next()) {
+						VacationForm details = new VacationForm();
+
+						details.setVacationId(rs.getInt("ID"));
+						details.setComments(rs.getString("COMNTS"));
+						details.setStartDate(rs.getString("VACTN_STRT_DT"));
+						details.setEndDate(rs.getString("VACTN_END_DT"));
+						details.setStatus(rs.getString("STATUS"));
+						details.setVacationType(rs.getString("VACTN_TYP"));
+						details.setRole("DEVLP");
+						int empId= rs.getInt("EMP_ID");
+						System.out.println("employee id ::" + employeeId);
+						if(empId== employeeId)
+						{
+							details.setViewFlag("TRUE");
+							System.out.println("flag set true::");
+						}
+						System.out.println("the emps reporting are::" + empId);
+						final String resourceQuery = "SELECT EMP_RESOURCE_NAME FROM EDB_MSTR_EMP_DTLS WHERE EMP_ID = "+empId;
+						log.debug("get resource name Query :{}",resourceQuery);
+						selectStatement = getConnection().createStatement();
+						ResultSet rsEmpname = selectStatement.executeQuery(query);
+						rsEmpname = selectStatement.executeQuery(resourceQuery);
+
+						while(rsEmpname.next())
+						{
+							details.setResourceName(rsEmpname.getString("EMP_RESOURCE_NAME"));
+						}
+						vactionDetails.add(details);
+
+					}
+
+
+					return vactionDetails;
+				}
+			} catch (Exception e) {
+				log.error("Error in getTasksByComponentId:",e);
+			}
+			return vactionDetails;
+		}
+
+	}
+
+	public String editVacation(VacationForm vacationForm)
+	{
+		try {
+
+
+			System.out.println("record to be updated::"+ vacationForm.getVacationId());
+			
+			final String updIdQuery = "UPDATE EDB_VACTN_CALNDR SET VACTN_STRT_DT= ?, VACTN_END_DT= ? ,COMNTS=? WHERE ID=?";
+			PreparedStatement prpStatement = getConnection().prepareStatement(updIdQuery);
+			prpStatement.setString(1, vacationForm.getStartDate());
+			prpStatement.setString(2, vacationForm.getEndDate());
+			prpStatement.setString(3, vacationForm.getComments());
+			prpStatement.setInt(4, vacationForm.getVacationId());
+			log.debug("delIdQuery Query :{}",updIdQuery);
+			int rowcount =0;
+			rowcount= prpStatement.executeUpdate();
+			prpStatement.close();
+		
+			System.out.println("rows UPDATED");
+			//rowcount= selectStatement.executeUpdate(delIdQuery);
+			if(rowcount==0)
+			{
+				System.out.println("update failure");
+
+			}
+			else{
+
+				System.out.println("update success");
+				return "success";
+			}
+		} catch (Exception e) {
+			log.error("Error in updating vacation records:",e);
+		}
+
+
+
+		return "success";
+	}
+
+	public void deleteVacation(int vacationId)
+	{
+
+		try {
+
+			System.out.println("record to be deleted::"+ vacationId);
+			final String delIdQuery = "DELETE FROM EDB_VACTN_CALNDR WHERE ID="+vacationId;
+			log.debug("delIdQuery Query :{}",delIdQuery);
+			Statement selectStatement = getConnection().createStatement();
+			int rowcount =0;
+			System.out.println("rows deleted");
+			rowcount= selectStatement.executeUpdate(delIdQuery);
+			if(rowcount==0)
+			{
+				System.out.println("update failure");
+
+			}
+			else{
+
+				System.out.println("update success");
+			}
+		} catch (Exception e) {
+			log.error("Error in deleteing vacation records:",e);
+		}
+
+	}
+
+	public void mapLegendData(ResultSet rs, TaskLedgerForm taskLedgerForm,
+			Integer componentId, Integer taskId) throws SQLException,
+			ParseException {
+		// TODO Auto-generated method stub
 		
 	}
 }
