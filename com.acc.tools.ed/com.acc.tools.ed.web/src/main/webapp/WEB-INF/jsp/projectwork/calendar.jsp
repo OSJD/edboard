@@ -19,7 +19,6 @@
 				<th>Comments</th>
 				<th>Status</th>
 				<th>Supervisor Comments</th>
-				<th>Action</th>
 				<th colspan="2" style="width: 20px;"><a href="#"
 					id="vacationRequestBtn"><img class="imgLink"
 						alt="Vacation Request" src="./resources/addnews.gif" width="20px;"></a></th>
@@ -47,17 +46,20 @@
 					</td>
 					<td>backup Name</td>
 					<c:choose>
-						<c:when test="${vacationDetails.role eq 'DEVLP'}">
+						<c:when test="${(vacationDetails.role =='DEVLP') || (vacationDetails.role =='Admin')}">
 							<c:choose>
 								<c:when test="${vacationDetails.viewFlag eq 'TRUE'}">
 									<td><input type = "date" id="vacationEditStartDate_${vacationDetails.vacationId}" name = "startDate" value="${vacationDetails.startDate}" class="vctnEditStartDate"/></td>
 									<td><input type = "date" id="vacationEditEndDate_${vacationDetails.vacationId}" name = "endDate" value="${vacationDetails.endDate}" class="vctnEditEndDate"/></td>
-									<td><input type="text" name="vacationComments" id="vctnComments_${vacationDetails.vacationId}"	class="textbox" value="${vacationDetails.comments}" /></td>
+									<td><textarea rows="3" cols="40" class="textbox" id="vctnComments_${vacationDetails.vacationId}">${vacationDetails.comments}</textarea></td>
 									<td>${vacationDetails.status}</td>
 									<td>${vacationDetails.approverComments}</td>
-									<td><a href="#" id="${vacationDetails.vacationId}" class="vacationEditSubmit" style="width: 60px;">Update</a>  
-									 <a href="#" id="${vacationDetails.vacationId}" class="vacationDeleteSubmit" style="width: 60px;">Delete</a></td>
-									<td></td>
+									<td style="width: 10px;">
+										<a href="#" id="${vacationDetails.vacationId}" class="vacationEditSubmit" style="width: 60px;">Update</a>  
+									 </td>
+									<td style="width: 10px;">
+										<a href="#" id="${vacationDetails.vacationId}" class="vacationDeleteSubmit" style="width: 60px;">Delete</a>
+									</td>
 								</c:when>
 								<c:otherwise>
 									
@@ -73,7 +75,6 @@
 						
 						</c:when>
 						<c:otherwise>
-							<td>backup</td>
 							<td id="vctnStartDate_${vacationDetails.vacationId}">${vacationDetails.startDate}</td>
 							<td id="vctnEndtDate_${vacationDetails.vacationId}">${vacationDetails.endDate}</td>
 							<td id="vctnComments_${vacationDetails.vacationId}">${vacationDetails.comments}</td>
