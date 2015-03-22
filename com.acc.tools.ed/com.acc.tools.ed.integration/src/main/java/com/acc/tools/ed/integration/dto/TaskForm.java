@@ -28,7 +28,7 @@ public class TaskForm implements Serializable {
 	private String employeeName;
 	private List<TaskLedgerForm> taskLedger;
 	private List<TaskReviewHistory> taskReviewHistory;
-
+	private List<String> reviewerList;
 
 	public int getTaskId() {
 		return taskId;
@@ -196,6 +196,14 @@ public class TaskForm implements Serializable {
 
 	public void setTaskReviewHistory(List<TaskReviewHistory> taskReviewHistory) {
 		this.taskReviewHistory = taskReviewHistory;
+	}
+
+	public List<String> getReviewerList() {
+		return reviewerList;
+	}
+
+	public void setReviewerList(List<String> reviewerList) {
+		this.reviewerList = reviewerList;
 	}
 
 }

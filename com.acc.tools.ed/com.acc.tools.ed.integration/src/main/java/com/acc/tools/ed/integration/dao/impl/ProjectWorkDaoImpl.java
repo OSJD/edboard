@@ -3,7 +3,10 @@ package com.acc.tools.ed.integration.dao.impl;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -293,6 +296,11 @@ public int approveVacation(VacationForm vacationForm){
 	}
 
 
+private void addReviewerNames(TaskForm task, int taskId) {
+		// TODO Auto-generated method stub
+		
+	}
+
 public List<ProjectForm> getMyTeamTasks(Integer supervisorId) {
 	
 	final List<ProjectForm> projectTasks=new ArrayList<ProjectForm>();
@@ -492,23 +500,43 @@ public List<ProjectForm> getMyTeamTasks(Integer supervisorId) {
 			final String relTable="SELECT * FROM EDB_TASK_MASTER AS A LEFT JOIN EDB_TASK_REVW_HISTORY AS B ON A.TASK_ID=B.TASK_ID WHERE A.TASK_ID ="+taskId;
 			Statement selectStatement = getConnection().createStatement();
 			ResultSet rs = selectStatement.executeQuery(relTable);
+			int emp_Id = 0;
 			while (rs.next()) {
 				TaskForm taskForm = new TaskForm();
 				taskForm.setTaskId(rs.getInt("TASK_ID"));
 				taskForm.setComponentId(rs.getInt("COMPNT_ID"));
 				taskForm.setTaskName(rs.getString("TASK_NAME"));
 				taskForm.setTaskDesc(rs.getString("TASK_DESC"));
-				taskForm.setTaskHrs(rs.getInt("TASK_HRS"));
+				//taskForm.setTaskHrs(rs.getInt("TASK_HRS"));
 				taskForm.setTaskType(rs.getString("TASK_TYPE"));
 				taskForm.setTaskCreateDate(rs.getString("TASK_CT_DT"));
 				taskForm.setTaskStartDate(rs.getString("TASK_ST_DT"));
 				taskForm.setTaskEndDate(rs.getString("TASK_ET_DT"));
 				taskForm.setTaskStatus(rs.getString("TASK_STATUS"));
-				taskForm.setTaskAction(rs.getString("TASK_ACTIONS"));
-				taskForm.setTaskReviewUser(rs.getString("TASK_REVIEW_USER"));
+				//taskForm.setTaskAction(rs.getString("TASK_ACTIONS"));
+				//taskForm.setTaskReviewUser(rs.getString("TASK_REVIEW_USER"));
 				taskForm.setRejComment(rs.getString("TASK_REVIEW_COMMENTS"));
-				taskForm.setTaskComments(rs.getString("TASK_COMMENTS"));
-				taskFormList.add(taskForm);
+				//taskForm.setTaskComments(rs.getString("TASK_COMMENTS"));
+				
+				
+				emp_Id = rs.getInt("EMP_ID");
+				
+				final String reviewIdquery = "SELECT * FROM EDB_MSTR_EMP_DTLS WHERE  EMP_SUP_EMP_ID = (SELECT EMP_SUP_EMP_ID FROM EDB_MSTR_emp_DTLS WHERE EMP_ID = "+emp_Id + ")  AND EMP_ID <>" +emp_Id ;
+				log.debug("reviewIdquery Query :{}", reviewIdquery );
+				String reviewerName;
+				selectStatement = getConnection().createStatement();
+				ResultSet rss = selectStatement.executeQuery(reviewIdquery);
+				 List<String> reviewerList = new ArrayList<String>();
+				 while(rss.next())
+				 {
+					 reviewerName = rss.getString("EMP_RESOURCE_NAME");
+					 System.out.println("name added is ::" +reviewerName );
+					 reviewerList.add(reviewerName);
+				 }
+				 taskForm.setReviewerList(reviewerList);
+				 System.out.println("size of the list is::" + reviewerList.size());
+				 
+				 taskFormList.add(taskForm);
 			}
 			
 		} catch (Exception e) {
@@ -600,31 +628,50 @@ public List<ProjectForm> getMyTeamTasks(Integer supervisorId) {
 	
 	public TaskForm getTaskByTaskId(Integer taskId){
 		
-		TaskForm taskform=null;
+		final Map<Integer,TaskForm> taskMap=new HashMap<Integer, TaskForm>();
 		try {
 
-			final String relTable="SELECT TASK_ID,TASK_NAME,TASK_DESC FROM EDB_TASK_MASTER WHERE TASK_ID="+taskId;
+			final String relTable="SELECT T.TASK_ID,T.TASK_NAME,T.TASK_TYPE,T.TASK_DESC,TASK_ST_DT,TASK_ET_DT,TASK_STATUS,L.TASK_LDGR_ID,L.TASK_HRS,L.TASK_ACTIVITY, "
+					+ " L.TASK_ACTIVITI_DT,R.TASK_REVIWER_ID,E.EMP_RESOURCE_NAME FROM ((EDB_TASK_MASTER AS T  LEFT JOIN EDB_TASK_LEDGER AS L ON T.TASK_ID=L.TASK_ID) "
+					+ " LEFT JOIN EDB_TASK_REVW AS R ON T.TASK_ID=R.TASK_ID) LEFT JOIN EDB_MSTR_EMP_DTLS AS E ON E.EMP_ID=R.TASK_REVIWER_ID WHERE T.TASK_ID="+taskId;
 			log.debug("getTaskById Query :{}",relTable);
 			Statement selectStatement = getConnection().createStatement();
 			ResultSet rs = selectStatement.executeQuery(relTable);
 			while (rs.next()) {
-				taskform=new TaskForm();
-				taskform.setTaskId(rs.getInt("TASK_ID"));
-				taskform.setTaskName(rs.getString("TASK_NAME"));
-				taskform.setTaskDesc(rs.getString("TASK_DESC"));
+				if(taskMap.isEmpty() && taskMap.containsKey(taskId)){
+					final TaskForm taskForm=taskMap.get(taskId);
+					List<TaskLedgerForm> taskLedger=taskForm.getTaskLedger();
+					if(taskLedger==null){
+						taskLedger=new ArrayList<TaskLedgerForm>();
+					}
+					mapTaskLedgerData(rs, taskForm, taskLedger);
+				} else {
+					final TaskForm taskform=new TaskForm();
+					taskform.setTaskId(rs.getInt("TASK_ID"));
+					taskform.setTaskName(rs.getString("TASK_NAME"));
+					taskform.setTaskDesc(rs.getString("TASK_DESC"));
+					taskform.setTaskType(rs.getString("TASK_TYPE"));
+					taskform.setTaskStartDate(new DateTime(rs.getDate("TASK_ST_DT").getTime()).toString("MM/dd/yyyy"));
+					taskform.setTaskEndDate(new DateTime(rs.getDate("TASK_ET_DT").getTime()).toString("MM/dd/yyyy"));
+					taskform.setTaskStatus(rs.getString("TASK_STATUS"));
+					final List<TaskLedgerForm> taskLedger=new ArrayList<TaskLedgerForm>(); 
+					mapTaskLedgerData(rs, taskform, taskLedger);
+					taskMap.put(taskId, taskform);
+					
+				}
 				
 			}
 				
 		} catch (Exception e) {
 			log.error("Error in getTasksByComponentId:",e);
 		}
-		return taskform;
+		return taskMap.get(taskId);
 	}
 	
 	public List<ReferenceData> getTaskActivities(Integer taskId) {
 		final List<ReferenceData> taskForm = new LinkedList<ReferenceData>();
 		try {
-			final String activityTable = "SELECT TASK_ACTIVITY FROM EDB_TASK_LEDGER WHERE TASK_ID="+ taskId;
+			final String activityTable = "SELECT * FROM EDB_TASK_LEDGER WHERE TASK_ID="+ taskId;
 			log.debug("getTaskByTaskActivity Query :{}", activityTable);
 			Statement selectStatement = getConnection().createStatement();
 			ResultSet rs = selectStatement.executeQuery(activityTable);
@@ -838,4 +885,27 @@ public List<ProjectForm> getMyTeamTasks(Integer supervisorId) {
 
 	}
 	
+	public void addTaskComments(int taskId, String devloperComments)
+	{
+		
+		try{
+			DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy ");
+			//get current date time with Date()
+			Date date = new Date();
+			String addTaskCommentQuery = "insert into EDB_TASK_REVW_HISTORY(TASK_ID,TASK_REVIEW_DT,TASK_DEV_COMMENTS) values (?,?,?)";
+			PreparedStatement pstm = getConnection().prepareStatement(addTaskCommentQuery);
+			pstm.setInt(1, taskId);
+			pstm.setString(2, devloperComments);
+			pstm.setString(3, dateFormat.format(date));
+			pstm.executeUpdate();
+			pstm.close();
+
+
+
+		}
+		catch(Exception e){
+			log.error("Error in updating the task comments");
+		}
+
+	}
 }

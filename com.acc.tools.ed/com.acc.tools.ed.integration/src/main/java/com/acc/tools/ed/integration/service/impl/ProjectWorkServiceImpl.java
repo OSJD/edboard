@@ -81,8 +81,12 @@ public class ProjectWorkServiceImpl implements ProjectWorkService {
 	{
 		projectWorkDao.deleteVacation(vacationId);
 	}
-
-	public List<ReferenceData> getTaskActivities(Integer taskId) {
-		return null;
+	public List<ReferenceData> getTaskActivities(Integer taskId)
+	{
+		return projectWorkDao.getTaskActivities(taskId);
+	}
+	public void addTaskComments(int taskId, String devloperComments)
+	{
+		projectWorkDao.addTaskComments(taskId,devloperComments);
 	}
 }

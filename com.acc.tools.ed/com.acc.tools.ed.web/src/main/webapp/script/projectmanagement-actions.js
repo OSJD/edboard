@@ -311,7 +311,22 @@ $(document).ready(function(){
 						
 						});
 						
-						
+						$( "#projectStartDate" ).datepicker({
+							showOn: 'button',
+							buttonText: 'Show Date',
+							buttonImageOnly: true,
+							buttonImage: 'resources/cal.gif',
+							dateFormat: 'mm/dd/yy',
+							constrainInput: true
+						 });
+						$( "#projectEndDate" ).datepicker({
+							showOn: 'button',
+							buttonText: 'Show Date',
+							buttonImageOnly: true,
+							buttonImage: 'resources/cal.gif',
+							dateFormat: 'mm/dd/yy',
+							constrainInput: true
+						 });
 						
 						$("#addProject").button().unbind("click").on("click", function() {
 							fnReset();
@@ -344,22 +359,7 @@ $(document).ready(function(){
 									   
 									});
 									$("#newProgramName").val("");
-									$( "#startDate" ).datepicker({
-										showOn: 'button',
-										buttonText: 'Show Date',
-										buttonImageOnly: true,
-										buttonImage: 'resources/cal.gif',
-										dateFormat: 'mm/dd/yy',
-										constrainInput: true
-									 });
-									$( "#endDate" ).datepicker({
-										showOn: 'button',
-										buttonText: 'Show Date',
-										buttonImageOnly: true,
-										buttonImage: 'resources/cal.gif',
-										dateFormat: 'mm/dd/yy',
-										constrainInput: true
-									 });
+									
 									addProjectDialog.dialog("open");
 								},
 								error : function(data) {	

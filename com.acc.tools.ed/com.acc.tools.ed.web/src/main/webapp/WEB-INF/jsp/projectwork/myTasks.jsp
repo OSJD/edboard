@@ -5,7 +5,7 @@
 
 <%@ include file="/WEB-INF/jsp/includes/document-header.jsp"%>
 <script src="<%=request.getContextPath()%>/script/projectwork-actions.js"></script>
-<%@ include file="/WEB-INF/jsp/projectwork/addTaskPopup.jsp"%>	
+
 	<table class="ebdtable">
 		<tr>
 			<th style="width: 70px; font-weight: bold;">Release Name</th>

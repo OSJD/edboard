@@ -24,6 +24,8 @@ public interface ProjectWorkService {
 	public List<VacationForm> getDeveloperVacationDetails(Integer employeeId);
 	public void deleteVacation(int vacationId);
 	public String editVacation(VacationForm vacationForm);
-	public List<ReferenceData> getTaskActivities(Integer taskId);
+		public List<ReferenceData> getTaskActivities(Integer taskId);
+		public void addTaskComments(int taskId, String devloperComments);
+
 }
 

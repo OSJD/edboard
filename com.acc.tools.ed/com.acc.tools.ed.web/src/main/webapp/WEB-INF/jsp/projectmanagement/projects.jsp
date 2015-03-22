@@ -35,10 +35,10 @@
 						<tr>
 							<th style="text-align: right;">Start Date</th>
 							<td style="width: 200px;"><form:input type="date" path="startDate"
-								id="startDate" class="textbox" /></td>
+								id="projectStartDate" class="textbox" /></td>
 							<th style="text-align: right;">End Date</th>
 							<td>
-								<form:input type="date" path="endDate" id="endDate" class="textbox" />
+								<form:input type="date" path="endDate" id="projectEndDate" class="textbox" />
 							</td>
 						</tr>
 						<tr>

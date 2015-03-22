@@ -23,7 +23,10 @@ public interface ProjectWorkDao {
 	public int approveVacation(VacationForm vacationForm);
 	public List<VacationForm> getDeveloperVacationDetails(Integer employeeId);
 	public void deleteVacation(int vacationId);
+	public List<ReferenceData> getTaskActivities(Integer taskId);
 	
 	public String editVacation(VacationForm vacationForm);
+	public void addTaskComments(int taskId, String devloperComments);
+	
 	
 }

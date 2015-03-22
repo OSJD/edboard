@@ -13,11 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.acc.tools.ed.integration.dto.ComponentForm;
 import com.acc.tools.ed.integration.dto.EDBUser;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
-import com.acc.tools.ed.integration.dto.ReleaseForm;
 import com.acc.tools.ed.integration.dto.TaskForm;
 import com.acc.tools.ed.integration.service.ProjectWorkService;
 import com.acc.tools.ed.web.controller.common.AbstractEdbBaseController;
@@ -54,7 +52,6 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 	public @ResponseBody List<ReferenceData> getTaskIdsByComponentId(
 			@ModelAttribute("componentId") Integer componentId,
 			Model model){
-		
 		return projectWorkService.getTasksByComponentId(componentId);
 	}
 
@@ -71,8 +68,14 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 	public @ResponseBody List<ReferenceData> getTaskActivities(
 			@ModelAttribute("taskId") Integer taskId,
 			Model model){
-		model.addAttribute("activityList", getTaskActivities(taskId, model));
-		return projectWorkService.getTaskActivities(taskId);
+		//model.addAttribute("activityList", getTaskActivities(taskId, model));
+		List<ReferenceData> test = projectWorkService.getTaskActivities(taskId);
+		for(ReferenceData data : test)
+		{
+			System.out.println("task id ::" +data.getId());
+			System.out.println("activity is ::"+data.getLabel());
+		}
+		return test;
 	}
 	
 
@@ -121,5 +124,17 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 		return "/projectwork/newTask";
 	}
 	
+	 @RequestMapping(value = "/addTaskComments.do")
+		public @ResponseBody String addTaskComments(
+				@RequestParam("taskId") int taskId,
+				@RequestParam("devloperComments") String devloperComments,
+				@ModelAttribute("edbUser") EDBUser edbUser,
+				Model model){
+			LOG.debug("taskId:{}",taskId);
+			LOG.debug("devloperComments:{}",devloperComments);
+			
+			projectWorkService.addTaskComments(taskId,devloperComments);			
 
+			return "success";
+		}
 }

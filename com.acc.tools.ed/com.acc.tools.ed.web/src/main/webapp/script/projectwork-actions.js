@@ -1,6 +1,6 @@
 $(document).ready(
 		function() {
-			
+						
 		/*Calendar Actions*/
 		$("#vacationEndDate").edbdatepicker({
 			//trigger : "#buttonn1"
@@ -146,9 +146,28 @@ $(document).ready(
 			 }
 
 		});
+		
+		
+		$( "#taskStartDate" ).datepicker({
+			showOn: 'button',
+			buttonText: 'Show Date',
+			buttonImageOnly: true,
+			buttonImage: 'resources/cal.gif',
+			dateFormat: 'mm/dd/yy',
+			constrainInput: true
+		});
+		$( "#taskEndDate" ).datepicker({
+			showOn: 'button',
+			buttonText: 'Show Date',
+			buttonImageOnly: true,
+			buttonImage: 'resources/cal.gif',
+			dateFormat: 'mm/dd/yy',
+			constrainInput: true
+		});
 
 	
-		$(".addTaskPopup").unbind("click").on("click", function() {
+		$(".addTaskPopup").on("click", function() {
+			
 			var componentId=$(this).attr("id");
 			var taskTypeDisplay=$(this).attr("taskType");
 			$("#taskProjectName").html($("#projName"+componentId).val());
@@ -160,26 +179,8 @@ $(document).ready(
 			$("#taskCompStartDate").html(startDate);
 			$("#taskCompEndDate").html(endDate);
 			
-			$( "#taskStartDate" ).datepicker({
-				showOn: 'button',
-				buttonText: 'Show Date',
-				buttonImageOnly: true,
-				buttonImage: 'resources/cal.gif',
-				dateFormat: 'mm/dd/yy',
-				constrainInput: true,
-				minDate:startDate,
-				maxDate:endDate
-			});
-			$( "#taskEndDate" ).datepicker({
-				showOn: 'button',
-				buttonText: 'Show Date',
-				buttonImageOnly: true,
-				buttonImage: 'resources/cal.gif',
-				dateFormat: 'mm/dd/yy',
-				constrainInput: true,
-				minDate:startDate,
-				maxDate:endDate
-			});
+			
+
 			
 			$.ajax({
 				type : "POST",
@@ -187,9 +188,15 @@ $(document).ready(
 				dataType:'json',
 				data : {componentId:componentId},
 				success : function(tasks) {
+					$("#taskNameSelect option").remove();
+					$("#taskNameSelect").append("<option value='0'>--- Select ---</option>")
+					$("#taskNameSelect").append("<option value='-1'>Create New Task</option>");
 					for(var index in tasks){
 						$("#taskNameSelect").append("<option value='"+tasks[index].id+"'>"+tasks[index].label+"</option>")
+						activity(tasks[index].id);
 					}
+				
+					
 				},
 				error : function(data) {
 				}
@@ -250,9 +257,62 @@ $(document).ready(
 			});
 		});
 		
+		$(".updateTaskComnt").button().unbind("click").on("click",function(){
+
+
+			var componentId=this.id;
+			
+			var taskComments=$("#taskComments_"+componentId).val();
+			//alert(approverComments);
+			$.ajax({
+				type : "POST",
+				url : "./updateTaskComments.do",
+				data : {
+					componentId:componentId,
+					taskComments:taskComments
+				},
+				success : function(response) {
+					if(response=="success"){
+						alert('Request status updated successfully!');
+					}
+					
+				},
+				error : function(data) {},
+				complete:function(data){
+
+				}
+			});
+		});
+		
 });
 
+$(".taskCommentSubmit").button().unbind("click").on("click",function(){
 
+
+	var taskId=this.id;
+	
+	var devloperComments=$("#taskDvlprComments_"+taskId).val();
+	//alert(taskId);
+	$.ajax({
+		type : "POST",
+		url : "./addTaskComments.do",
+		data : {
+			taskId:taskId,
+			devloperComments:devloperComments
+			
+		},
+		success : function(response) {
+			if(response=="success"){
+				alert('Request status updated successfully!');
+			}
+			vacationRequestPopup.dialog("close");
+		},
+		error : function(data) {},
+		complete:function(data){
+
+		}
+	});
+});
 
 $("#taskNameSelect").unbind("change").on("change",function(){
 	var taskId=$("#taskNameSelect").val();
@@ -260,13 +320,17 @@ $("#taskNameSelect").unbind("change").on("change",function(){
 		$("#newTask").show();
 	} else {
 		$("#newTask").hide();
-		alert(taskId);
+		//alert(taskId);
 		$.ajax({
 			type : "POST",
 			url : "./getTaskByTaskId.do",
 			dataType:'json',
 			data : {taskId:taskId},
 			success : function(task) {
+				alert(task.taskStartDate);
+				alert(task.taskEndDate);
+				$("#taskType").val(1);
+				$("#taskType").attr("disabled", "disabled"); 
 				$("#taskDesc").val(task.taskDesc);
 				$("#taskDesc").attr("disabled", "disabled"); 
 			},
@@ -285,6 +349,25 @@ $("#taskAction").unbind("change").on("change",function(){
 		$("#div1").hide();
 	
 }); 
+function activity(taskId){
+	//alert(taskId);
+	$.ajax({
+		type : "POST",
+		url : "./fetchtaskActivityDetails.do",
+		dataType:'json',
+		data : {taskId:taskId},
+		success : function(activity) {
+			
+			for(var index in activity){
+				$("#taskActivitySelect").append("<option value='"+activity[index].id+"'>"+activity[index].label+"</option>")
+			}
+		},
+		error : function(data) {
+		}
+	});
+	
+	
+}
 
  function edit(taskId) {
 	 var taskTypeDisplay=$("#editTask").attr("taskType");
@@ -320,6 +403,7 @@ $("#taskAction").unbind("change").on("change",function(){
 				$("#taskStatus").val(response[obj].taskStatus);
 				$("#taskAction").val(response[obj].taskAction);
 				$("#taskComments").val(response[obj].taskComments);
+				alert(testing + val(response[obj].taskId));
 				if($("#taskAction").val()=="rejected")
 				{
 					$("#rejComment").val(response[obj].rejComment);
@@ -377,3 +461,21 @@ function reset()
 	$("#taskReviewUser").val('');
 	$("#taskComments").val('');
 }
+
+var developmentArtifactspopup=$("#developmentArtifacts-popup").dialog({
+	autoOpen : false,
+	height : 420,
+	width : 430,
+	modal : true,
+	buttons:{
+		"Add":function(){
+		alert("Added Successfully")
+		}
+	}
+});
+
+$("#addArtifacts").unbind("click").on("click", function() {
+	alert("fd" );
+	developmentArtifactspopup.dialog("open");
+	alert("fd45" );
+});

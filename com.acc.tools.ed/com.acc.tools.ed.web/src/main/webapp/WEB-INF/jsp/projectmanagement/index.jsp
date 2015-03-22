@@ -18,7 +18,8 @@
 	<%@ include file="/WEB-INF/jsp/projectmanagement/editRelease.jsp" %>
 	<%@ include file="/WEB-INF/jsp/projectmanagement/addComponent.jsp" %>
 	<%@ include file="/WEB-INF/jsp/projectmanagement/addVacationRequest.jsp" %>
-	
+	<%@ include file="/WEB-INF/jsp/projectwork/addTaskPopup.jsp"%>	
+		
 	
 	<table style="width: 100%;height: 100%;">
 		<!-- header -->
