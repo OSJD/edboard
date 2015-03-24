@@ -41,7 +41,34 @@ var edb=(function($){
 	    return false;
 	}
 	
+	
+	/*
+	 * Edb Context Object to hold all application objects while moving from page to another page.
+	 */
+	var edbContextInstance = null;
+	function initializeEdbContext() {
+		 var contextAttributes=[];
+		 function addEdbAttribute(key,value) {
+			 contextAttributes[key]=value;
+		 }
+		 function getEdbAttribute(key) {
+			 return contextAttributes[key];
+		 }
+		 return {
+			 addAttribute : addEdbAttribute,
+			 getAttribute : getEdbAttribute
+		 };
+	 }
+
+	 function getInstance() {
+		 if( ! edbContextInstance ) {
+			 edbContextInstance = new initializeEdbContext();
+		 }
+		 return edbContextInstance;
+	 } 
+	
 	return {
-		openWindow:openWindow
+		openWindow:openWindow,
+		getEDBContextInstance :getInstance
 	};
 })($);

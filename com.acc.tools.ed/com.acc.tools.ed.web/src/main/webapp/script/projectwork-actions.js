@@ -148,19 +148,11 @@ $(document).ready(
 		});
 		
 		
-		$( "#taskStartDate" ).datepicker({
-			showOn: 'button',
-			buttonText: 'Show Date',
-			buttonImageOnly: true,
-			buttonImage: 'resources/cal.gif',
+		$( "#taskStartDateId" ).datepicker({
 			dateFormat: 'mm/dd/yy',
 			constrainInput: true
 		});
-		$( "#taskEndDate" ).datepicker({
-			showOn: 'button',
-			buttonText: 'Show Date',
-			buttonImageOnly: true,
-			buttonImage: 'resources/cal.gif',
+		$( "#taskEndDateId" ).datepicker({
 			dateFormat: 'mm/dd/yy',
 			constrainInput: true
 		});
@@ -193,10 +185,7 @@ $(document).ready(
 					$("#taskNameSelect").append("<option value='-1'>Create New Task</option>");
 					for(var index in tasks){
 						$("#taskNameSelect").append("<option value='"+tasks[index].id+"'>"+tasks[index].label+"</option>")
-						activity(tasks[index].id);
 					}
-				
-					
 				},
 				error : function(data) {
 				}
@@ -287,7 +276,7 @@ $(document).ready(
 });
 
 $(".taskCommentSubmit").button().unbind("click").on("click",function(){
-
+	
 
 	var taskId=this.id;
 	
@@ -327,12 +316,24 @@ $("#taskNameSelect").unbind("change").on("change",function(){
 			dataType:'json',
 			data : {taskId:taskId},
 			success : function(task) {
-				alert(task.taskStartDate);
-				alert(task.taskEndDate);
-				$("#taskType").val(1);
+				$("#taskType").val(task.taskType);
 				$("#taskType").attr("disabled", "disabled"); 
 				$("#taskDesc").val(task.taskDesc);
 				$("#taskDesc").attr("disabled", "disabled"); 
+				$("#taskStartDateId").val(task.taskStartDate);
+				$("#taskStartDateId").attr("disabled", "disabled"); 
+				$("#taskEndDateId").val(task.taskEndDate) 
+				$("#taskEndDateId").attr("disabled", "disabled"); 
+				$("#taskActivitySelect option").remove();
+				$("#taskActivitySelect").append("<option value='-1'>Enter new comment</option>");
+				var activity=task.taskLedger;
+				var context=edb.getEDBContextInstance();
+				for(var index in activity){
+					$("#taskActivitySelect").append("<option value='"+activity[index].taskLedgerId+"'>"+activity[index].taskActivity+"</option>");
+					alert(activity[index].taskLedgerId);
+					context.addAttribute(activity[index].taskLedgerId,activity[index]);
+				}
+
 			},
 			error : function(data) {
 				alert(data.error);
@@ -340,6 +341,13 @@ $("#taskNameSelect").unbind("change").on("change",function(){
 		});
 	}
 }); 
+
+$("#taskActivitySelect").on("change",function(){
+	var context=edb.getEDBContextInstance();
+	var taskActivityObject=context.getAttribute($("#taskActivitySelect").val());
+	$("#taskActivityDateId").html("Date :"+taskActivityObject.taskActivityDate);
+	
+});
 
 
 $("#taskAction").unbind("change").on("change",function(){
@@ -349,25 +357,7 @@ $("#taskAction").unbind("change").on("change",function(){
 		$("#div1").hide();
 	
 }); 
-function activity(taskId){
-	//alert(taskId);
-	$.ajax({
-		type : "POST",
-		url : "./fetchtaskActivityDetails.do",
-		dataType:'json',
-		data : {taskId:taskId},
-		success : function(activity) {
-			
-			for(var index in activity){
-				$("#taskActivitySelect").append("<option value='"+activity[index].id+"'>"+activity[index].label+"</option>")
-			}
-		},
-		error : function(data) {
-		}
-	});
-	
-	
-}
+
 
  function edit(taskId) {
 	 var taskTypeDisplay=$("#editTask").attr("taskType");

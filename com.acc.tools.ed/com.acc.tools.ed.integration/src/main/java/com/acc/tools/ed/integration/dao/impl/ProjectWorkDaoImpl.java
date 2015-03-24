@@ -638,13 +638,15 @@ public List<ProjectForm> getMyTeamTasks(Integer supervisorId) {
 			Statement selectStatement = getConnection().createStatement();
 			ResultSet rs = selectStatement.executeQuery(relTable);
 			while (rs.next()) {
-				if(taskMap.isEmpty() && taskMap.containsKey(taskId)){
+				if(!taskMap.isEmpty() && taskMap.containsKey(taskId)){
 					final TaskForm taskForm=taskMap.get(taskId);
 					List<TaskLedgerForm> taskLedger=taskForm.getTaskLedger();
 					if(taskLedger==null){
 						taskLedger=new ArrayList<TaskLedgerForm>();
 					}
-					mapTaskLedgerData(rs, taskForm, taskLedger);
+					mapTaskLedgerData(rs, taskLedger);
+					taskForm.setTaskLedger(taskLedger);
+					
 				} else {
 					final TaskForm taskform=new TaskForm();
 					taskform.setTaskId(rs.getInt("TASK_ID"));
@@ -655,7 +657,8 @@ public List<ProjectForm> getMyTeamTasks(Integer supervisorId) {
 					taskform.setTaskEndDate(new DateTime(rs.getDate("TASK_ET_DT").getTime()).toString("MM/dd/yyyy"));
 					taskform.setTaskStatus(rs.getString("TASK_STATUS"));
 					final List<TaskLedgerForm> taskLedger=new ArrayList<TaskLedgerForm>(); 
-					mapTaskLedgerData(rs, taskform, taskLedger);
+					taskform.setTaskLedger(taskLedger);
+					mapTaskLedgerData(rs, taskLedger);
 					taskMap.put(taskId, taskform);
 					
 				}

@@ -55,9 +55,9 @@
 							<option value="3">Value Added</option>
 						</select>
 					</td>
-					<td><input type="text" name="taskStartDate" id="taskStartDate" class="textbox" style="width:75px;" /></td>
+					<td><input type="text" name="taskStartDate" id="taskStartDateId" class="textbox" style="width:75px;" /></td>
 
-					<td><input type="text" name="taskEndDate" id="taskEndDate" class="textbox" style="width:75px;" /></td>
+					<td><input type="text" name="taskEndDate" id="taskEndDateId" class="textbox" style="width:75px;" /></td>
 					<td colspan="3"><textarea name="taskDesc" id="taskDesc" rows="5" cols="70"></textarea>
 					
 					</td>
@@ -71,12 +71,13 @@
 
 								<tr>
 									<th style="text-align: left;width: 200px;">
-									
-										Activites	
-			
-										<select name="taskActivity" id = "taskActivitySelect" class = "textbox" style="margin-left50px;'', h  width:135px;">
-											  <option value="-1">Enter new comment</option>
-				   						</select>
+										<div style="width:180px;float: left;">
+											Activites	
+											<select name="taskActivity" id = "taskActivitySelect" class = "textbox" style="width:135px;">
+												  <option value="-1">Enter new comment</option>
+					   						</select>
+				   						</div>
+				   						<div id="taskActivityDateId" style="margin-left:15px; width: 10px;float: left;"></div>
 										<a href="#" id="${componentId}" class="taskCommentSubmit" style="width: 75px; float:right">+Comment</a>
 									
 									</th>
