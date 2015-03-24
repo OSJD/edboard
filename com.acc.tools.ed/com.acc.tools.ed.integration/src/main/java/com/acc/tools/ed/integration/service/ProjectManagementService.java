@@ -42,4 +42,5 @@ public interface ProjectManagementService {
 	public int checkProjName(String projectName, int progId);
 	public ReleasePlan buildReleasePlan(DateTime relDateStart,DateTime relDateEnd,Integer projId);
 	public ReleasePlan fetchReleasePlan(DateTime relDateStart,DateTime relDateEnd,Integer releaseId,Integer projId);
+	public List<ReferenceData> getResourcesByProjectId(Integer projectId);
 }

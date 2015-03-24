@@ -671,27 +671,6 @@ public List<ProjectForm> getMyTeamTasks(Integer supervisorId) {
 		return taskMap.get(taskId);
 	}
 	
-	public List<ReferenceData> getTaskActivities(Integer taskId) {
-		final List<ReferenceData> taskForm = new LinkedList<ReferenceData>();
-		try {
-			final String activityTable = "SELECT * FROM EDB_TASK_LEDGER WHERE TASK_ID="+ taskId;
-			log.debug("getTaskByTaskActivity Query :{}", activityTable);
-			Statement selectStatement = getConnection().createStatement();
-			ResultSet rs = selectStatement.executeQuery(activityTable);
-			while (rs.next()) {
-				ReferenceData task=new ReferenceData();
-				task.setId(""+rs.getInt("TASK_ID"));
-				task.setLabel(rs.getString("TASK_ACTIVITY"));
-				taskForm.add(task);
-			}
-		} catch (Exception e) {
-			log.error("Error in getTaskByTaskActivity:", e);
-
-		}
-		return taskForm;
-	}
-	
-
 
 	public List<VacationForm> getVacationDetails(Integer employeeId){
 		

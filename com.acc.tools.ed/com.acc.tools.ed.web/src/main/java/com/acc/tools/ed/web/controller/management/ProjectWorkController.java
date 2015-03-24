@@ -1,6 +1,9 @@
 package com.acc.tools.ed.web.controller.management;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +20,7 @@ import com.acc.tools.ed.integration.dto.EDBUser;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.TaskForm;
+import com.acc.tools.ed.integration.service.ProjectManagementService;
 import com.acc.tools.ed.integration.service.ProjectWorkService;
 import com.acc.tools.ed.web.controller.common.AbstractEdbBaseController;
 
@@ -28,6 +32,9 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 	
 	@Autowired
 	private ProjectWorkService projectWorkService;
+	
+	@Autowired
+	private ProjectManagementService projectManagementService;
 	
 	@RequestMapping(value = "/projectWork.do")
 	public String resourceManagement(@ModelAttribute("edbUser")EDBUser edbUser,Model model) {
@@ -49,10 +56,23 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 	}
 	
 	@RequestMapping(value = "/getTaskIdsByComponentId.do")
-	public @ResponseBody List<ReferenceData> getTaskIdsByComponentId(
+	public @ResponseBody Map<String,Object> getTaskIdsByComponentId(
 			@ModelAttribute("componentId") Integer componentId,
+			@ModelAttribute("projectId") Integer projectId,
+			@ModelAttribute("edbUser")EDBUser edbUser,
 			Model model){
-		return projectWorkService.getTasksByComponentId(componentId);
+		Map<String,Object> taskPopupData=new HashMap<String, Object>();
+		taskPopupData.put("myTasks", projectWorkService.getTasksByComponentId(componentId));
+		List<ReferenceData> resources=projectManagementService.getResourcesByProjectId(projectId);
+		for(Iterator<ReferenceData> resItr=resources.iterator();resItr.hasNext();){
+			ReferenceData resource=(ReferenceData)resItr.next();
+			if(resource.getId().equalsIgnoreCase(""+edbUser.getEmployeeId())){
+				resItr.remove();
+			}
+		}
+		taskPopupData.put("reviewerList", resources);
+		LOG.debug("Task Popup Data:{}",taskPopupData);
+		return taskPopupData;
 	}
 
 	
@@ -63,22 +83,6 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 		return projectWorkService.getTaskByTaskId(taskId);
 	}
 	
-	
-	@RequestMapping(value = "/fetchtaskActivityDetails.do")
-	public @ResponseBody List<ReferenceData> getTaskActivities(
-			@ModelAttribute("taskId") Integer taskId,
-			Model model){
-		//model.addAttribute("activityList", getTaskActivities(taskId, model));
-		List<ReferenceData> test = projectWorkService.getTaskActivities(taskId);
-		for(ReferenceData data : test)
-		{
-			System.out.println("task id ::" +data.getId());
-			System.out.println("activity is ::"+data.getLabel());
-		}
-		return test;
-	}
-	
-
 	
 	@RequestMapping(value = "/teamTasks.do")
 	public String teamTasks(@ModelAttribute("edbUser")EDBUser edbUser,Model model) {

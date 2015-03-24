@@ -13,6 +13,8 @@ public class TaskLedgerForm implements Serializable {
 	private int taskHrs;
 	private String taskActivity;
 	private String taskActivityDate;
+	private String status;
+	private String taskReviewUser;
 	
 	public int getTaskId() {
 		return taskId;
@@ -43,6 +45,18 @@ public class TaskLedgerForm implements Serializable {
 	}
 	public void setTaskLedgerId(int taskLedgerId) {
 		this.taskLedgerId = taskLedgerId;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public String getTaskReviewUser() {
+		return taskReviewUser;
+	}
+	public void setTaskReviewUser(String taskReviewUser) {
+		this.taskReviewUser = taskReviewUser;
 	}
 	
 

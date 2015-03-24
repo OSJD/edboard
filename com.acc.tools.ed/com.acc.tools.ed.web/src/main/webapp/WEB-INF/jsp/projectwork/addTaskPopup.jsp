@@ -58,7 +58,7 @@
 					<td><input type="text" name="taskStartDate" id="taskStartDateId" class="textbox" style="width:75px;" /></td>
 
 					<td><input type="text" name="taskEndDate" id="taskEndDateId" class="textbox" style="width:75px;" /></td>
-					<td colspan="3"><textarea name="taskDesc" id="taskDesc" rows="5" cols="70"></textarea>
+					<td colspan="3"><textarea name="taskDesc" id="taskDesc" rows="5" cols="90"></textarea>
 					
 					</td>
 
@@ -71,14 +71,14 @@
 
 								<tr>
 									<th style="text-align: left;width: 200px;">
-										<div style="width:180px;float: left;">
+										<div style="width:185px;float: left;">
 											Activites	
-											<select name="taskActivity" id = "taskActivitySelect" class = "textbox" style="width:135px;">
+											<select name="taskActivity" id = "taskActivitySelect" class = "textbox" style="width:140px;">
 												  <option value="-1">Enter new comment</option>
 					   						</select>
 				   						</div>
 				   						<div id="taskActivityDateId" style="margin-left:15px; width: 10px;float: left;"></div>
-										<a href="#" id="${componentId}" class="taskCommentSubmit" style="width: 75px; float:right">+Comment</a>
+										<a href="#" id="${componentId}" class="taskHistory" style="width: 75px; float:right">History</a>
 									
 									</th>
 									<th>Task Hours</th>
@@ -87,22 +87,22 @@
 								</tr>
 								<tr>
 									<td>
-									<textarea rows="5" cols="100" name="taskComments"
-									id="taskDvlprComments_${taskId}"></textarea>
-									
-										
+										<textarea rows="5" cols="100" name="taskComments" id="taskDvlprComments"></textarea>
 									</td>
-									<td><input type="text" name="taskHrs" id="taskHrs"
-											class="textbox" style="width:35px;" /></td>
+									<td><input type="text" name="taskHrs" id="taskHrs" class="textbox" style="width:35px;" /></td>
 									<td>
 										<select name="taskStatus" id="taskStatus" style="width:135px;">
-											<option value="">---Select---</option>
+											<option value="-1">---Select---</option>
 											<option value="completed">Completed</option>
 											<option value="inProgress">In Progress</option>
 											<option value="onHold">ComplOn Holdeted</option>
 										</select>
 									</td>
-									<td>Murali Gavarasana</td>
+									<td>
+										<select name="taskReviewUser" id="taskReviewUser" style="width:200px;">
+											<option value="-1">---Select---</option>
+										</select>
+									</td>
 								</tr>	
 								<tr>
 									<td colspan="4" style="text-align: center; background-image: none; background-color: white;">
@@ -156,4 +156,7 @@
 				</table>
 			</fieldset>
 		</form>
+	</div>
+	<div id="taskHistoryPanel" title="Tasks History">
+	
 	</div>

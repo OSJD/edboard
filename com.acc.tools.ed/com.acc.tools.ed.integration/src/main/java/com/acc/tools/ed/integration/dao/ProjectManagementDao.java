@@ -43,4 +43,5 @@ public interface ProjectManagementDao {
 	public Map<String,List<WeekDates>> getVacationDetailsByEmployeeIds(List<ReferenceData> employeeIds);
 	public ProjectForm getReleaseData(Integer releaseId);
 	public int releaseCountByProjectId(String projectId);
+	public List<ReferenceData> getResourcesByProjectId(Integer projectId);
 }

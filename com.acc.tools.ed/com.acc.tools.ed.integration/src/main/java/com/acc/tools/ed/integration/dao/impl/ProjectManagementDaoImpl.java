@@ -39,7 +39,32 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 	
 	Logger log=LoggerFactory.getLogger(ProjectManagementDaoImpl.class);
 	
-	
+	public List<ReferenceData> getResourcesByProjectId(Integer projectId){
+
+		
+		List<ReferenceData> resourceList = new ArrayList<ReferenceData>();
+		
+		try {
+			String resourceQuery = "SELECT E.EMP_ID,E.EMP_RESOURCE_NAME FROM EDB_MSTR_EMP_DTLS AS E,EDB_PROJ_EMP AS PE WHERE E.EMP_ID=PE.EMP_ID AND PE.PROJ_ID="+projectId;
+			log.debug("Resource by project Id Query:{}",resourceQuery);
+			Statement selectStatement = getConnection().createStatement();
+			ResultSet rs = selectStatement.executeQuery(resourceQuery);
+			
+			while (rs.next()) {
+				ReferenceData referenceData = new ReferenceData();
+				referenceData.setId(rs.getString("EMP_ID"));
+				referenceData.setLabel(rs.getString("EMP_RESOURCE_NAME"));
+				resourceList.add(referenceData);
+			}
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return resourceList;
+		
+		
+	}
 	public Map<String,List<WeekDates>> getVacationDetailsByEmployeeIds(List<ReferenceData> employeeIds){
 		final Map<String,List<WeekDates>> vacationDetailsMap=new LinkedHashMap<String, List<WeekDates>>();
 		StringBuilder empIds=new StringBuilder();

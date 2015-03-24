@@ -162,6 +162,7 @@ $(document).ready(
 			
 			var componentId=$(this).attr("id");
 			var taskTypeDisplay=$(this).attr("taskType");
+			var projectId=$(this).attr("projectId");
 			$("#taskProjectName").html($("#projName"+componentId).val());
 			$("#taskReleaseName").html($("#releaseName"+componentId).val());
 			$("#taskComponentName").html($("#componentName"+componentId).val());
@@ -171,21 +172,33 @@ $(document).ready(
 			$("#taskCompStartDate").html(startDate);
 			$("#taskCompEndDate").html(endDate);
 			
-			
-
-			
 			$.ajax({
 				type : "POST",
 				url : "./getTaskIdsByComponentId.do",
 				dataType:'json',
-				data : {componentId:componentId},
-				success : function(tasks) {
-					$("#taskNameSelect option").remove();
-					$("#taskNameSelect").append("<option value='0'>--- Select ---</option>")
-					$("#taskNameSelect").append("<option value='-1'>Create New Task</option>");
-					for(var index in tasks){
-						$("#taskNameSelect").append("<option value='"+tasks[index].id+"'>"+tasks[index].label+"</option>")
-					}
+				data : {componentId:componentId,
+						projectId:projectId},
+				success : function(response) {
+					$.each(response, function(key, value){
+						if(key=="myTasks"){
+							var tasks=value;
+							$("#taskNameSelect option").remove();
+							$("#taskNameSelect").append("<option value='0'>--- Select ---</option>");
+							$("#taskNameSelect").append("<option value='-1'>Create New Task</option>");
+							for(var index in tasks){
+								$("#taskNameSelect").append("<option value='"+tasks[index].id+"'>"+tasks[index].label+"</option>")
+							}
+						} else if(key=="reviewerList"){
+							var reviewers=value;
+							$("#taskReviewUser option").remove();
+							$("#taskReviewUser").append("<option value='0'>--- Select ---</option>")
+							for(var index in reviewers){
+								$("#taskReviewUser").append("<option value='"+reviewers[index].id+"'>"+reviewers[index].label+"</option>")
+							}
+						}
+						
+					});
+
 				},
 				error : function(data) {
 				}
@@ -208,7 +221,9 @@ $(document).ready(
 			addTaskDialog.dialog('open');
 		});
 		
-		
+		/**
+		 * Hide and show of tasks
+		 */
 		$(".componentData").hide();	
 		$(".compData").hide();	
 		$(".taskData").hide();
@@ -246,62 +261,20 @@ $(document).ready(
 			});
 		});
 		
-		$(".updateTaskComnt").button().unbind("click").on("click",function(){
-
-
-			var componentId=this.id;
-			
-			var taskComments=$("#taskComments_"+componentId).val();
-			//alert(approverComments);
-			$.ajax({
-				type : "POST",
-				url : "./updateTaskComments.do",
-				data : {
-					componentId:componentId,
-					taskComments:taskComments
-				},
-				success : function(response) {
-					if(response=="success"){
-						alert('Request status updated successfully!');
-					}
-					
-				},
-				error : function(data) {},
-				complete:function(data){
-
-				}
-			});
+		var taskHistoryPanelPopup=$("#taskHistoryPanel").dialog({
+			autoOpen : false,
+			height : 420,
+			width : 430,
+			modal : true
+		});
+		
+		$(".taskHistory").button().unbind("click").on("click",function(){
+			taskHistoryPanelPopup.dialog("open");
 		});
 		
 });
 
-$(".taskCommentSubmit").button().unbind("click").on("click",function(){
-	
 
-	var taskId=this.id;
-	
-	var devloperComments=$("#taskDvlprComments_"+taskId).val();
-	//alert(taskId);
-	$.ajax({
-		type : "POST",
-		url : "./addTaskComments.do",
-		data : {
-			taskId:taskId,
-			devloperComments:devloperComments
-			
-		},
-		success : function(response) {
-			if(response=="success"){
-				alert('Request status updated successfully!');
-			}
-			vacationRequestPopup.dialog("close");
-		},
-		error : function(data) {},
-		complete:function(data){
-
-		}
-	});
-});
 
 $("#taskNameSelect").unbind("change").on("change",function(){
 	var taskId=$("#taskNameSelect").val();
@@ -320,17 +293,14 @@ $("#taskNameSelect").unbind("change").on("change",function(){
 				$("#taskType").attr("disabled", "disabled"); 
 				$("#taskDesc").val(task.taskDesc);
 				$("#taskDesc").attr("disabled", "disabled"); 
-				$("#taskStartDateId").val(task.taskStartDate);
-				$("#taskStartDateId").attr("disabled", "disabled"); 
-				$("#taskEndDateId").val(task.taskEndDate) 
-				$("#taskEndDateId").attr("disabled", "disabled"); 
+				$("#taskStartDateId").val(task.taskStartDate).attr("disabled", "disabled"); 
+				$("#taskEndDateId").val(task.taskEndDate).attr("disabled", "disabled"); 
 				$("#taskActivitySelect option").remove();
 				$("#taskActivitySelect").append("<option value='-1'>Enter new comment</option>");
 				var activity=task.taskLedger;
 				var context=edb.getEDBContextInstance();
 				for(var index in activity){
 					$("#taskActivitySelect").append("<option value='"+activity[index].taskLedgerId+"'>"+activity[index].taskActivity+"</option>");
-					alert(activity[index].taskLedgerId);
 					context.addAttribute(activity[index].taskLedgerId,activity[index]);
 				}
 
@@ -343,10 +313,22 @@ $("#taskNameSelect").unbind("change").on("change",function(){
 }); 
 
 $("#taskActivitySelect").on("change",function(){
-	var context=edb.getEDBContextInstance();
-	var taskActivityObject=context.getAttribute($("#taskActivitySelect").val());
-	$("#taskActivityDateId").html("Date :"+taskActivityObject.taskActivityDate);
-	
+	var activity=$("#taskActivitySelect").val();
+	if(activity!=-1){
+		var context=edb.getEDBContextInstance();
+		var taskActivityObject=context.getAttribute(activity);
+		$("#taskActivityDateId").html("Date :"+taskActivityObject.taskActivityDate);
+		$("#taskDvlprComments").val(taskActivityObject.taskActivity).attr("disabled", "disabled");
+		$("#taskHrs").val(taskActivityObject.taskHrs).attr("disabled", "disabled");
+		$("#taskStatus").val(taskActivityObject.status).attr("disabled", "disabled");
+		$("#taskReviewUser").val(taskActivityObject.taskReviewUser).attr("disabled", "disabled");
+	} else {
+		$("#taskActivityDateId").html("Date :"+$.datepicker.formatDate('mm/dd/yy', new Date()));
+		$("#taskDvlprComments").val("").removeAttr('disabled');
+		$("#taskHrs").val(0).removeAttr('disabled');
+		$("#taskStatus").val(-1).removeAttr('disabled');
+		$("#taskReviewUser").val(-1).removeAttr('disabled');
+	}
 });
 
 

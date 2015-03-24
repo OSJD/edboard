@@ -66,9 +66,9 @@
 									<td>${component.endDate}</td>
 									<td>In Progress</td>
 									<td>60</td>
-									<td><a href="#" taskType="myTasks" class="addTaskPopup"
+									<td><a href="#" taskType="myTasks" class="addTaskPopup" projectId="${project.projectId}"
 										id="${component.componentId}"><img class="imgLink"
-											alt="add comnponent" src="./resources/addnews.gif"></a></td>
+											alt="add Task" src="./resources/addnews.gif"></a></td>
 									<td>De</td>
 								</tr>
 								<tr id="component${component.componentId}" class="taskData">

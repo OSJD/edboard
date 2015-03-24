@@ -411,6 +411,8 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 		return projectManagementDao.getReleaseData(releaseId);
 	}
 	
-	
+	public List<ReferenceData> getResourcesByProjectId(Integer projectId){
+		return projectManagementDao.getResourcesByProjectId(projectId);
+	}
 	
 }
