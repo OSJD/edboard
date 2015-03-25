@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -93,13 +94,13 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 	}
 	
 	@RequestMapping(value = "/addTask.do")
-	public  String addTask(@ModelAttribute("addTaskForm")TaskForm taskform,Model model) {
+	public  String addTask(@RequestBody TaskForm taskform,Model model) {
 		
 		LOG.debug("addTask:{} | Today Work:{}",taskform.getTaskName(),taskform.getTaskComments());
-		getProjectWorkService().addTasks(taskform);
+/*		getProjectWorkService().addTasks(taskform);
 		TaskForm taskData=projectWorkService.retrieveTasks();
 		taskform.setTaskId(taskData.getTaskId());
-		model.addAttribute("addTaskForm", taskform);
+		model.addAttribute("addTaskForm", taskform);*/
 		return "/projectwork/newTask";
 	}
 	

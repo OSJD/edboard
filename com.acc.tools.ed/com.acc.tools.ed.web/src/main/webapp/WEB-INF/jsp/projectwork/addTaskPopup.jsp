@@ -78,8 +78,6 @@
 					   						</select>
 				   						</div>
 				   						<div id="taskActivityDateId" style="margin-left:15px; width: 10px;float: left;"></div>
-										<a href="#" id="${componentId}" class="taskHistory" style="width: 75px; float:right">History</a>
-									
 									</th>
 									<th>Task Hours</th>
 									<th>Task Status</th>
@@ -100,7 +98,6 @@
 									</td>
 									<td>
 										<select name="taskReviewUser" id="taskReviewUser" style="width:200px;">
-											<option value="-1">---Select---</option>
 										</select>
 									</td>
 								</tr>	

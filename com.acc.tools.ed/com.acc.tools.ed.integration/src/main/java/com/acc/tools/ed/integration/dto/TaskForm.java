@@ -9,7 +9,7 @@ public class TaskForm implements Serializable {
 
 	private int taskId;
 	private int componentId;
-	private String taskName="0";
+	private String taskName;
 	private String taskDesc;
 	private int taskHrs;
 	private String taskType;

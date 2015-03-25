@@ -65,12 +65,19 @@ $(document).ready(
 					id:"addTaskButton",
 					click:function(){
 					var cId = $('#addTaskPanel').data('param');
+					var taskFormData=$("#addTaskForm").serializeArray();
+					var jsonString = "{";
+					$.each(taskFormData,
+					    function(i, v) {
+						alert(v.name+" | "+v.value);
+					});
+					
 					$("#componentId").val(cId);
 					$.ajax({
 						type : "POST",
 						url : "./addTask.do",
-						data : 
-							$("#addTaskForm").serialize(),
+						contentType: "application/json; charset=utf-8",
+					    data : JSON.stringify({"taskName":"task name"}),						
 						beforeSend : function() {
 						},
 						success : function(response) {
@@ -91,7 +98,7 @@ $(document).ready(
 					});
 					}
 				},
-				"Edit Task" :  {
+/*				"Edit Task" :  {
 					text:"Edit Task",
 					id:"editTaskButton",
 					click:function(){
@@ -119,28 +126,12 @@ $(document).ready(
 						}
 					});
 					}
-				},
+				},*/
 				Cancel : function() {
 					addTaskDialog.dialog("close");
 					reset();
 				},
 			},
-			 open:function () {
-				 if($("#popupDisplay").val()=="edit")
-				 {
-					 $("#addTaskButton").hide();
-					 $("#editTaskButton").show();
-					 $("#taskNameSelect").attr('disabled',true);
-					
-				 }
-				 else
-				 {
-					 $("#addTaskButton").show();
-					 $("#editTaskButton").hide();
-					 $("#taskNameSelect").removeAttr('disabled');
-					 
-				 }
-			 },
 			 close:function () {
 				 reset();
 			 }
@@ -191,7 +182,7 @@ $(document).ready(
 						} else if(key=="reviewerList"){
 							var reviewers=value;
 							$("#taskReviewUser option").remove();
-							$("#taskReviewUser").append("<option value='0'>--- Select ---</option>")
+							$("#taskReviewUser").append("<option value='-1'>--- Select ---</option>")
 							for(var index in reviewers){
 								$("#taskReviewUser").append("<option value='"+reviewers[index].id+"'>"+reviewers[index].label+"</option>")
 							}
@@ -204,19 +195,6 @@ $(document).ready(
 				}
 			});
 			
-			if(taskTypeDisplay=="teamTasks")
-			{
-				$("#taskActionRow").show();
-				$("#taskCommentRow").hide();
-				$("#taskReviewUser").val($('#addTaskPanel').attr("edbUser"));
-				
-			}
-			else
-			{
-				$("#taskActionRow").hide();
-				$("#taskCommentRow").show();
-			}
-			$("#popupDisplay").val('add');
 			$("#addTaskPanel").data('param', componentId);
 			addTaskDialog.dialog('open');
 		});
@@ -261,17 +239,6 @@ $(document).ready(
 			});
 		});
 		
-		var taskHistoryPanelPopup=$("#taskHistoryPanel").dialog({
-			autoOpen : false,
-			height : 420,
-			width : 430,
-			modal : true
-		});
-		
-		$(".taskHistory").button().unbind("click").on("click",function(){
-			taskHistoryPanelPopup.dialog("open");
-		});
-		
 });
 
 
@@ -280,19 +247,21 @@ $("#taskNameSelect").unbind("change").on("change",function(){
 	var taskId=$("#taskNameSelect").val();
 	if(taskId=='-1'){
 		$("#newTask").show();
+		$("#taskType").val(0).removeAttr('disabled'); 
+		$("#taskDesc").val("").removeAttr('disabled'); 
+		$("#taskStartDateId").val("").removeAttr('disabled'); 
+		$("#taskEndDateId").val("").removeAttr('disabled'); 
+
 	} else {
 		$("#newTask").hide();
-		//alert(taskId);
 		$.ajax({
 			type : "POST",
 			url : "./getTaskByTaskId.do",
 			dataType:'json',
 			data : {taskId:taskId},
 			success : function(task) {
-				$("#taskType").val(task.taskType);
-				$("#taskType").attr("disabled", "disabled"); 
-				$("#taskDesc").val(task.taskDesc);
-				$("#taskDesc").attr("disabled", "disabled"); 
+				$("#taskType").val(task.taskType).attr("disabled", "disabled"); 
+				$("#taskDesc").val(task.taskDesc).attr("disabled", "disabled"); 
 				$("#taskStartDateId").val(task.taskStartDate).attr("disabled", "disabled"); 
 				$("#taskEndDateId").val(task.taskEndDate).attr("disabled", "disabled"); 
 				$("#taskActivitySelect option").remove();
