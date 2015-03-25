@@ -69,8 +69,13 @@ $(document).ready(
 					var jsonString = "{";
 					$.each(taskFormData,
 					    function(i, v) {
-						alert(v.name+" | "+v.value);
+						//alert(v.name+" | "+v.value);
 					});
+					var taskForm=EdbDataModel.jsonString({taskName:""},taskFormData);
+					alert(taskForm);
+					//taskForm.getAllFormFields();
+					//alert(taskForm);
+					//alert(JSON.stringify(taskForm));
 					
 					$("#componentId").val(cId);
 					$.ajax({

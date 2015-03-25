@@ -6,6 +6,7 @@
 <%@ include file="/WEB-INF/jsp/includes/document-header.jsp"%>
 <script src="<%=request.getContextPath()%>/script/projectwork-actions.js"></script>
 <script src="<%=request.getContextPath()%>/script/libs/edb-common.js"></script>
+<script src="<%=request.getContextPath()%>/script/libs/edb-object-model.js"></script>
 
 	<table class="ebdtable">
 		<tr>
