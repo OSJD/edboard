@@ -97,10 +97,10 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 	public  String addTask(@RequestBody TaskForm taskform,Model model) {
 		
 		LOG.debug("addTask:{} | Today Work:{}",taskform.getTaskName(),taskform.getTaskComments());
-/*		getProjectWorkService().addTasks(taskform);
+		getProjectWorkService().addTasks(taskform);
 		TaskForm taskData=projectWorkService.retrieveTasks();
 		taskform.setTaskId(taskData.getTaskId());
-		model.addAttribute("addTaskForm", taskform);*/
+		model.addAttribute("addTaskForm", taskform);
 		return "/projectwork/newTask";
 	}
 	

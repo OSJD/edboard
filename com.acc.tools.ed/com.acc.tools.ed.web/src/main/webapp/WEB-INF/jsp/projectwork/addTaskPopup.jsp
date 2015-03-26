@@ -37,14 +37,13 @@
 				</tr>
 				<tr>
 					<td id="taskNamePosition">
-						<select name="taskName" id="taskNameSelect" class="textbox" style="width : 150px;">
+						<select name=taskId id="taskIdSelect" class="textbox" style="width : 150px;">
 							<option value="0">--- Select ---</option>
 							<option value="-1">Create New Task</option>
 						</select>
 						<div id="newTask" style="display: none;">
 							<input type="text" name="taskName" id="taskName" class="textbox" style="width : 143px;" />
 							<input type="hidden" name="componentId" id="componentId" />
-							<input type="hidden" name="taskId" id="taskId" />
 						</div>
 					</td>
 					<td style="width: 40px;">

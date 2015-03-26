@@ -66,23 +66,26 @@ $(document).ready(
 					click:function(){
 					var cId = $('#addTaskPanel').data('param');
 					var taskFormData=$("#addTaskForm").serializeArray();
-					var jsonString = "{";
-					$.each(taskFormData,
-					    function(i, v) {
-						//alert(v.name+" | "+v.value);
-					});
-					var taskForm=EdbDataModel.jsonString({taskName:""},taskFormData);
-					alert(taskForm);
-					//taskForm.getAllFormFields();
-					//alert(taskForm);
-					//alert(JSON.stringify(taskForm));
+					var jsonString=EdbDataModel.jsonString({
+						"taskId":"int",
+						"taskName":"string",
+						"taskType":"string",
+						"taskStartDate":"string",
+						"taskEndDate":"string",
+						"taskDesc":"string",
+						"taskComments":"string",
+						"taskHrs":"int",
+						"taskReviewUser":"string"
+						},taskFormData);
+					//alert(jsonString);
+
 					
 					$("#componentId").val(cId);
 					$.ajax({
 						type : "POST",
 						url : "./addTask.do",
 						contentType: "application/json; charset=utf-8",
-					    data : JSON.stringify({"taskName":"task name"}),						
+					    data : jsonString,						
 						beforeSend : function() {
 						},
 						success : function(response) {
@@ -143,14 +146,26 @@ $(document).ready(
 
 		});
 		
-		
-		$( "#taskStartDateId" ).datepicker({
-			dateFormat: 'mm/dd/yy',
-			constrainInput: true
+		$( "#taskStartDateId" ).unbind("click").on("click",function(){
+			var context=edb.getEDBContextInstance();
+			alert(edb.getEDBContextInstance().getAttribute("taskCompStartDate"));
 		});
-		$( "#taskEndDateId" ).datepicker({
+		
+/*		$( "#taskStartDateId" ).unbind("click").datepicker({
 			dateFormat: 'mm/dd/yy',
-			constrainInput: true
+			showOn: 'button',
+			buttonText: 'Show Date',
+			buttonImageOnly: true,
+			buttonImage: 'resources/cal.gif'
+			minDate:edb.getEDBContextInstance().getAttribute("taskCompStartDate"),
+			maxDate:edb.getEDBContextInstance().getAttribute("taskCompEndDate")
+		});*/
+		$( "#taskEndDateId" ).unbind("click").datepicker({
+			dateFormat: 'mm/dd/yy',
+			showOn: 'button',
+			buttonText: 'Show Date',
+			buttonImageOnly: true,
+			buttonImage: 'resources/cal.gif',
 		});
 
 	
@@ -168,6 +183,11 @@ $(document).ready(
 			$("#taskCompStartDate").html(startDate);
 			$("#taskCompEndDate").html(endDate);
 			
+			//storing componentStartDate and componentEndDate in edb context space.
+			var context=edb.getEDBContextInstance();
+			context.addAttribute("taskCompStartDate",startDate);
+			context.addAttribute("taskCompEndDate",endDate);
+			
 			$.ajax({
 				type : "POST",
 				url : "./getTaskIdsByComponentId.do",
@@ -178,11 +198,11 @@ $(document).ready(
 					$.each(response, function(key, value){
 						if(key=="myTasks"){
 							var tasks=value;
-							$("#taskNameSelect option").remove();
-							$("#taskNameSelect").append("<option value='0'>--- Select ---</option>");
-							$("#taskNameSelect").append("<option value='-1'>Create New Task</option>");
+							$("#taskIdSelect option").remove();
+							$("#taskIdSelect").append("<option value='0'>--- Select ---</option>");
+							$("#taskIdSelect").append("<option value='-1'>Create New Task</option>");
 							for(var index in tasks){
-								$("#taskNameSelect").append("<option value='"+tasks[index].id+"'>"+tasks[index].label+"</option>")
+								$("#taskIdSelect").append("<option value='"+tasks[index].id+"'>"+tasks[index].label+"</option>")
 							}
 						} else if(key=="reviewerList"){
 							var reviewers=value;
@@ -248,8 +268,8 @@ $(document).ready(
 
 
 
-$("#taskNameSelect").unbind("change").on("change",function(){
-	var taskId=$("#taskNameSelect").val();
+$("#taskIdSelect").unbind("change").on("change",function(){
+	var taskId=$("#taskIdSelect").val();
 	if(taskId=='-1'){
 		$("#newTask").show();
 		$("#taskType").val(0).removeAttr('disabled'); 
@@ -392,7 +412,7 @@ $("#taskAction").unbind("change").on("change",function(){
 function reset()
 {
 	$("#taskAction").val('');
-	$("#taskNameSelect").val('');
+	$("#taskIdSelect").val('');
 	$("#rejComment").val('');
 	$("#taskStatus").val('');
 	$("#taskEndDate").val('');
