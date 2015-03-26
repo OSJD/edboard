@@ -21,6 +21,7 @@ import com.acc.tools.ed.integration.dto.EDBUser;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.TaskForm;
+import com.acc.tools.ed.integration.dto.TaskLedgerForm;
 import com.acc.tools.ed.integration.service.ProjectManagementService;
 import com.acc.tools.ed.integration.service.ProjectWorkService;
 import com.acc.tools.ed.web.controller.common.AbstractEdbBaseController;
@@ -96,8 +97,15 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 	@RequestMapping(value = "/addTask.do")
 	public  String addTask(@RequestBody TaskForm taskform,Model model) {
 		
-		LOG.debug("addTask:{} | Today Work:{}",taskform.getTaskName(),taskform.getTaskComments());
-		getProjectWorkService().addTasks(taskform);
+		LOG.debug("Task Id:{} | Task Name:{} | Today Work:{}",taskform.getTaskId(),taskform.getTaskName(),taskform.getTaskComments());
+		if(taskform.getTaskId()>0){
+			final TaskLedgerForm ledgerForm=new TaskLedgerForm();
+			ledgerForm.setTaskId(taskform.getTaskId());
+			ledgerForm.setTaskHrs(taskform.getTaskHrs());
+			ledgerForm.setTaskActivity(taskform.getTaskComments());
+			getProjectWorkService().addTaskLedger(ledgerForm);
+		}
+		//getProjectWorkService().addTasks(taskform);
 		TaskForm taskData=projectWorkService.retrieveTasks();
 		taskform.setTaskId(taskData.getTaskId());
 		model.addAttribute("addTaskForm", taskform);
@@ -128,18 +136,5 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 		model.addAttribute("addTaskForm", taskform);
 		return "/projectwork/newTask";
 	}
-	
-	 @RequestMapping(value = "/addTaskComments.do")
-		public @ResponseBody String addTaskComments(
-				@RequestParam("taskId") int taskId,
-				@RequestParam("devloperComments") String devloperComments,
-				@ModelAttribute("edbUser") EDBUser edbUser,
-				Model model){
-			LOG.debug("taskId:{}",taskId);
-			LOG.debug("devloperComments:{}",devloperComments);
-			
-			projectWorkService.addTaskComments(taskId,devloperComments);			
 
-			return "success";
-		}
 }

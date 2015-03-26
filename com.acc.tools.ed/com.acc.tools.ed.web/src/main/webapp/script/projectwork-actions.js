@@ -66,7 +66,7 @@ $(document).ready(
 					click:function(){
 					var cId = $('#addTaskPanel').data('param');
 					var taskFormData=$("#addTaskForm").serializeArray();
-					var jsonString=EdbDataModel.jsonString({
+					var jsonString=edb.jsonString({
 						"taskId":"int",
 						"taskName":"string",
 						"taskType":"string",
@@ -146,33 +146,58 @@ $(document).ready(
 
 		});
 		
-		$( "#taskStartDateId" ).unbind("click").on("click",function(){
-			var context=edb.getEDBContextInstance();
-			alert(edb.getEDBContextInstance().getAttribute("taskCompStartDate"));
-		});
 		
-/*		$( "#taskStartDateId" ).unbind("click").datepicker({
+		$( "#taskStartDateId" ).unbind("click").datepicker({
 			dateFormat: 'mm/dd/yy',
 			showOn: 'button',
 			buttonText: 'Show Date',
 			buttonImageOnly: true,
-			buttonImage: 'resources/cal.gif'
-			minDate:edb.getEDBContextInstance().getAttribute("taskCompStartDate"),
-			maxDate:edb.getEDBContextInstance().getAttribute("taskCompEndDate")
-		});*/
+			buttonImage: 'resources/cal.gif',
+			onSelect : function(selecteddate){
+				var context=edb.getEDBContextInstance();
+				var fDate,lDate,cDate;
+				var startDate=context.getAttribute("taskCompStartDate");
+				var endDate=context.getAttribute("taskCompEndDate");
+			    fDate = Date.parse(startDate);
+			    lDate = Date.parse(endDate);
+			    cDate = Date.parse(selecteddate);
+			    if(!(cDate <= lDate && cDate >= fDate)) {
+			    	alert("Please select the date between "+startDate+" and "+endDate);
+			    	$( "#taskStartDateId" ).val("");
+			        return true;
+			    }
+			    return false;
+			}
+			
+		});
 		$( "#taskEndDateId" ).unbind("click").datepicker({
 			dateFormat: 'mm/dd/yy',
 			showOn: 'button',
 			buttonText: 'Show Date',
 			buttonImageOnly: true,
 			buttonImage: 'resources/cal.gif',
+			onSelect : function(selecteddate){
+				var context=edb.getEDBContextInstance();
+				var fDate,lDate,cDate;
+				var startDate=context.getAttribute("taskCompStartDate");
+				var endDate=context.getAttribute("taskCompEndDate");
+			    fDate = Date.parse(startDate);
+			    lDate = Date.parse(endDate);
+			    cDate = Date.parse(selecteddate);
+			    if(!(cDate <= lDate && cDate >= fDate)) {
+			    	alert("Please select the date between "+startDate+" and "+endDate);
+			    	$( "#taskEndDateId" ).val("");
+			        return true;
+			    }
+			    return false;
+			}
+
 		});
 
 	
 		$(".addTaskPopup").on("click", function() {
 			
 			var componentId=$(this).attr("id");
-			var taskTypeDisplay=$(this).attr("taskType");
 			var projectId=$(this).attr("projectId");
 			$("#taskProjectName").html($("#projName"+componentId).val());
 			$("#taskReleaseName").html($("#releaseName"+componentId).val());
@@ -263,6 +288,25 @@ $(document).ready(
 					$("#tasktree"+componentId).html("[+]");
 			});
 		});
+		
+		var developmentArtifactspopup=$("#developmentArtifacts-popup").dialog({
+			autoOpen : false,
+			height : 420,
+			width : 430,
+			modal : true,
+			buttons:{
+				"Add":function(){
+				alert("Added Successfully")
+				}
+			}
+		});
+
+		$("#addArtifacts").unbind("click").on("click", function() {
+			alert("fd" );
+			developmentArtifactspopup.dialog("open");
+			alert("fd45" );
+		});
+
 		
 });
 
@@ -428,20 +472,3 @@ function reset()
 	$("#taskComments").val('');
 }
 
-var developmentArtifactspopup=$("#developmentArtifacts-popup").dialog({
-	autoOpen : false,
-	height : 420,
-	width : 430,
-	modal : true,
-	buttons:{
-		"Add":function(){
-		alert("Added Successfully")
-		}
-	}
-});
-
-$("#addArtifacts").unbind("click").on("click", function() {
-	alert("fd" );
-	developmentArtifactspopup.dialog("open");
-	alert("fd45" );
-});

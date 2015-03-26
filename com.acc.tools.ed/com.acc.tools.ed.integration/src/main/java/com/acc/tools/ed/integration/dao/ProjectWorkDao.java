@@ -5,6 +5,7 @@ import java.util.List;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.TaskForm;
+import com.acc.tools.ed.integration.dto.TaskLedgerForm;
 import com.acc.tools.ed.integration.dto.VacationForm;
 
 public interface ProjectWorkDao {
@@ -24,7 +25,7 @@ public interface ProjectWorkDao {
 	public List<VacationForm> getDeveloperVacationDetails(Integer employeeId);
 	public void deleteVacation(int vacationId);
 	public String editVacation(VacationForm vacationForm);
-	public void addTaskComments(int taskId, String devloperComments);
+	public void addTaskLedger(TaskLedgerForm ledgerForm);
 	
 	
 }

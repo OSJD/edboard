@@ -867,18 +867,18 @@ public List<ProjectForm> getMyTeamTasks(Integer supervisorId) {
 
 	}
 	
-	public void addTaskComments(int taskId, String devloperComments)
+	public void addTaskLedger(TaskLedgerForm ledgerForm)
 	{
 		
 		try{
 			DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy ");
-			//get current date time with Date()
 			Date date = new Date();
-			String addTaskCommentQuery = "insert into EDB_TASK_REVW_HISTORY(TASK_ID,TASK_REVIEW_DT,TASK_DEV_COMMENTS) values (?,?,?)";
+			String addTaskCommentQuery = "insert into EDB_TASK_LEDGER(TASK_ID,TASK_HRS,TASK_ACTIVITY,TASK_ACTIVITI_DT) values (?,?,?,?)";
 			PreparedStatement pstm = getConnection().prepareStatement(addTaskCommentQuery);
-			pstm.setInt(1, taskId);
-			pstm.setString(2, devloperComments);
-			pstm.setString(3, dateFormat.format(date));
+			pstm.setInt(1, ledgerForm.getTaskId());
+			pstm.setInt(2, ledgerForm.getTaskHrs());
+			pstm.setString(3, ledgerForm.getTaskActivity());
+			pstm.setString(4, dateFormat.format(date));
 			pstm.executeUpdate();
 			pstm.close();
 
@@ -886,7 +886,7 @@ public List<ProjectForm> getMyTeamTasks(Integer supervisorId) {
 
 		}
 		catch(Exception e){
-			log.error("Error in updating the task comments");
+			log.error("Error adding Task ledger for task id:"+ledgerForm.getTaskId(),e);
 		}
 
 	}
