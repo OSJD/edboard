@@ -37,7 +37,7 @@
 				</tr>
 				<tr>
 					<td id="taskNamePosition">
-						<select name=taskId id="taskIdSelect" class="textbox" style="width : 150px;">
+						<select name="taskId" id="taskIdSelect" class="textbox" style="width : 150px;">
 							<option value="0">--- Select ---</option>
 							<option value="-1">Create New Task</option>
 						</select>
@@ -54,9 +54,9 @@
 							<option value="3">Value Added</option>
 						</select>
 					</td>
-					<td><input type="text" name="taskStartDate" id="taskStartDateId" class="textbox" style="width:75px;" /></td>
+					<td><div id="editTaskStartDateId"><input type="text" name="taskStartDate" id="taskStartDateId" class="textbox" style="width:75px;" /></div></td>
 
-					<td><input type="text" name="taskEndDate" id="taskEndDateId" class="textbox" style="width:75px;" /></td>
+					<td><div id="editTaskEndDateId"><input type="text" name="taskEndDate" id="taskEndDateId" class="textbox" style="width:75px;" /></div></td>
 					<td colspan="3"><textarea name="taskDesc" id="taskDesc" rows="5" cols="90"></textarea>
 					
 					</td>
@@ -70,9 +70,9 @@
 
 								<tr>
 									<th style="text-align: left;width: 200px;">
-										<div style="width:185px;float: left;">
-											Activites	
-											<select name="taskActivity" id = "taskActivitySelect" class = "textbox" style="width:140px;">
+										<div style="width:285px;float: left;">
+											Activity Date :
+											<select name="taskActivity" id = "taskActivitySelect" class = "textbox" style="margin-left:10px; width:140px;">
 												  <option value="-1">Enter new comment</option>
 					   						</select>
 				   						</div>
@@ -89,10 +89,10 @@
 									<td><input type="text" name="taskHrs" id="taskHrs" class="textbox" style="width:35px;" /></td>
 									<td>
 										<select name="taskStatus" id="taskStatus" style="width:135px;">
-											<option value="-1">---Select---</option>
-											<option value="completed">Completed</option>
-											<option value="inProgress">In Progress</option>
-											<option value="onHold">ComplOn Holdeted</option>
+											<option value="0">---Select---</option>
+											<option value="1">Completed</option>
+											<option value="2">In Progress</option>
+											<option value="3">On Hold</option>
 										</select>
 									</td>
 									<td>
@@ -104,9 +104,17 @@
 									<td colspan="4" style="text-align: center; background-image: none; background-color: white;">
 										<table style="width: 100%;">
 											<tr>
-												<th style="width: 30%;text-align: left;">Development Artifacts<a href ="#" id="addArtifacts">Add File</a> </th>
-												<th>Review Comment</th>
-												<th>Developer Update</th>
+												<th style="text-align: left;width: 250px;">
+													<div style="width: 60%;float: left;">Development Artifacts</div>
+													<div style="width: 40%;float: left;">
+														<a href="#" id="addArtifacts">Add File</a>
+													</div>
+												</th>
+												<th style="width:365px;">
+													Review Comment
+												</th>
+												<th style="width:365px;">Developer Update</th>
+												<th style="25px;">Valid(Y/N)</th>
 											</tr>
 											<tr>	
 	 											<td style="width: 50px;text-align: left;">
@@ -115,13 +123,24 @@
 		 											<a href="#">Delete</a>
 	 											</td>
 	 											
-												<td>
-													<div style="width: 325px;height: 60px;overflow: auto;">
-														Review Comment 1
+												<td colspan="3">
+													<div style="height: 175px;overflow: auto;">
+														<table>
+															<tr>
+																<td>
+																	<div id="viewReviewCommentTxtId" style="height: 75px;overflow: auto;">
+																		<textarea cols="60" rows="5" disabled="disabled"></textarea>
+																	</div>
+																</td>
+																<td>
+																	<div id="developerCommentsId" style="width:365px;height: 75px;overflow: auto;">
+																		<textarea cols="60" rows="5"></textarea>
+																	</div>
+																</td>
+																<td style="width: 20px;"></td>
+															</tr>
+														</table>
 													</div>
-												</td>
-												<td>
-													<textarea cols="62" rows="5"></textarea>
 												</td>
 											</tr>	 										
 										</table>
@@ -153,7 +172,7 @@
 			</fieldset>
 		</form>
 </div>
-<div id="developmentArtifacts-popup" title="Add New Release">
+<div id="developmentArtifacts-popup" title="Add New Development Artifact">
 	<p class="validateTips">All form fields are required.</p>
 	<form id="developmentArtifacts">
 		<fieldset>
@@ -162,7 +181,7 @@
 				style="width: 100%;">
 				<tr>
 					<th style="text-align: right;">File Name</th>
-					<td><input type="text" name="fileName" class="textbox" /></td>
+					<td colspan="2"><input type="text" name="fileName" class="textbox" /></td>
 				</tr>
 				<tr>
 					<th colspan="4" style="text-align: left; font-size: 15px;">Code

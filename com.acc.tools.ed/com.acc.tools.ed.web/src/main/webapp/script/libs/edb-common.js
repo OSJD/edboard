@@ -54,9 +54,14 @@ var edb=(function($){
 		 function getEdbAttribute(key) {
 			 return contextAttributes[key];
 		 }
+		 function cleanContext(){
+			 contextAttributes=[];
+		 }
+		 
 		 return {
 			 addAttribute : addEdbAttribute,
-			 getAttribute : getEdbAttribute
+			 getAttribute : getEdbAttribute,
+			 clean : cleanContext
 		 };
 	 }
 
@@ -67,25 +72,33 @@ var edb=(function($){
 		 return edbContextInstance;
 	 } 
 	 
-	function constructJSONString(formFields,formData) {
-			
+	function constructJSONString(formFields,formObject) {
 			
 			var jsonObject={};
-
-			for(var field in formData){
-				var fieldName=formData[field].name;
-				if(formFields.hasOwnProperty(fieldName)){
-					var fieldValue=formData[field].value;
-					var fieldValueType=formFields[fieldName];
-					if(fieldValue){
-						if(fieldValueType=="string"){
-							jsonObject[fieldName]=fieldValue;
-						} else if(fieldValueType=="int"){
-							jsonObject[fieldName]=parseInt(fieldValue);
-						} 
-	 
+			
+			for(var formField in formFields){
+				var dataType=formFields[formField].dataType;
+				if(dataType=="int" || dataType=="string"){
+					var formFieldValue=formObject.find("*[name='"+formField+"']").val();
+					if(formFieldValue!=undefined){
+						//alert(formField+"|"+formFields[formField].dataType+"|"+formFieldValue);	
+						if(formFieldValue){
+							if(dataType=="string"){
+								jsonObject[formField]=formFieldValue;
+							} else if(dataType=="int"){
+								jsonObject[formField]=parseInt(formFieldValue);
+							} 
+						}
 					}
+				} else if(dataType=="array"){
+					var formFieldValue=formObject.find("*[id^='"+formField+"']");
+					jsonObjectArray=[];
+					formFieldValue.each(function(index, obj){
+						jsonObjectArray.push(obj.value);
+					});
+					jsonObject[formField]=jsonObjectArray;
 				}
+				
 			}
 
 			return JSON.stringify(jsonObject);

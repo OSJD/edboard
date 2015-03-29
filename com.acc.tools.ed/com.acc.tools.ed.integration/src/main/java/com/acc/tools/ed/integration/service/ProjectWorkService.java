@@ -11,13 +11,13 @@ import com.acc.tools.ed.integration.dto.VacationForm;
 public interface ProjectWorkService {
 	
 	public List<ProjectForm> getMyTasks(Integer userId);
-	public void addTasks(TaskForm taskForm);
+	public int addTasks(TaskForm taskForm);
 	public List<ProjectForm> getMyTeamTasks(Integer supervisorId);
 	public void deleteTasks(int taskId);
-	public List<TaskForm> editTasks(int taskId);
+	public List<TaskForm> editTasks(TaskForm taskForm);
 	public void saveTasks(TaskForm taskForm);
 	public TaskForm retrieveTasks();
-	public List<ReferenceData> getTasksByComponentId(Integer componentId);
+	public List<ReferenceData> getTasksByComponentId(Integer componentId,Integer employeeId);
 	public TaskForm getTaskByTaskId(Integer taskId);
 	public int addVacation(VacationForm vacationForm);
 	public List<VacationForm> getVacationDetails(Integer employeeId);
@@ -26,6 +26,7 @@ public interface ProjectWorkService {
 	public void deleteVacation(int vacationId);
 	public String editVacation(VacationForm vacationForm);
 	public void addTaskLedger(TaskLedgerForm ledgerForm);
+	public void assignTaskReviewer(Integer taskId,Integer reviewerId,String status);
 
 }
 

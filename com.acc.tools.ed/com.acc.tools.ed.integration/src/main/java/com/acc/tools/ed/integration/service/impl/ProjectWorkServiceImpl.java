@@ -31,10 +31,10 @@ public class ProjectWorkServiceImpl implements ProjectWorkService {
 		return projectWorkDao.getMyTasks(userId);
 	}
 
-	public void  addTasks(TaskForm taskForm) {
-		
-		 projectWorkDao.addTasks(taskForm);
+	public int  addTasks(TaskForm taskForm) {
+		 return projectWorkDao.addTasks(taskForm);
 	}
+	
 	public List<ProjectForm> getMyTeamTasks(Integer supervisorId){
 		return projectWorkDao.getMyTeamTasks(supervisorId);
 	}
@@ -43,9 +43,9 @@ public class ProjectWorkServiceImpl implements ProjectWorkService {
 		
 		projectWorkDao.deleteTasks(taskId);
 	}
-	public List<TaskForm> editTasks(int taskId) {
+	public List<TaskForm> editTasks(TaskForm taskForm) {
 		
-		return projectWorkDao.editTasks(taskId);
+		return projectWorkDao.editTasks(taskForm);
 	}
 	public void saveTasks(TaskForm taskForm) {
 		
@@ -56,8 +56,8 @@ public class ProjectWorkServiceImpl implements ProjectWorkService {
 		return projectWorkDao.retrieveTasks();
 	}
 	
-	public List<ReferenceData> getTasksByComponentId(Integer componentId){
-		return projectWorkDao.getTasksByComponentId(componentId);
+	public List<ReferenceData> getTasksByComponentId(Integer componentId,Integer employeeId){
+		return projectWorkDao.getTasksByComponentId(componentId,employeeId);
 	}
 	
 	public TaskForm getTaskByTaskId(Integer taskId){
@@ -72,18 +72,19 @@ public class ProjectWorkServiceImpl implements ProjectWorkService {
 		return projectWorkDao.getDeveloperVacationDetails(employeeId);
 	}
 
-	public String editVacation(VacationForm vacationForm)
-	{
+	public String editVacation(VacationForm vacationForm){
 		return projectWorkDao.editVacation(vacationForm);
 	}
 	
-	public void deleteVacation(int vacationId)
-	{
+	public void deleteVacation(int vacationId){
 		projectWorkDao.deleteVacation(vacationId);
 	}
 
-	public void addTaskLedger(TaskLedgerForm ledgerForm)
-	{
+	public void addTaskLedger(TaskLedgerForm ledgerForm){
 		projectWorkDao.addTaskLedger(ledgerForm);
+	}
+	
+	public void assignTaskReviewer(Integer taskId,Integer reviewerId,String status){
+		projectWorkDao.assignTaskReviewer(taskId, reviewerId, status);
 	}
 }

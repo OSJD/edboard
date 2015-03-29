@@ -94,6 +94,7 @@ public class AbstractEdbDao {
 		ledgerForm.setTaskLedgerId(rs.getInt("TASK_LDGR_ID"));
 		ledgerForm.setTaskHrs(rs.getInt("TASK_HRS"));
 		ledgerForm.setTaskActivity(rs.getString("TASK_ACTIVITY"));
+		ledgerForm.setTaskStatus(rs.getString("TASK_STATUS"));
 		ledgerForm.setTaskActivityDate(new DateTime(rs.getDate("TASK_ACTIVITI_DT").getTime()).toString("MM/dd/yyyy"));
 		taskLedger.add(ledgerForm);
 	}

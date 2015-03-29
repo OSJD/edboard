@@ -67,26 +67,28 @@
 									<td>${component.endDate}</td>
 									<td>In Progress</td>
 									<td>60</td>
-									<td><a href="#" taskType="myTasks" class="addTaskPopup" projectId="${project.projectId}"
-										id="${component.componentId}"><img class="imgLink"
-											alt="add Task" src="./resources/addnews.gif"></a></td>
+									<td>
+										<a href="#" class="addTaskPopup" projectId="${project.projectId}" id="${component.componentId}">
+											<img class="imgLink" alt="add Task" src="./resources/addnews.gif">
+										</a>
+									</td>
 									<td>De</td>
 								</tr>
 								<tr id="component${component.componentId}" class="taskData">
 									<td colspan="10" style="background-color: white;">
 										<table class="innertable1"
-											id="taskTable${component.componentId}">
+											id="taskTable${component.componentId}" style="margin-left: 20px;">
 											<tbody>
 												<tr>
 													<th style="width: 150px;">Task Name</th>
-													<th style="width: 220px;">Task Description</th>
-													<th style="width: 40px;">Task Hours</th>
-													<th style="width: 75px;">Task Date</th>
-													<th style="width: 60px;">Review Status</th>
-													<th style="width: 150px;">Review By</th>
-													<th style="width: 220px;">Review Comments</th>
-													<th style="width: 220px;">Today Work</th>
-													<th colspan="2" style="width: 150px;">Actions</th>
+													<th style="width: 320px;">Task Description</th>
+													<th style="width: 75px;">Create Date</th>
+													<th style="width: 75px;">Start Date</th>
+													<th style="width: 75px;">End Date</th>
+													<th style="width: 60px;">Status</th>
+													<th style="width: 60px;">System Status</th>
+													<th style="width: 220px;">System Comments</th>
+													<th colspan="2" style="width: 40px;">Actions</th>
 
 												</tr>
 
@@ -110,19 +112,20 @@
 																	id="taskIdValue" value="${tasks.taskId}" />
 																</td>
 																<td>${tasks.taskDesc}</td>
-																<td>${tasks.taskHrs}</td>
-																<td>${tasks.taskCreateDate}</td>
-																<td>${tasks.taskAction}</td>
-																<td>${tasks.taskReviewUser}</td>
-																<td>${tasks.rejComment}</td>
-																<td>${tasks.taskComments}</td>
-																<td><a href="#" taskType="myTasks" id="editTask"
-																	onclick="edit('${tasks.taskId}');"><img
-																		alt="edit project" src="./resources/edit.gif"
-																		width="20px;"></a></td>
+																<td>${tasks.taskStartDate}</td>
+																<td>${tasks.taskStartDate}</td>
+																<td>${tasks.taskEndDate}</td>
+																<td>${tasks.taskStatus}</td>
+																<td></td>
+																<td></td>
+																<td>
+																	<a href="#" class="editTaskPopup" taskId="${tasks.taskId}" id="${component.componentId}">
+																		<img class="imgLink" alt="edit Task" src="./resources/edit.gif" width="20px;">
+																	</a>
+																</td>
 																<td><a href="#" id="deleteTask"
-																	onclick="deleteTask('${tasks.taskId}');"><img
-																		alt="delete project" src="./resources/delete.gif"
+																	onclick="deleteTask('${tasks.taskId}');"><img class="imgLink"
+																		alt="Delete Task" src="./resources/delete.gif"
 																		width="20px;"></a></td>
 															</tr>
 														</c:forEach>

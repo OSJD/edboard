@@ -16,7 +16,7 @@ public class TaskForm implements Serializable {
 	private String taskStatus;
 	private String taskAction;
 	private String rejComment;
-	private String taskReviewUser;
+	private int taskReviewUser;
 	private String taskCreateDate;
 	private String taskStartDate;
 	private String taskEndDate;
@@ -29,6 +29,7 @@ public class TaskForm implements Serializable {
 	private List<TaskLedgerForm> taskLedger;
 	private List<TaskReviewHistory> taskReviewHistory;
 	private List<String> reviewerList;
+	private List<String> reviewCommentInput;
 
 	public int getTaskId() {
 		return taskId;
@@ -102,11 +103,11 @@ public class TaskForm implements Serializable {
 		this.rejComment = rejComment;
 	}
 
-	public String getTaskReviewUser() {
+	public int getTaskReviewUser() {
 		return taskReviewUser;
 	}
 
-	public void setTaskReviewUser(String taskReviewUser) {
+	public void setTaskReviewUser(int taskReviewUser) {
 		this.taskReviewUser = taskReviewUser;
 	}
 
@@ -204,6 +205,14 @@ public class TaskForm implements Serializable {
 
 	public void setReviewerList(List<String> reviewerList) {
 		this.reviewerList = reviewerList;
+	}
+
+	public List<String> getReviewCommentInput() {
+		return reviewCommentInput;
+	}
+
+	public void setReviewCommentInput(List<String> reviewCommentInput) {
+		this.reviewCommentInput = reviewCommentInput;
 	}
 
 }

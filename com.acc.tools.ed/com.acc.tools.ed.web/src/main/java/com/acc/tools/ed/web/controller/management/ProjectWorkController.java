@@ -64,7 +64,7 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 			@ModelAttribute("edbUser")EDBUser edbUser,
 			Model model){
 		Map<String,Object> taskPopupData=new HashMap<String, Object>();
-		taskPopupData.put("myTasks", projectWorkService.getTasksByComponentId(componentId));
+		taskPopupData.put("myTasks", projectWorkService.getTasksByComponentId(componentId,edbUser.getEmployeeId()));
 		List<ReferenceData> resources=projectManagementService.getResourcesByProjectId(projectId);
 		for(Iterator<ReferenceData> resItr=resources.iterator();resItr.hasNext();){
 			ReferenceData resource=(ReferenceData)resItr.next();
@@ -95,21 +95,38 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 	}
 	
 	@RequestMapping(value = "/addTask.do")
-	public  String addTask(@RequestBody TaskForm taskform,Model model) {
+	public  String addTask(
+			@RequestBody TaskForm taskform,
+			@ModelAttribute("edbUser")EDBUser edbUser,
+			Model model) {
 		
-		LOG.debug("Task Id:{} | Task Name:{} | Today Work:{}",taskform.getTaskId(),taskform.getTaskName(),taskform.getTaskComments());
+		LOG.debug("Task Id:{} | Task Name:{} | Today Work:{} | Status:{}",new Object[]{taskform.getTaskId(),taskform.getTaskName(),taskform.getTaskComments(),taskform.getTaskStatus()});
 		if(taskform.getTaskId()>0){
-			final TaskLedgerForm ledgerForm=new TaskLedgerForm();
-			ledgerForm.setTaskId(taskform.getTaskId());
-			ledgerForm.setTaskHrs(taskform.getTaskHrs());
-			ledgerForm.setTaskActivity(taskform.getTaskComments());
-			getProjectWorkService().addTaskLedger(ledgerForm);
+			addTaskLedger(taskform);
+			if(taskform.getTaskReviewUser()>0){
+				getProjectWorkService().assignTaskReviewer(taskform.getTaskId(), taskform.getTaskReviewUser(), "1");
+			}
+		}else{
+			taskform.setEmployeeId(edbUser.getEmployeeId());
+			taskform.setEmployeeName(edbUser.getEnterpriseId());
+			final int taskId=getProjectWorkService().addTasks(taskform);
+			taskform.setTaskId(taskId);
+			addTaskLedger(taskform);
 		}
-		//getProjectWorkService().addTasks(taskform);
+		
 		TaskForm taskData=projectWorkService.retrieveTasks();
 		taskform.setTaskId(taskData.getTaskId());
 		model.addAttribute("addTaskForm", taskform);
 		return "/projectwork/newTask";
+	}
+
+	private void addTaskLedger(TaskForm taskform){
+		final TaskLedgerForm ledgerForm=new TaskLedgerForm();
+		ledgerForm.setTaskId(taskform.getTaskId());
+		ledgerForm.setTaskHrs(taskform.getTaskHrs());
+		ledgerForm.setTaskActivity(taskform.getTaskComments());
+		ledgerForm.setTaskStatus(taskform.getTaskStatus());
+		getProjectWorkService().addTaskLedger(ledgerForm);
 	}
 	
 	@RequestMapping(value = "/deleteTask.do")
@@ -121,20 +138,11 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 	}
 	
 	@RequestMapping(value = "/editTask.do")
-	public @ResponseBody List<TaskForm> editTask(@RequestParam("taskId") int taskId,Model model) {
+	public @ResponseBody List<TaskForm> editTask(@RequestBody TaskForm taskform,Model model) {
 		
-		LOG.debug("Project Name:[{--}] addTask:[{}]");
-		List<TaskForm> taskFormList = projectWorkService.editTasks(taskId);
-		return taskFormList;
-	}
-	
-	@RequestMapping(value = "/saveTask.do")
-	public String saveTask(@ModelAttribute("addTaskForm")TaskForm taskform,Model model) {
-		
-		LOG.debug("Project Name:[{--}] addTask:[{}]");
-		getProjectWorkService().saveTasks(taskform);
-		model.addAttribute("addTaskForm", taskform);
-		return "/projectwork/newTask";
+		LOG.debug("Task Id :[{}] review Comments:[{}]",taskform.getTaskId(),taskform.getReviewCommentInput());
+		List<TaskForm> taskFormList = projectWorkService.editTasks(taskform);
+		return null;
 	}
 
 }
