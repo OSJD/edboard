@@ -21,6 +21,8 @@ public class EDBUser implements Serializable {
 	private String role;
 	private String level;
 	private Integer supervisorId;
+	private Integer projectId;
+	private String projectName;
 	
 	public Integer getEmployeeId() {
 		return employeeId;
@@ -57,6 +59,18 @@ public class EDBUser implements Serializable {
 	}
 	public void setSupervisorId(Integer supervisorId) {
 		this.supervisorId = supervisorId;
+	}
+	public Integer getProjectId() {
+		return projectId;
+	}
+	public void setProjectId(Integer projectId) {
+		this.projectId = projectId;
+	}
+	public String getProjectName() {
+		return projectName;
+	}
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
 	}
 
 

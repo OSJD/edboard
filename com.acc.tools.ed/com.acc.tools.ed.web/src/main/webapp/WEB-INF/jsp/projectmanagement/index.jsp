@@ -18,6 +18,7 @@
 	<%@ include file="/WEB-INF/jsp/projectmanagement/editRelease.jsp" %>
 	<%@ include file="/WEB-INF/jsp/projectmanagement/addComponent.jsp" %>
 	<%@ include file="/WEB-INF/jsp/projectmanagement/addVacationRequest.jsp" %>
+	<%@ include file="/WEB-INF/jsp/projectmanagement/updateVacationRequest.jsp" %>
 	<%@ include file="/WEB-INF/jsp/projectwork/addTaskPopup.jsp"%>
 	<%@ include file="/WEB-INF/jsp/projectwork/editTaskPopup.jsp"%>		
 		

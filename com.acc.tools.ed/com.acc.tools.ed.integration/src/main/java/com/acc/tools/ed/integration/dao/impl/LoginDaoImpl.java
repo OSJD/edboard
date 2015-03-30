@@ -22,7 +22,9 @@ public class LoginDaoImpl extends AbstractEdbDao implements LoginDao{
 		
 			final Connection connection=getConnection();
 			Statement stmt=connection.createStatement();
-			final String loginQuery="SELECT EMP_ID,EMP_EMPLOYEE_ID,EMP_ROLE,EMP_LEVEL,EMP_SUP_EMP_ID FROM EDB_MSTR_EMP_DTLS WHERE EMP_ENTERPRISE_ID='"+name+"'";
+			final String loginQuery="SELECT P.PROJ_ID,P.PROJ_NAME, E.EMP_ID,E.EMP_EMPLOYEE_ID,E.EMP_ROLE,E.EMP_LEVEL,E.EMP_SUP_EMP_ID FROM "
+					+ "(EDB_MSTR_EMP_DTLS E LEFT JOIN  EDB_PROJ_EMP PE ON E.EMP_ID=PE.EMP_ID) "
+					+ " LEFT JOIN EDB_PROJECT P ON P.PROJ_ID=PE.PROJ_ID WHERE E.EMP_ENTERPRISE_ID='"+name+"'";
 			log.debug("loginQuery");
 			final ResultSet resultSet = stmt.executeQuery(loginQuery);
 			EDBUser user=null;
@@ -34,6 +36,8 @@ public class LoginDaoImpl extends AbstractEdbDao implements LoginDao{
 				user.setRole(resultSet.getString("EMP_ROLE"));
 				user.setLevel(resultSet.getString("EMP_LEVEL"));
 				user.setSupervisorId(resultSet.getInt("EMP_SUP_EMP_ID"));
+				user.setProjectId(resultSet.getInt("PROJ_ID"));
+				user.setProjectName(resultSet.getString("PROJ_NAME"));
 			}
 
 		

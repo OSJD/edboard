@@ -6,19 +6,20 @@
 						</tr>
 						<tr>
 							<th style="width: 75px;">Vacation Type</th>
-							<td><select class="text" style="width: 130px;"
-								name="vacationType" id="vacationType">
-									<option value="0">--select--</option>
-									<option value="-1">Vacation</option>
-									<option value="-2">Sick Leave</option>
-									<option value="-3">Optional Holiday</option>
-									<c:if test="${edbUser.role =='Admin'}">
-										<option value="-4">Public Holiday</option>
-									</c:if>
-							</select></td>
+							<td>
+									<select class="text" style="width: 130px;" name="vacationType" id="newVacationType">
+											<option value="0">--select--</option>
+											<option value="-1">Vacation</option>
+											<option value="-2">Sick Leave</option>
+											<option value="-3">Optional Holiday</option>
+											<c:if test="${edbUser.role =='Admin'}">
+												<option value="-4">Public Holiday</option>
+											</c:if>
+									</select>
+							</td>
 						</tr>
 						<c:if test="${edbUser.role =='Admin'}">
-							<tr>
+							<tr id="LocationDiv">
 								<th>Location</th>
 								<td><input type="radio" name="location"
 									id="offShoreLocation" value="1" disabled="disabled">
@@ -29,23 +30,21 @@
 						</c:if>
 						<tr>
 							<th>Start Date</th>
-							<td><input type="text" name="vacationStartDate"
-								id="vacationStartDate" class="textbox" /></td>
+							<td>
+								<input type="text" name="startDate" id="vacationStartDate" class="textbox" />
+							</td>
 						</tr>
 						<tr>
 							<th>End Date</th>
-							<td><input type="text" name="vacationEndDate" id="vacationEndDate"
-								class="textbox" /><!-- <a href="#" id="buttonn1">Button2</a> --></td>
+							<td>
+								<input type="text" name="endDate" id="vacationEndDate" class="textbox" />
+							</td>
 						</tr>
 						<tr>
 							<th>Backup</th>
 							<td>
 								<select class="text" style="width: 130px;"
-									name="backupResource" id="backupResource">
-										<option value="0">--select--</option>
-										<option value="-1">Dimple</option>
-										<option value="-2">Vidhya</option>
-										<option value="-3">Vinoth</option>
+										name="backupResource" id="newBackupResource">
 								</select>
 							</td>
 						</tr>						
@@ -53,10 +52,10 @@
 							<th colspan="2">Comments</th>
 						</tr>
 						<tr>
-							<td colspan="2"><textarea name="comments" rows="5" cols="60"
-									class="text"></textarea></td>
+							<td colspan="2">
+								<textarea name="comments" id="newComments" rows="5" cols="60" class="text"></textarea>
+							</td>
 						</tr>
-
 					</table>
 				</form>
 			</div>

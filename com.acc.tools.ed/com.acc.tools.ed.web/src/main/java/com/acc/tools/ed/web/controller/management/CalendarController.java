@@ -1,17 +1,14 @@
 package com.acc.tools.ed.web.controller.management;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.Iterator;
 import java.util.List;
 
-import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,8 +16,8 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.acc.tools.ed.integration.dto.EDBUser;
 import com.acc.tools.ed.integration.dto.ReferenceData;
-import com.acc.tools.ed.integration.dto.ReleaseForm;
 import com.acc.tools.ed.integration.dto.VacationForm;
+import com.acc.tools.ed.integration.service.ProjectManagementService;
 import com.acc.tools.ed.integration.service.ProjectWorkService;
 
 @Controller
@@ -32,9 +29,11 @@ public class CalendarController {
 	@Autowired
 	private ProjectWorkService projectWorkService;
 	
+	@Autowired
+	private ProjectManagementService projectManagementService;
+	
 	 @RequestMapping({"/calendar.do"})
-	  public String calendar(Model model,
-			
+	  public String calendar(Model model,			
 			  @ModelAttribute("edbUser") EDBUser edbUser){
 		  
 		 List<VacationForm> calendar= projectWorkService.getVacationDetails(edbUser.getEmployeeId());
@@ -56,6 +55,7 @@ public class CalendarController {
 				Model model){
 			LOG.debug("Vacation Type:{}",vacationForm.getVacationType());
 			vacationForm.setEmployeeId(edbUser.getEmployeeId());
+			vacationForm.setResourceName(edbUser.getEnterpriseId());
 			vacationForm.setStatus("Submitted");
 			vacationForm.setSupervisorId(edbUser.getSupervisorId());
 			if(vacationForm.getVacationType()!="-4"){
@@ -67,23 +67,29 @@ public class CalendarController {
 			return "success";
 		}
 	  
+	  @RequestMapping(value = "/getBackUpList.do")
+	  public @ResponseBody List<ReferenceData> getBackUpResource(@ModelAttribute("edbUser") EDBUser edbUser,
+				Model model){
+		  List<ReferenceData> resources=projectManagementService.getResourcesByProjectId(edbUser.getProjectId());
+			for(Iterator<ReferenceData> resItr=resources.iterator();resItr.hasNext();){
+				ReferenceData resource=(ReferenceData)resItr.next();
+				if(resource.getId().equalsIgnoreCase(""+edbUser.getEmployeeId())){
+					resItr.remove();
+				}
+			}
+		  return resources;
+	  }
+	  
 	  @RequestMapping(value = "/approveVacation.do")
 		public @ResponseBody String approveVacation(
-				@RequestParam("vacationId") int vacationId,
-				@RequestParam("status") String status,
-				@RequestParam("approverComments") String approverComments,
+				@ModelAttribute("updateVacationRequestForm") VacationForm updateVacationRequestForm,
 				@ModelAttribute("edbUser") EDBUser edbUser,
 				Model model){
-			LOG.debug("Vacation Type:{}",vacationId);
-			LOG.debug("Vacation Status:{}",status);
-			final VacationForm vacationForm=new VacationForm();
-			vacationForm.setVacationId(vacationId);
-			vacationForm.setStatus(status);
-			vacationForm.setApproverComments(approverComments);
-			vacationForm.setSupervisorId(edbUser.getSupervisorId());
-			projectWorkService.approveVacation(vacationForm);			
+			LOG.debug("Vacation Type:{}",updateVacationRequestForm.getVacationId());
+			LOG.debug("Vacation Status:{} | Comments:{}",updateVacationRequestForm.getStatus(),updateVacationRequestForm.getApproverComments());
+			projectWorkService.approveVacation(updateVacationRequestForm);			
 
-			return "success";
+			return updateVacationRequestForm.getStatus();
 		}
 	  
 	  

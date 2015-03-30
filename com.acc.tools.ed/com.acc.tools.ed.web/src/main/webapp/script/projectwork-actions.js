@@ -21,10 +21,34 @@ $(document).ready(
 			dateFormat: 'mm/dd/yy',
 			constranInput: true 
 		});
-		
+		var updateVacationRequestPopup=$("#updateVacationRequestPopup").dialog({
+			autoOpen : false,
+			height : 470,
+			width : 430,
+			modal : true,
+			buttons:{
+				"Update":function(){
+					$.ajax({
+						type : "POST",
+						url : "./approveVacation.do",
+						data :$("#updateVacationRequestForm").serialize(),
+						success : function(response) {
+							$("#status"+$("#updateVacationRequestPopup").data("vacationId")).html(response);
+							$("#approverComments"+$("#updateVacationRequestPopup").data("vacationId")).html($("#newSupervisorComments").val());
+							updateVacationRequestPopup.dialog("close");
+						},
+						error : function(data) {},
+						complete:function(data){
+							
+						}
+					});
+				}
+			}
+			
+		});
 		var vacationRequestPopup=$("#vacationRequestPopup").dialog({
 			autoOpen : false,
-			height : 420,
+			height : 400,
 			width : 430,
 			modal : true,
 			buttons:{
@@ -51,7 +75,40 @@ $(document).ready(
 		});
 		
 		$("#vacationRequestBtn").on("click",function(){
+			$.ajax({
+				type : "POST",
+				url : "./getBackUpList.do",
+				success : function(backupresource) {
+					$("#newBackupResource option").remove();
+					$("#newBackupResource").append("<option value='-1'>--select--</option>");
+					for(var index in backupresource){
+						$("#backupResource").append("<option value='"+backupresource[index].id+"'>"+backupresource[index].label+"</option>");
+					}
+				},
+				error : function(data) {},
+				complete:function(data){
+					
+				}
+			});			
 			vacationRequestPopup.dialog("open");
+		});
+		
+		$(".updateVacationDetail").button().on("click",function(){
+			var vacationId=$(this).attr("id");
+			var vacationType=$("#vacationType"+vacationId).html().replace(/\s+/g, '');
+			var backUpResource=$("#backUpResource"+vacationId).html().replace(/\s+/g, '');
+			$("#updatevacationId").val(vacationId);
+			$("#newVacationTypeDiv").html(vacationType);
+			$("#vacationStartDateDiv").html($("#startDate"+vacationId).html());
+			$("#vacationEndDateDiv").html($("#endDate"+vacationId).html());
+			$("#newBackupResourceDiv").html(backUpResource);
+			$("#newCommentsDiv").html($("#comments"+vacationId).html());
+			alert($("#supervisorId"+vacationId).val());
+			$("#statusTr").hide();
+			$("#supervisorCommentsHdTr").hide();
+			$("#supervisorCommentsValTr").hide();
+			updateVacationRequestPopup.data("vacationId",vacationId);
+			updateVacationRequestPopup.dialog("open");
 		});
 		
 		var addTaskDialog=$("#addTaskPanel").dialog({
