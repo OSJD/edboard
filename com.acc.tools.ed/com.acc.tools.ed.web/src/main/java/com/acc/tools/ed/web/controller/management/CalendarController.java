@@ -49,7 +49,7 @@ public class CalendarController {
 	  }
 	  
 	  @RequestMapping(value = "/addVacation.do")
-		public @ResponseBody String addVacation(
+		public @ResponseBody VacationForm addVacation(
 				@ModelAttribute("vacationForm") VacationForm vacationForm,
 				@ModelAttribute("edbUser") EDBUser edbUser,
 				Model model){
@@ -59,12 +59,12 @@ public class CalendarController {
 			vacationForm.setStatus("Submitted");
 			vacationForm.setSupervisorId(edbUser.getSupervisorId());
 			if(vacationForm.getVacationType()!="-4"){
-				projectWorkService.addVacation(vacationForm);			
+				vacationForm.setVacationId(projectWorkService.addVacation(vacationForm));			
 			} else {
 				System.out.println("-------------------------------------------->holiday");
 			}
 
-			return "success";
+			return vacationForm;
 		}
 	  
 	  @RequestMapping(value = "/getBackUpList.do")

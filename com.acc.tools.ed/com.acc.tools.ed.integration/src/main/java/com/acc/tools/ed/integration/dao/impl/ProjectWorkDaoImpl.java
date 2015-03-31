@@ -37,11 +37,11 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 	
 	public int addVacation(VacationForm vacationForm){
 		
-		int status =0;
+		int vacationId=0;
 		try {
 			
 			
-			String addTaskQuery = "insert into EDB_VACTN_CALNDR(EMP_ID,EMP_NM,VACTN_TYP,VACTN_STRT_DT,VACTN_END_DT,COMNTS,STATUS,SUP_ID,SUP_COMNTS) values (?,?,?,?,?,?,?,?,?)";
+			String addTaskQuery = "insert into EDB_VACTN_CALNDR(EMP_ID,EMP_NM,VACTN_TYP,VACTN_STRT_DT,VACTN_END_DT,COMNTS,STATUS,SUP_ID,SUP_COMNTS,CREATE_TS) values (?,?,?,?,?,?,?,?,?,?)";
 			PreparedStatement pstm = getConnection().prepareStatement(addTaskQuery);
 			pstm.setInt(1, vacationForm.getEmployeeId());
 			pstm.setString(2, vacationForm.getResourceName());
@@ -52,17 +52,31 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 			pstm.setString(7, vacationForm.getStatus());
 			pstm.setInt(8, vacationForm.getSupervisorId());
 			pstm.setString(9, vacationForm.getApproverComments());
+			final String createTimestamp=Long.toString(vacationForm.getCreateTimestamp());
+			pstm.setString(10, createTimestamp);
 			pstm.executeUpdate();
 			pstm.close();
 
-			
+			vacationId=getLatestVacationRequest(vacationForm.getEmployeeId(),createTimestamp);
 		} catch (Exception e) {
 			log.error("Error Inserting into Vacation Table:{}",e);
 		}
-		return status;
+		return vacationId;
 	}
 	
-public int approveVacation(VacationForm vacationForm){
+	private int getLatestVacationRequest(Integer employeeId,String createTimestamp) throws SQLException, IOException{
+		final String latestVacationRequestQuery="SELECT TOP 1 * FROM EDB_VACTN_CALNDR WHERE CREATE_TS='"+createTimestamp+"' AND EMP_ID="+employeeId+" ORDER BY CREATE_TS DESC";
+		log.debug("Vacation Request latest record query :{}",latestVacationRequestQuery);
+		Statement selectStatement = getConnection().createStatement();
+		ResultSet rs = selectStatement.executeQuery(latestVacationRequestQuery);
+		int vacationId=0;
+		while (rs.next()) {
+			vacationId=rs.getInt("VACTN_ID");
+		}
+		return vacationId;
+	}
+	
+	public int approveVacation(VacationForm vacationForm){
 		
 		int status =0;
 		try {

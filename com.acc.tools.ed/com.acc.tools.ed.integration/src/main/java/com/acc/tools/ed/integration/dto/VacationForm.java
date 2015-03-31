@@ -24,6 +24,7 @@ public class VacationForm implements Serializable{
 	private String approverComments;
 	private String role;
 	private String viewFlag;
+	private long createTimestamp;
 	
 	
 	public String getRole() {
@@ -115,6 +116,12 @@ public class VacationForm implements Serializable{
 	}
 	public void setBackUpResource(int backUpResource) {
 		this.backUpResource = backUpResource;
+	}
+	public long getCreateTimestamp() {
+		return createTimestamp;
+	}
+	public void setCreateTimestamp(long createTimestamp) {
+		this.createTimestamp = createTimestamp;
 	}
 
 }
