@@ -59,24 +59,12 @@ $(document).ready(
 						data :$("#vacationRequestForm").serialize(),
 						beforeSend : function() {
 						},
-						success : function(vacationForm) {
-							if(vacationForm.vacationId!=0){
+						success : function(status) {
+							if(status=="success"){
 								alert('Request submitted successfully!');
-								var vacationId=vacationForm.vacationId;
-								var vacationType=vacationForm.vacationType;
-								var vacationRequestRow="<tr><td style=\"width: 20px;\"><a href=\"#\" id=\""+vacationId+"\" class=\"updateVacationDetail\" style=\"width: 55px;\">Update</a>"+
-								"</td><td><a href=\"#\" id=\""+vacationId+"\" class=\"deleteVacationDetail\" style=\"width: 25px;\">Delete </a>"+
-								"</td><td><div id=\"resourceName"+vacationId+"\">"+vacationForm.resourceName+"</div></td>"+
-								"<td><div id=\"requestDate"+vacationId+"\">"+vacationForm.createDate+"</div></td><td>"+
-								"<div id=\"vacationType"+vacationId+"\">"+vacationType+"</div></td>"+
-								"<td><div id=\"backUpResource"+vacationId+"\">"+vacationForm.backUpResource+"</div></td>"+
-								"<td><div id=\"startDate"+vacationId+"\">"+vacationForm.startDate+"</div></td>"+
-								"<td><div id=\"endDate"+vacationId+"\">"+vacationForm.endDate+"</div></td>"+
-								"<td><div id=\"comments"+vacationId+"\">"+vacationForm.comments+"</div></td>"+
-								"<td><div id=\"status"+vacationId+"\">"+vacationForm.status+"</div></td>"+
-								"<td><div id=\"approverComments"+vacationId+"\">"+vacationForm.approverComments+"</div>"+
-								"<input type=\"hidden\" id=\"supervisorId"+vacationId+"\" value=\""+vacationForm.supervisorId+"\"></td></tr>";
-								$('#vacationStatusFormTable > tbody:last').append(vacationRequestRow);	
+								$("#mainBody .subtabs").attr("id","pwsubtab3");
+								$("#mainBody .subtabs").attr("action","./dvlpCalendar.do");
+								$("#mainBody .subtabs").get(0).click();
 							} else {
 								alert('Request not submitted successfully!');
 							}
