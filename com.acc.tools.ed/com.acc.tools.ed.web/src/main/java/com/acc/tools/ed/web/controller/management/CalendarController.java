@@ -52,7 +52,7 @@ public class CalendarController {
 				@ModelAttribute("vacationForm") VacationForm vacationForm,
 				@ModelAttribute("edbUser") EDBUser edbUser,
 				Model model){
-			LOG.debug("Vacation Type:{}",vacationForm.getVacationType());
+			LOG.debug("Vacation Type:{}",vacationForm.getBackUpResource());
 			vacationForm.setEmployeeId(edbUser.getEmployeeId());
 			vacationForm.setResourceName(edbUser.getEnterpriseId());
 			vacationForm.setStatus("Submitted");

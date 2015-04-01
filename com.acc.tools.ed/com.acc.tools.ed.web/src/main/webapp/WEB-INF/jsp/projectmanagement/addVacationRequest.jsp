@@ -16,6 +16,7 @@
 												<option value="-4">Public Holiday</option>
 											</c:if>
 									</select>
+									<input type="hidden" id="editVacationId">
 							</td>
 						</tr>
 						<c:if test="${edbUser.role =='Admin'}">
@@ -43,8 +44,8 @@
 						<tr>
 							<th>Backup</th>
 							<td>
-								<select class="text" style="width: 130px;"
-										name="backupResource" id="newBackupResource">
+								<select class="textbox" style="width: 230px;"
+										name="backUpResource" id="newBackupResource">
 								</select>
 							</td>
 						</tr>						

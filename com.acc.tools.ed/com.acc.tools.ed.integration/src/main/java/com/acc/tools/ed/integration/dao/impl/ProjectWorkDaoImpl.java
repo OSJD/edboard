@@ -41,7 +41,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 		try {
 			
 			
-			String addTaskQuery = "insert into EDB_VACTN_CALNDR(EMP_ID,EMP_NM,VACTN_TYP,VACTN_STRT_DT,VACTN_END_DT,COMNTS,STATUS,SUP_ID,SUP_COMNTS,CREATE_TS) values (?,?,?,?,?,?,?,?,?,?)";
+			String addTaskQuery = "insert into EDB_VACTN_CALNDR(EMP_ID,EMP_NM,VACTN_TYP,VACTN_STRT_DT,VACTN_END_DT,COMNTS,STATUS,SUP_ID,SUP_COMNTS,CREATE_TS,BACKUP_ID) values (?,?,?,?,?,?,?,?,?,?,?)";
 			PreparedStatement pstm = getConnection().prepareStatement(addTaskQuery);
 			pstm.setInt(1, vacationForm.getEmployeeId());
 			pstm.setString(2, vacationForm.getResourceName());
@@ -54,6 +54,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 			pstm.setString(9, vacationForm.getApproverComments());
 			final String createTimestamp=Long.toString(vacationForm.getCreateTimestamp());
 			pstm.setString(10, createTimestamp);
+			pstm.setInt(11, vacationForm.getBackUpResource());			
 			vacationId=pstm.executeUpdate();
 			pstm.close();
 
@@ -681,6 +682,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 					details.setVacationType(rs.getString("VACTN_TYP"));
 					details.setResourceName(rs.getString("EMP_NM"));
 					details.setEmployeeId(rs.getInt("EMP_ID"));
+					details.setBackUpResource(rs.getInt("BACKUP_ID"));
 					vactionDetails.add(details);
 				}
 				
@@ -718,6 +720,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 					details.setVacationType(rs.getString("VACTN_TYP"));
 					details.setResourceName(rs.getString("EMP_NM"));
 					details.setEmployeeId(rs.getInt("EMP_ID"));
+					details.setBackUpResource(rs.getInt("BACKUP_ID"));					
 					vactionDetails.add(details);
 				}
 				

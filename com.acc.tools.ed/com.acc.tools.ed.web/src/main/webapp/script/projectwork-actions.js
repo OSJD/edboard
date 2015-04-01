@@ -57,8 +57,6 @@ $(document).ready(
 						type : "POST",
 						url : "./addVacation.do",
 						data :$("#vacationRequestForm").serialize(),
-						beforeSend : function() {
-						},
 						success : function(status) {
 							if(status=="success"){
 								alert('Request submitted successfully!');
@@ -101,7 +99,7 @@ $(document).ready(
 		
 		$(".updateVacationDetail").button().on("click",function(){
 			var vacationId=$(this).attr("id");
-			var vacationType=$("#vacationType"+vacationId).html().replace(/\s+/g, '');
+			var vacationType=$("#vacationType"+vacationId).html().trim()
 			var backUpResource=$("#backUpResource"+vacationId).html().replace(/\s+/g, '');
 			var supervisorId=$("input[name='supervisorId']").val();
 			var loginUserId=$("input[name='loginUserId']").val();
@@ -115,7 +113,34 @@ $(document).ready(
 				updateVacationRequestPopup.data("vacationId",vacationId);
 				updateVacationRequestPopup.dialog("open");
 			}else{
-				vacationRequestPopup.dialog("open");			
+				$.ajax({
+					type : "POST",
+					url : "./getBackUpList.do",
+					success : function(backupresource) {
+						$("#newBackupResource option").remove();
+						$("#newBackupResource").append("<option value='-1'>--select--</option>");
+						for(var index in backupresource){
+							var key=backupresource[index].id;
+							if(key==backUpResource){
+								$("#newBackupResource").append("<option value='"+key+"' selected=\"selected\">"+backupresource[index].label+"</option>");
+							} else {
+								$("#newBackupResource").append("<option value='"+key+"'>"+backupresource[index].label+"</option>");
+							}
+						}
+					},
+					error : function(data) {},
+					complete:function(data){
+						
+					}
+				});
+				$("#editVacationId").val(vacationId);
+				$('#newVacationType option').filter(function() { 
+				    return ($(this).text() == vacationType);
+				}).prop('selected', true);
+				$("#vacationStartDate").val($("#startDate"+vacationId).html());
+				$("#vacationEndDate").val($("#endDate"+vacationId).html());
+				$("#newComments").val($("#comments"+vacationId).html());
+				vacationRequestPopup.dialog("open");	
 			}
 		});
 		
