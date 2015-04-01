@@ -93,7 +93,10 @@ $(document).ready(
 				complete:function(data){
 					
 				}
-			});			
+			});		
+			$("#newVacationType").val(0);
+			$("#newVacationType option[value='-4']").remove();
+			$("#newVacationType").append("<option value='-4'>Pudlic Holiday</option>");
 			vacationRequestPopup.dialog("open");
 		});
 		
@@ -133,6 +136,7 @@ $(document).ready(
 						
 					}
 				});
+				$("#newVacationType option[value='-4']").remove();
 				$("#editVacationId").val(vacationId);
 				$('#newVacationType option').filter(function() { 
 				    return ($(this).text() == vacationType);
@@ -558,6 +562,20 @@ $(document).ready(
 			
 			
 		}); 
+		
+		
+		$("#newVacationType").on("change",function(){
+			$(this).unbind("change");
+			var vactionType=$(this).val();
+			if(vactionType==-4){
+				$("#locationDiv").show();
+				$("#backUpRow").hide();
+			} else {
+				$("#locationDiv").hide();
+				$("#backUpRow").show();
+			}
+			
+		});
 		
 });
 

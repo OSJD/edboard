@@ -20,6 +20,7 @@ public interface ProjectWorkDao {
 	public List<ReferenceData> getTasksByComponentId(Integer componentId,Integer employeeId);
 	public TaskForm getTaskByTaskId(Integer taskId);
 	public int addVacation(VacationForm vacationForm);
+	public int addHoliday(VacationForm vacationForm);
 	public List<VacationForm> getVacationDetailsBySupervisorId(Integer employeeId,Integer loginUserId);
 	public List<VacationForm> getVacationDetailsByEmployeeId(Integer employeeId,Integer loginUserId);
 	public int approveVacation(VacationForm vacationForm);

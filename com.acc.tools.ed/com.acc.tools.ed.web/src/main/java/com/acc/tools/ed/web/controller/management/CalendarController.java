@@ -52,23 +52,22 @@ public class CalendarController {
 				@ModelAttribute("vacationForm") VacationForm vacationForm,
 				@ModelAttribute("edbUser") EDBUser edbUser,
 				Model model){
-			LOG.debug("Vacation Type:{}",vacationForm.getBackUpResource());
+			LOG.debug("Vacation Type:{}",vacationForm.getVacationType());
+			int status=0;
 			vacationForm.setEmployeeId(edbUser.getEmployeeId());
 			vacationForm.setResourceName(edbUser.getEnterpriseId());
 			vacationForm.setStatus("Submitted");
 			vacationForm.setSupervisorId(edbUser.getSupervisorId());
-			if(vacationForm.getVacationType()!="-4"){
-				final int status=projectWorkService.addVacation(vacationForm);
-				if(status>0){
-					return "success";
-				}else{
-					return "fail";
-				}
+			if(!vacationForm.getVacationType().equalsIgnoreCase("-4")){
+				status=projectWorkService.addVacation(vacationForm);
 			} else {
-				System.out.println("-------------------------------------------->holiday");
+				status=projectWorkService.addHoliday(vacationForm);
 			}
-
-			return "fail";
+			if(status>0){
+				return "success";
+			}else{
+				return "fail";
+			}
 		}
 	  
 	  @RequestMapping(value = "/getBackUpList.do")

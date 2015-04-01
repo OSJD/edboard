@@ -64,6 +64,28 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 		return vacationId;
 	}
 	
+	public int addHoliday(VacationForm vacationForm){
+		
+		int status=0;
+		try {
+			
+			final String addTaskQuery = "insert into EDB_HOLDY_CALNDR(HOLDY_NM,START_DT,END_DT,ADD_BY,ADD_DT) values (?,?,?,?,?)";
+			final PreparedStatement pstm = getConnection().prepareStatement(addTaskQuery);
+			pstm.setString(1, vacationForm.getComments());
+			pstm.setString(2, vacationForm.getStartDate());
+			pstm.setString(3, vacationForm.getEndDate());
+			pstm.setInt(4, vacationForm.getEmployeeId());
+			pstm.setString(5, new DateTime(System.currentTimeMillis()).toString("yyyy-MM-dd"));
+				
+			status=pstm.executeUpdate();
+			pstm.close();
+
+		} catch (Exception e) {
+			log.error("Error Inserting into Holoday Table:{}",e);
+		}
+		return status;
+	}
+	
 	
 	public int approveVacation(VacationForm vacationForm){
 		

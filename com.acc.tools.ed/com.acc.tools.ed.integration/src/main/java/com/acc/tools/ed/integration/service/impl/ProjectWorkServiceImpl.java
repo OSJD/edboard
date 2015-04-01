@@ -23,6 +23,10 @@ public class ProjectWorkServiceImpl implements ProjectWorkService {
 		return projectWorkDao.addVacation(vacationForm);
 	}
 	
+	public int addHoliday(VacationForm vacationForm){
+		return projectWorkDao.addHoliday(vacationForm);
+	}
+	
 	public int approveVacation(VacationForm vacationForm){
 		return projectWorkDao.approveVacation(vacationForm);
 	}

@@ -20,12 +20,12 @@
 							</td>
 						</tr>
 						<c:if test="${edbUser.role =='Admin'}">
-							<tr id="LocationDiv">
+							<tr id="locationDiv" style="display: none">
 								<th>Location</th>
 								<td><input type="radio" name="location"
-									id="offShoreLocation" value="1" disabled="disabled">
+									id="offShoreLocation" value="1" checked="checked">
 									Off Shore <input type="radio" name="location"
-									id="onShoreLocation" value="2" disabled="disabled"> On
+									id="onShoreLocation" value="2"> On
 									Shore</td>
 							</tr>
 						</c:if>
@@ -41,7 +41,7 @@
 								<input type="text" name="endDate" id="vacationEndDate" class="textbox" />
 							</td>
 						</tr>
-						<tr>
+						<tr id="backUpRow">
 							<th>Backup</th>
 							<td>
 								<select class="textbox" style="width: 230px;"
