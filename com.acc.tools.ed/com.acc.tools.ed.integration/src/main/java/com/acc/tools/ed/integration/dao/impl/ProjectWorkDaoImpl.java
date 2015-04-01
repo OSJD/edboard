@@ -656,25 +656,21 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 		return taskMap.get(taskId);
 	}
 	
-
-	public List<VacationForm> getVacationDetails(Integer employeeId){
-		
-		{
-		
+	public List<VacationForm> getVacationDetailsBySupervisorId(Integer employeeId,Integer loginUserId){
 			final List<VacationForm> vactionDetails=new ArrayList<VacationForm>();
 			try {
 
 				
 				
-				final String query="SELECT * FROM EDB_VACTN_CALNDR WHERE EMP_ID="+employeeId;
-				log.debug("getTaskById Query :{}",query);
+				final String query="SELECT * FROM EDB_VACTN_CALNDR WHERE SUP_ID="+employeeId;
+				log.debug("Vacation Query by supervisor Id:{}",query);
 				Statement selectStatement = getConnection().createStatement();
 				ResultSet rs = selectStatement.executeQuery(query);
 				
 				
 				while (rs.next()) {
-					VacationForm details = new VacationForm();
-					
+					final VacationForm details = new VacationForm();
+					details.setLoginUserId(loginUserId);
 					details.setVacationId(rs.getInt("VACTN_ID"));
 					details.setSupervisorId(rs.getInt("SUP_ID"));
 					details.setApproverComments(rs.getString("SUP_COMNTS"));
@@ -683,102 +679,55 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 					details.setEndDate(rs.getString("VACTN_END_DT"));
 					details.setStatus(rs.getString("STATUS"));
 					details.setVacationType(rs.getString("VACTN_TYP"));
-					String empId= rs.getString("EMP_ID");
-
-					System.out.println("the emps reporting are::" + empId);
-					final String resourceQuery = "SELECT EMP_RESOURCE_NAME FROM EDB_MSTR_EMP_DTLS WHERE EMP_ID = "+empId;
-					log.debug("get resource name Query :{}",resourceQuery);
-					selectStatement = getConnection().createStatement();
-					ResultSet rsEmpname = selectStatement.executeQuery(query);
-					rsEmpname = selectStatement.executeQuery(resourceQuery);
-								
-					while(rsEmpname.next())
-					{
-						details.setResourceName(rsEmpname.getString("EMP_RESOURCE_NAME"));
-					}
+					details.setResourceName(rs.getString("EMP_NM"));
+					details.setEmployeeId(rs.getInt("EMP_ID"));
 					vactionDetails.add(details);
-				
 				}
 				
 				
 				return vactionDetails;
 			} catch (Exception e) {
-				log.error("Error in getTasksByComponentId:",e);
+				log.error("Error in Vacation query by employee id:",e);
 			}
 			return vactionDetails;
-		}
-		
-	}
 	
-	public List<VacationForm> getDeveloperVacationDetails(Integer employeeId){
-
-		{
-
+	}
+	public List<VacationForm> getVacationDetailsByEmployeeId(Integer employeeId,Integer loginUserId){
+		
 			final List<VacationForm> vactionDetails=new ArrayList<VacationForm>();
 			try {
 
-
-				final String supIdQuery = "SELECT EMP_SUP_EMP_ID  FROM EDB_MSTR_EMP_DTLS WHERE EMP_ID ="+employeeId;
-				log.debug("getTaskById Query :{}",supIdQuery);
+				
+				
+				final String query="SELECT * FROM EDB_VACTN_CALNDR WHERE EMP_ID="+employeeId;
+				log.debug("Vacation Query by employee Id :{}",query);
 				Statement selectStatement = getConnection().createStatement();
-				ResultSet supRs = selectStatement.executeQuery(supIdQuery);
-				Integer sup_id =0;
-				while(supRs.next())
-				{
-					sup_id = supRs.getInt("EMP_SUP_EMP_ID");
-
+				ResultSet rs = selectStatement.executeQuery(query);
+				
+				
+				while (rs.next()) {
+					final VacationForm details = new VacationForm();
+					details.setLoginUserId(loginUserId);
+					details.setVacationId(rs.getInt("VACTN_ID"));
+					details.setSupervisorId(rs.getInt("SUP_ID"));
+					details.setApproverComments(rs.getString("SUP_COMNTS"));
+					details.setComments(rs.getString("COMNTS"));
+					details.setStartDate(rs.getString("VACTN_STRT_DT"));
+					details.setEndDate(rs.getString("VACTN_END_DT"));
+					details.setStatus(rs.getString("STATUS"));
+					details.setVacationType(rs.getString("VACTN_TYP"));
+					details.setResourceName(rs.getString("EMP_NM"));
+					details.setEmployeeId(rs.getInt("EMP_ID"));
+					vactionDetails.add(details);
 				}
-
-				if(sup_id!= 0)
-				{
-
-					final String query="SELECT * FROM EDB_VACTN_CALNDR WHERE SUP_ID="+sup_id;
-					log.debug("getTaskById Query :{}",query);
-					selectStatement = getConnection().createStatement();
-					ResultSet rs = selectStatement.executeQuery(query);
-
-
-					while (rs.next()) {
-						VacationForm details = new VacationForm();
-
-						details.setVacationId(rs.getInt("VACTN_ID"));
-						details.setComments(rs.getString("COMNTS"));
-						details.setStartDate(rs.getString("VACTN_STRT_DT"));
-						details.setEndDate(rs.getString("VACTN_END_DT"));
-						details.setStatus(rs.getString("STATUS"));
-						details.setVacationType(rs.getString("VACTN_TYP"));
-						details.setRole("DEVLP");
-						int empId= rs.getInt("EMP_ID");
-						System.out.println("employee id ::" + employeeId);
-						if(empId== employeeId)
-						{
-							details.setViewFlag("TRUE");
-							System.out.println("flag set true::");
-						}
-						System.out.println("the emps reporting are::" + empId);
-						final String resourceQuery = "SELECT EMP_RESOURCE_NAME FROM EDB_MSTR_EMP_DTLS WHERE EMP_ID = "+empId;
-						log.debug("get resource name Query :{}",resourceQuery);
-						selectStatement = getConnection().createStatement();
-						ResultSet rsEmpname = selectStatement.executeQuery(query);
-						rsEmpname = selectStatement.executeQuery(resourceQuery);
-
-						while(rsEmpname.next())
-						{
-							details.setResourceName(rsEmpname.getString("EMP_RESOURCE_NAME"));
-						}
-						vactionDetails.add(details);
-
-					}
-
-
-					return vactionDetails;
-				}
+				
+				
+				return vactionDetails;
 			} catch (Exception e) {
-				log.error("Error in getTasksByComponentId:",e);
+				log.error("Error in Vacation query by employee id:",e);
 			}
 			return vactionDetails;
-		}
-
+		
 	}
 
 	public String editVacation(VacationForm vacationForm)

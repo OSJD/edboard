@@ -63,7 +63,7 @@ $(document).ready(
 							if(status=="success"){
 								alert('Request submitted successfully!');
 								$("#mainBody .subtabs").attr("id","pwsubtab3");
-								$("#mainBody .subtabs").attr("action","./dvlpCalendar.do");
+								$("#mainBody .subtabs").attr("action","./calendar.do");
 								$("#mainBody .subtabs").get(0).click();
 							} else {
 								alert('Request not submitted successfully!');
@@ -103,18 +103,20 @@ $(document).ready(
 			var vacationId=$(this).attr("id");
 			var vacationType=$("#vacationType"+vacationId).html().replace(/\s+/g, '');
 			var backUpResource=$("#backUpResource"+vacationId).html().replace(/\s+/g, '');
-			$("#updatevacationId").val(vacationId);
-			$("#newVacationTypeDiv").html(vacationType);
-			$("#vacationStartDateDiv").html($("#startDate"+vacationId).html());
-			$("#vacationEndDateDiv").html($("#endDate"+vacationId).html());
-			$("#newBackupResourceDiv").html(backUpResource);
-			$("#newCommentsDiv").html($("#comments"+vacationId).html());
-			alert($("#supervisorId"+vacationId).val());
-			$("#statusTr").hide();
-			$("#supervisorCommentsHdTr").hide();
-			$("#supervisorCommentsValTr").hide();
-			updateVacationRequestPopup.data("vacationId",vacationId);
-			updateVacationRequestPopup.dialog("open");
+			var supervisorId=$("input[name='supervisorId']").val();
+			var loginUserId=$("input[name='loginUserId']").val();
+			if(loginUserId==supervisorId){
+				$("#updatevacationId").val(vacationId);
+				$("#newVacationTypeDiv").html(vacationType);
+				$("#vacationStartDateDiv").html($("#startDate"+vacationId).html());
+				$("#vacationEndDateDiv").html($("#endDate"+vacationId).html());
+				$("#newBackupResourceDiv").html(backUpResource);
+				$("#newCommentsDiv").html($("#comments"+vacationId).html());
+				updateVacationRequestPopup.data("vacationId",vacationId);
+				updateVacationRequestPopup.dialog("open");
+			}else{
+				vacationRequestPopup.dialog("open");			
+			}
 		});
 		
 		var addTaskDialog=$("#addTaskPanel").dialog({

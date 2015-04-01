@@ -20,9 +20,9 @@ public interface ProjectWorkService {
 	public List<ReferenceData> getTasksByComponentId(Integer componentId,Integer employeeId);
 	public TaskForm getTaskByTaskId(Integer taskId);
 	public int addVacation(VacationForm vacationForm);
-	public List<VacationForm> getVacationDetails(Integer employeeId);
+	public List<VacationForm> getVacationDetailsBySupervisorId(Integer employeeId,Integer loginUserId);
+	public List<VacationForm> getVacationDetailsByEmployeeId(Integer employeeId,Integer loginUserId);
 	public int approveVacation(VacationForm vacationForm);
-	public List<VacationForm> getDeveloperVacationDetails(Integer employeeId);
 	public void deleteVacation(int vacationId);
 	public String editVacation(VacationForm vacationForm);
 	public void addTaskLedger(TaskLedgerForm ledgerForm);

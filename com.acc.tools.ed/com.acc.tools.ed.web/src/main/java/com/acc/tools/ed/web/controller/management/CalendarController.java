@@ -36,14 +36,13 @@ public class CalendarController {
 	  public String calendar(Model model,			
 			  @ModelAttribute("edbUser") EDBUser edbUser){
 		  
-		 List<VacationForm> calendar= projectWorkService.getVacationDetails(edbUser.getEmployeeId());
-		 for(VacationForm vctn: calendar)
-		 {
-			 LOG.debug("Resource Name:[{}]",vctn.getVacationType());
+		 final List<VacationForm> calendar= projectWorkService.getVacationDetailsByEmployeeId(edbUser.getEmployeeId(),edbUser.getEmployeeId());
+		 if(edbUser.getRole().equalsIgnoreCase("SUPERVISOR")){
+			 calendar.addAll(projectWorkService.getVacationDetailsBySupervisorId(edbUser.getEmployeeId(),edbUser.getEmployeeId()));
 		 }
 		  
-		model.addAttribute("edbUser", edbUser);
-		model.addAttribute("calendar", calendar);
+		 model.addAttribute("edbUser", edbUser);
+		 model.addAttribute("calendar", calendar);
 		
 	    return "/projectwork/calendar";
 	  }
@@ -137,24 +136,5 @@ public class CalendarController {
 			return "success";
 		}
 
-	  @RequestMapping({"/dvlpCalendar.do"})
-	  public String developerCalendar(Model model,
-			
-			  @ModelAttribute("edbUser") EDBUser edbUser){
-		  
-		 List<VacationForm> calendar= projectWorkService.getDeveloperVacationDetails(edbUser.getEmployeeId());
-		 for(VacationForm vctn: calendar)
-		 {
-			 LOG.debug("Resource Name:[{}]",vctn.getVacationType());
-		 }
-		  System.out.println("working in developer vacation method");
-		model.addAttribute("edbUser", edbUser);
-		model.addAttribute("calendar", calendar);
-		
-	    return "/projectwork/calendar";
-	  }
-	  
-	  
-	 
 	  
 }

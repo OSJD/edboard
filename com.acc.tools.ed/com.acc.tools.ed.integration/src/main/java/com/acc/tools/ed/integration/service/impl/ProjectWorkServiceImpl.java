@@ -63,13 +63,12 @@ public class ProjectWorkServiceImpl implements ProjectWorkService {
 	public TaskForm getTaskByTaskId(Integer taskId){
 		return projectWorkDao.getTaskByTaskId(taskId);
 	}
-	
-	public List<VacationForm> getVacationDetails(Integer employeeId){
-		return projectWorkDao.getVacationDetails(employeeId);
+	public List<VacationForm> getVacationDetailsBySupervisorId(Integer employeeId,Integer loginUserId){
+		return projectWorkDao.getVacationDetailsBySupervisorId(employeeId,loginUserId);
 	}
-	
-	public List<VacationForm> getDeveloperVacationDetails(Integer employeeId){
-		return projectWorkDao.getDeveloperVacationDetails(employeeId);
+
+	public List<VacationForm> getVacationDetailsByEmployeeId(Integer employeeId,Integer loginUserId){
+		return projectWorkDao.getVacationDetailsByEmployeeId(employeeId,loginUserId);
 	}
 
 	public String editVacation(VacationForm vacationForm){

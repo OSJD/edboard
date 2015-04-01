@@ -10,6 +10,7 @@ public class VacationForm implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private int vacationId;
+	private int loginUserId;
 	private int employeeId;
 	private String resourceName;
 	private String vacationType;
@@ -122,6 +123,12 @@ public class VacationForm implements Serializable{
 	}
 	public void setCreateTimestamp(long createTimestamp) {
 		this.createTimestamp = createTimestamp;
+	}
+	public int getLoginUserId() {
+		return loginUserId;
+	}
+	public void setLoginUserId(int loginUserId) {
+		this.loginUserId = loginUserId;
 	}
 
 }

@@ -30,6 +30,8 @@
 					<tr>
 						<td style="width: 20px;">
 							<a href="#" id="${vacationDetails.vacationId}" class="updateVacationDetail" style="width: 55px;">Update</a>
+							<input type="hidden" name="supervisorId" value="${vacationDetails.supervisorId}">
+							<input type="hidden" name="loginUserId" value="${vacationDetails.loginUserId}">
 						</td>
 						<td>
 							<a href="#" id="${vacationDetails.vacationId}" class="deleteVacationDetail" style="width: 25px;">Delete </a>

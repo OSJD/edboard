@@ -15,7 +15,7 @@
 	</jstl:if>
 	<jstl:if	test="${(edbUser.role =='Dvlp') || (edbUser.role =='Admin') }">
 	<div style="text-align:center; height:18px; width: 100px;border-right: 1px solid black;margin-top: 7px;">
-		<a href="#" action="./dvlpCalendar.do" id="pwsubtab3" class="subtabs">Calendar</a>
+		<a href="#" action="./calendar.do" id="pwsubtab3" class="subtabs">Calendar</a>
 	</div>	
 	</jstl:if>
 	
