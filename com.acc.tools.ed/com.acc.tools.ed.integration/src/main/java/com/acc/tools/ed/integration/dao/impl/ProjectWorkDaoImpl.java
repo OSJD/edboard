@@ -679,6 +679,44 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 		return taskMap.get(taskId);
 	}
 	
+	public List<VacationForm> getHolidays(){
+		final List<VacationForm> vactionDetails=new ArrayList<VacationForm>();
+		try {
+
+			
+			
+			final String query="SELECT * FROM EDB_HOLDY_CALNDR";
+			log.debug("Holiday Query:{}",query);
+			Statement selectStatement = getConnection().createStatement();
+			ResultSet rs = selectStatement.executeQuery(query);
+			
+			
+			while (rs.next()) {
+				final VacationForm details = new VacationForm();
+				final String startDate=rs.getString("START_DT");
+				final String endDate=rs.getString("END_DT");
+				details.setVacationId(rs.getInt("ID"));
+				details.setApproverComments("Accenture office will be remained closed <br>starting "+startDate+" and will be opened on "+endDate);
+				details.setComments(rs.getString("HOLDY_NM"));
+				details.setStartDate(startDate);
+				details.setEndDate(endDate);
+				details.setStatus("Approved by IDC");
+				details.setVacationType("-4");
+				details.setResourceName("All Chennai Resources");
+				details.setEmployeeId(rs.getInt("ADD_BY"));
+				details.setBackUpResource(0);
+				vactionDetails.add(details);
+			}
+			
+			
+			return vactionDetails;
+		} catch (Exception e) {
+			log.error("Error in Holiday query:",e);
+		}
+		return vactionDetails;
+
+	}
+	
 	public List<VacationForm> getVacationDetailsBySupervisorId(Integer employeeId,Integer loginUserId){
 			final List<VacationForm> vactionDetails=new ArrayList<VacationForm>();
 			try {
@@ -716,6 +754,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 			return vactionDetails;
 	
 	}
+	
 	public List<VacationForm> getVacationDetailsByEmployeeId(Integer employeeId,Integer loginUserId){
 		
 			final List<VacationForm> vactionDetails=new ArrayList<VacationForm>();

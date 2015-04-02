@@ -74,7 +74,9 @@ public class ProjectWorkServiceImpl implements ProjectWorkService {
 	public List<VacationForm> getVacationDetailsByEmployeeId(Integer employeeId,Integer loginUserId){
 		return projectWorkDao.getVacationDetailsByEmployeeId(employeeId,loginUserId);
 	}
-
+	public List<VacationForm> getHolidays(){
+		return projectWorkDao.getHolidays();
+	}
 	public String editVacation(VacationForm vacationForm){
 		return projectWorkDao.editVacation(vacationForm);
 	}

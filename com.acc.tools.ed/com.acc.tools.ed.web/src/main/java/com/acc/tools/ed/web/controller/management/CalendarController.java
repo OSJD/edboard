@@ -37,6 +37,7 @@ public class CalendarController {
 			  @ModelAttribute("edbUser") EDBUser edbUser){
 		  
 		 final List<VacationForm> calendar= projectWorkService.getVacationDetailsByEmployeeId(edbUser.getEmployeeId(),edbUser.getEmployeeId());
+		 calendar.addAll(projectWorkService.getHolidays());
 		 if(edbUser.getRole().equalsIgnoreCase("SUPERVISOR")){
 			 calendar.addAll(projectWorkService.getVacationDetailsBySupervisorId(edbUser.getEmployeeId(),edbUser.getEmployeeId()));
 		 }
