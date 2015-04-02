@@ -54,6 +54,19 @@
 						</c:forEach>
 					</tr>
 				</c:forEach>
+				<tr>
+					<th style="width: 150px;">Week Hours</th>
+					<c:forEach var="releaseWeekPlanHrs"
+						items="${releasePlan.weakPlannedWorkHours}">
+						<th style="width: 300px;">
+							<table style="width: 100%; height: 100%;">
+								<tr>
+									<th style="text-align: center;">${releaseWeekPlanHrs.value}</th>
+								</tr>
+							</table>
+						</th>
+					</c:forEach>
+				</tr>				
 			</table>
 		</div>
 	</td>

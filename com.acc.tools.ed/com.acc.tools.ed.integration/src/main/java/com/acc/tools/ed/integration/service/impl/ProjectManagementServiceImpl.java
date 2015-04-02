@@ -1,6 +1,7 @@
 package com.acc.tools.ed.integration.service.impl;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -74,6 +75,8 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 
 		final ReleasePlan plan=new ReleasePlan();
 		final List<ResourceWorkPlan> resourceWorkPlanList=new LinkedList<ResourceWorkPlan>();
+		final Map<String,Integer> weakPlannedWorkHours=new LinkedHashMap<String,Integer>();
+		plan.setWeakPlannedWorkHours(weakPlannedWorkHours);
 		plan.setResourceWorkPlan(resourceWorkPlanList);
 		DateTime dateStart=relDateStart;
 		String tempCurrentWeek = dateStart.weekOfWeekyear().getAsShortText();
@@ -82,6 +85,8 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 
 		for(ReferenceData employee:resourceDetails){
 			final ResourceWorkPlan resourceWorkPlan=new ResourceWorkPlan();
+
+
 			resourceWorkPlan.setEmployeeId(employee.getId());
 			resourceWorkPlan.setEmployeeName(employee.getLabel());
 			final Map<String, List<ResourceWeekWorkPlan>> weekWorkPlanMap=resourceWorkPlan.getResourceWeekWorkPlan();
@@ -92,7 +97,7 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 					weekCount++;
 					tempCurrentWeek=currentWeek;
 				}
-				rebuildWeekWorkPlan(weekWorkPlanMap,dateStart,weekCount,resourceHoursMap.get(Integer.parseInt(employee.getId())),vacationDetails.get(employee.getId()));
+				rebuildWeekWorkPlan(weekWorkPlanMap,dateStart,weekCount,resourceHoursMap.get(Integer.parseInt(employee.getId())),vacationDetails.get(employee.getId()),weakPlannedWorkHours);
 
 			  dateStart = dateStart.plusDays(1);
 			}
@@ -107,14 +112,24 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 	}
 	
 	private void rebuildWeekWorkPlan(Map<String,List<ResourceWeekWorkPlan>> weeksWorkPlanMap,
-			DateTime dateStart,int weekCount,Map<DateTime,Integer> planedDates,List<WeekDates> vacationDates){
+			DateTime dateStart,int weekCount,Map<DateTime,Integer> planedDates,List<WeekDates> vacationDates,Map<String,Integer> weakPlannedWorkHours){
+		
+		Integer weekPlannedHours=0;
+		if(weakPlannedWorkHours.size()>0 && weakPlannedWorkHours.containsKey("Week-"+weekCount)){
+			weekPlannedHours=weakPlannedWorkHours.get("Week-"+weekCount);
+		}
+		
 		if(weeksWorkPlanMap.size()>0 && weeksWorkPlanMap.containsKey("Week-"+weekCount)){
 			final List<ResourceWeekWorkPlan> weekPlanList=weeksWorkPlanMap.get("Week-"+weekCount);
 			ResourceWeekWorkPlan weekPlan=new ResourceWeekWorkPlan();
 			weekPlan.setDay(dateStart.dayOfWeek().getAsShortText());
 			weekPlan.setDate(dateStart.toString("MM/dd/yyyy"));
 			if(planedDates!=null && !planedDates.isEmpty() && planedDates.containsKey(dateStart)){
-				weekPlan.setHours(""+planedDates.get(dateStart));	
+				final int hours=planedDates.get(dateStart);
+				if(hours>0){
+					weekPlannedHours=weekPlannedHours+hours;
+				}
+				weekPlan.setHours(""+hours);	
 			} else {
 				vacationDaysToWeekPlanMapping(vacationDates,weekPlan,dateStart);
 			}
@@ -126,13 +141,18 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 			weekPlan.setDay(dateStart.dayOfWeek().getAsShortText());
 			weekPlan.setDate(dateStart.toString("MM/dd/yyyy"));
 			if(planedDates!=null && !planedDates.isEmpty() && planedDates.containsKey(dateStart)){
-				weekPlan.setHours(""+planedDates.get(dateStart));	
+				final int hours=planedDates.get(dateStart);
+				if(hours>0){
+					weekPlannedHours=weekPlannedHours+hours;
+				}
+				weekPlan.setHours(""+hours);	
 			} else {
 				vacationDaysToWeekPlanMapping(vacationDates,weekPlan,dateStart);
 			}
 			weekPlanList.add(weekPlan);
 			weeksWorkPlanMap.put("Week-"+weekCount, weekPlanList);
 		}
+		weakPlannedWorkHours.put("Week-"+weekCount, weekPlannedHours);
 	}
 	
 	public ReleasePlan buildReleasePlan(DateTime relDateStart,DateTime relDateEnd,Integer projId) {
@@ -143,6 +163,8 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 		
 		final ReleasePlan plan=new ReleasePlan();
 		final List<ResourceWorkPlan> resourceWorkPlanList=new LinkedList<ResourceWorkPlan>();
+		final Map<String,Integer> weakPlannedWorkHours=new LinkedHashMap<String,Integer>();
+		plan.setWeakPlannedWorkHours(weakPlannedWorkHours);
 		plan.setResourceWorkPlan(resourceWorkPlanList);
 		DateTime dateStart=relDateStart;
 		String tempCurrentWeek = dateStart.weekOfWeekyear().getAsShortText();
@@ -161,7 +183,7 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 					weekCount++;
 					tempCurrentWeek=currentWeek;
 				}
-				buildWeekWorkPlan(weekWorkPlanMap,dateStart,weekCount,vacationDetails.get(employee.getId()));
+				buildWeekWorkPlan(weekWorkPlanMap,dateStart,weekCount,vacationDetails.get(employee.getId()),weakPlannedWorkHours);
 
 			  dateStart = dateStart.plusDays(1);
 			}
@@ -200,13 +222,23 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 	
 	
 	private void buildWeekWorkPlan(Map<String,List<ResourceWeekWorkPlan>> weeksWorkPlanMap,
-			DateTime dateStart,int weekCount,List<WeekDates> vacationDetails){
+			DateTime dateStart,int weekCount,List<WeekDates> vacationDetails,Map<String,Integer> weakPlannedWorkHours){
+		
+		Integer weekPlannedHours=0;
+		if(weakPlannedWorkHours.size()>0 && weakPlannedWorkHours.containsKey("Week-"+weekCount)){
+			weekPlannedHours=weakPlannedWorkHours.get("Week-"+weekCount);
+		}
+		
 		if(weeksWorkPlanMap.size()>0 && weeksWorkPlanMap.containsKey("Week-"+weekCount)){
 			final List<ResourceWeekWorkPlan> weekPlanList=weeksWorkPlanMap.get("Week-"+weekCount);
 			ResourceWeekWorkPlan weekPlan=new ResourceWeekWorkPlan();
 			weekPlan.setDay(dateStart.dayOfWeek().getAsShortText());
 			weekPlan.setDate(dateStart.toString("MM/dd/yyyy"));
 			vacationDaysToWeekPlanMapping(vacationDetails,weekPlan,dateStart);
+			final int hours=Integer.parseInt(weekPlan.getHours());
+			if(hours>0){
+				weekPlannedHours=weekPlannedHours+hours;
+			}
 			weekPlanList.add(weekPlan);
 		} else {
 			final List<ResourceWeekWorkPlan> weekPlanList=new LinkedList<ResourceWeekWorkPlan>();
@@ -214,9 +246,14 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 			weekPlan.setDay(dateStart.dayOfWeek().getAsShortText());
 			weekPlan.setDate(dateStart.toString("MM/dd/yyyy"));
 			vacationDaysToWeekPlanMapping(vacationDetails,weekPlan,dateStart);
+			final int hours=Integer.parseInt(weekPlan.getHours());
+			if(hours>0){
+				weekPlannedHours=weekPlannedHours+hours;
+			}
 			weekPlanList.add(weekPlan);
 			weeksWorkPlanMap.put("Week-"+weekCount, weekPlanList);
 		}
+		weakPlannedWorkHours.put("Week-"+weekCount, weekPlannedHours);
 	}
 	
 	

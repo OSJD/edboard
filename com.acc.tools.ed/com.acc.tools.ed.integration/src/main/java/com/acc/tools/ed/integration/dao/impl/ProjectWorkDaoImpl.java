@@ -717,7 +717,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 
 	}
 	
-	public List<VacationForm> getVacationDetailsBySupervisorId(Integer employeeId,Integer loginUserId){
+	public List<VacationForm> getVacationDetailsBySupervisorId(Integer employeeId){
 			final List<VacationForm> vactionDetails=new ArrayList<VacationForm>();
 			try {
 
@@ -731,7 +731,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 				
 				while (rs.next()) {
 					final VacationForm details = new VacationForm();
-					details.setLoginUserId(loginUserId);
+					details.setLoginUserId(employeeId);
 					details.setVacationId(rs.getInt("VACTN_ID"));
 					details.setSupervisorId(rs.getInt("SUP_ID"));
 					details.setApproverComments(rs.getString("SUP_COMNTS"));
@@ -755,7 +755,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 	
 	}
 	
-	public List<VacationForm> getVacationDetailsByEmployeeId(Integer employeeId,Integer loginUserId){
+	public List<VacationForm> getVacationDetailsByEmployeeId(Integer employeeId){
 		
 			final List<VacationForm> vactionDetails=new ArrayList<VacationForm>();
 			try {
@@ -770,7 +770,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 				
 				while (rs.next()) {
 					final VacationForm details = new VacationForm();
-					details.setLoginUserId(loginUserId);
+					details.setLoginUserId(employeeId);
 					details.setVacationId(rs.getInt("VACTN_ID"));
 					details.setSupervisorId(rs.getInt("SUP_ID"));
 					details.setApproverComments(rs.getString("SUP_COMNTS"));

@@ -34,6 +34,4 @@ public class ResourceWorkPlan implements Serializable{
 		this.employeeId = employeeId;
 	}
 
-
-
 }

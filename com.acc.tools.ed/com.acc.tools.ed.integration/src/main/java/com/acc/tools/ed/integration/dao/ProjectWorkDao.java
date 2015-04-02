@@ -21,8 +21,8 @@ public interface ProjectWorkDao {
 	public TaskForm getTaskByTaskId(Integer taskId);
 	public int addVacation(VacationForm vacationForm);
 	public int addHoliday(VacationForm vacationForm);
-	public List<VacationForm> getVacationDetailsBySupervisorId(Integer employeeId,Integer loginUserId);
-	public List<VacationForm> getVacationDetailsByEmployeeId(Integer employeeId,Integer loginUserId);
+	public List<VacationForm> getVacationDetailsBySupervisorId(Integer employeeId);
+	public List<VacationForm> getVacationDetailsByEmployeeId(Integer employeeId);
 	public List<VacationForm> getHolidays();
 	public int approveVacation(VacationForm vacationForm);
 	public void deleteVacation(int vacationId);

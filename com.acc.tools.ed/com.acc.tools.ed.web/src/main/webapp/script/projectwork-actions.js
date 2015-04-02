@@ -104,7 +104,7 @@ $(document).ready(
 			var vacationId=$(this).attr("id");
 			var vacationType=$("#vacationType"+vacationId).html().trim()
 			var backUpResource=$("#backUpResource"+vacationId).html().replace(/\s+/g, '');
-			var supervisorId=$("input[name='supervisorId']").val();
+			var supervisorId=$("#supervisorId"+vacationId).val();
 			var loginUserId=$("input[name='loginUserId']").val();
 			if(loginUserId==supervisorId){
 				$("#updatevacationId").val(vacationId);
