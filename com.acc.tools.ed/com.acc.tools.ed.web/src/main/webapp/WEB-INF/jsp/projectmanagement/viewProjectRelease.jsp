@@ -3,31 +3,112 @@
 	<script>
 	 $(document).ready(function () {
 		  
-		 
-			$("#mainBody").unbind("click").on("click","#addNewCompnt", function() {
-				
- 				 $( "#compStartDate" ).datepicker({
-						showOn: 'button',
-						buttonText: 'Show Date',
-						buttonImageOnly: true,
-						buttonImage: 'resources/cal.gif',
-						dateFormat: 'mm/dd/yy',
-						constrainInput: true,
-						minDate:$("#mainBody #relStartDate").html(),
-						maxDate:$("#mainBody #relEndDate").html()
-				 }); 
-				 $( "#compEndDate" ).datepicker({
-						showOn: 'button',
-						buttonText: 'Show Date',
-						buttonImageOnly: true,
-						buttonImage: 'resources/cal.gif',
-						dateFormat: 'mm/dd/yy',
-						constrainInput: true,
-						minDate:$("#mainBody #relStartDate").html(),
-						maxDate:$("#mainBody #relEndDate").html()
-				 });
-				$("#mainBody #componentPopup").dialog("open");
+			 $( "#compStartDate" ).datepicker({
+					showOn: 'button',
+					buttonText: 'Show Date',
+					buttonImageOnly: true,
+					buttonImage: 'resources/cal.gif',
+					dateFormat: 'mm/dd/yy',
+					constrainInput: true,
+					minDate:$("#relStartDate").html(),
+					maxDate:$("#relEndDate").html()
+			 }); 
+			 $( "#compEndDate" ).datepicker({
+					showOn: 'button',
+					buttonText: 'Show Date',
+					buttonImageOnly: true,
+					buttonImage: 'resources/cal.gif',
+					dateFormat: 'mm/dd/yy',
+					constrainInput: true,
+					minDate:$("#relStartDate").html(),
+					maxDate:$("#relEndDate").html()
+			 });	
+			    /*Add Component*/
+			 var componentPopup=$("#componentPopup").dialog({
+				 autoOpen: false,
+				 height : 430,
+				 width : 650,
+				 modal : true,
+				 buttons : {
+						"Add Component" : function() { 
+				  			var lComponentName = $("#componentName").val();
+				 			if($("#newComponent").is(":visible") && lComponentName == "0") {
+								lComponentName = $("#newComponent").val();
+							} 
+				 			var lFunctionalDesc= $("#functionalDesc").val();
+							var lCompStartDate = $("#compStartDate").val();
+							var lCompEndDate = $("#compEndDate").val();
+							var lCompResource = $("#compResourceList option:selected").val();
+							var lProjectId = $("#projects").val();
+							var lselectedRelease=$("#releases").val();
+							var lphaseId=$("#componentPhase").val();
+							var lworkDesc=$("#workDesc").val();
+							$.ajax({
+								type : "POST",
+								url : "./addComponent.do",
+								data : {componentName:lComponentName,
+										functionalDesc:lFunctionalDesc,
+										compStartDate:lCompStartDate,
+										compEndDate:lCompEndDate,
+										compResource:lCompResource,
+										projectId:lProjectId,
+										releaseId:lselectedRelease,
+										phaseId:lphaseId,
+										workDesc:lworkDesc},
+								dataType : 'json',
+								success : function(componentData) {
+									var compName="";
+									var phaseId="";
+									var functionalDesc="";
+									var startDate="";
+									var endDate="";
+									var workDesc=""
+									var resourceName="";
+									for(var field in componentData){
+										if(field=="componentName"){
+											compName=componentData.componentName;
+										} else if(field=="phaseId"){
+											phaseId=componentData.phaseId;
+										} else if(field=="functionalDesc"){
+											functionalDesc=componentData.functionalDesc;
+										} else if(field=="startDate"){
+											startDate=componentData.startDate;
+										} else if(field=="endDate"){
+											endDate=componentData.endDate;
+										} else if(field=="resourceName"){
+											resourceName=componentData.resourceName;
+										} else if(field=="workDesc"){
+											workDesc=componentData.workDesc;
+										}
+										
+									}
+									var newComponentRow='<tr><td><img alt="edit project" src="./resources/edit.gif" width="20px;"></td>'+
+														'<td><img alt="delete project" src="./resources/delete.gif"  width="20px;"></td>'+
+														'<td id="compName">'+compName+'</td><td>'+phaseId+'</td>'+
+														'<td id="compFuncDesc"><div style="height:20px;display:table-cell;vertical-align:middle;">'+functionalDesc+'</div></td>'+
+														'<td id="comStDate">'+startDate+'</td><td id="compEtDate">'+endDate+'</td><td>Not Started</td>'+
+														'<td align="center">0 % </td><td id="compResName">'+resourceName+'</td><td>'+workDesc+'</td></tr>';
+
+									$("#noComponentsRow").remove();
+									$('#componentTable > tbody:last').append(newComponentRow);	
+									
+								},
+								error : function(data) {	
+									$("#mainContainer").html("Application error! Please call help desk. Error:"+data.status);
+								}
+							});	  
+							componentPopup.dialog("close");
+						},
+						Cancel : function() {
+							componentPopup.dialog("close");
+						},
+					},
+
+			 });
+			$("#addNewCompnt").unbind("click").on("click", function() {
+				$("#componentPopup").dialog("open");
 			});		
+			
 		$("#componentName").unbind("change").on("change",function(){
 			if($("#componentName").val()=='0'){
 				$("#newComp").css("display", "inline");
@@ -216,25 +297,27 @@
 				<tr>
 					<td style="font-weight: bold;">Phase</td>
 					<td style="background-color: #eaead9;width: 75px; overflow: auto;">
-						<c:forEach var = "phase" items="${viewProjRelDetails.phases}">
-									<c:choose>
-										<c:when test="${phase.trim() =='1'}">
-											Analysis,
-										</c:when>
-										<c:when test="${phase.trim() =='2'}">
-											Design,
-										</c:when>
-										<c:when test="${phase.trim() =='3'}">
-											Build,
-										</c:when>
-										<c:when test="${phase.trim() =='4'}">
-											Test
-										</c:when>
-										<c:otherwise>
-											Support
-										</c:otherwise>
-									</c:choose>
-						</c:forEach>
+						<div id="releasePhases">
+							<c:forEach var = "phase" items="${viewProjRelDetails.phases}">
+										<c:choose>
+											<c:when test="${phase.trim() =='1'}">
+												Analysis,
+											</c:when>
+											<c:when test="${phase.trim() =='2'}">
+												Design,
+											</c:when>
+											<c:when test="${phase.trim() =='3'}">
+												Build,
+											</c:when>
+											<c:when test="${phase.trim() =='4'}">
+												Test
+											</c:when>
+											<c:otherwise>
+												Support
+											</c:otherwise>
+										</c:choose>
+							</c:forEach>
+						</div>
 					</td>
 				</tr>
 				<tr>
@@ -277,6 +360,77 @@
 		</td>
 	</tr>
 </table>
+<div id="componentPopup" title="Add Component to Developer">
+	<table class="ebdtable">
+		<tr>
+			<th style="width: 140px;">Component Name</th>
+			<td>
+				<select name="componentName" id = "componentName" class="text">
+					<option value="-1">---Select Component---</option>
+					<c:forEach var="component" items="${viewProjRelDetails.releases[0].components}">
+					    <c:if test="${not empty component.componentName}">
+							<option value="${component.componentName}" id="compName">${component.componentName}</option>
+						</c:if>
+					</c:forEach>
+					<option value="0">Create New Component</option>
+				</select>
+				<div id="newComp" style="display:none"><input name="newComponent" id="newComponent" type="text" class="textbox" style="width: 150px;"></div>
+			</td>
+			<th style="width: 140px;">Component Phase</th>
+			<td>
+				<select name="componentPhase" id="componentPhase">
+					<option value="0">Select Phase</option>
+					<c:forEach var = "phase" items="${viewProjRelDetails.phases}">
+						<c:choose>
+							<c:when test="${phase.trim() =='1'}">
+								<option value="1">Analysis</option>
+							</c:when>
+							<c:when test="${phase.trim() =='2'}">
+								<option value="2">Design</option>
+							</c:when>
+							<c:when test="${phase.trim() =='3'}">
+								<option value="3">Build</option>
+							</c:when>
+							<c:when test="${phase.trim() =='4'}">
+								<option value="4">Test</option>
+							</c:when>
+							<c:otherwise>
+								<option value="5">Support</option>
+							</c:otherwise>
+						</c:choose>
+					</c:forEach>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<th>Functional Desc</th>
+			<td colspan="3"><textarea id="functionalDesc" style="overflow: auto; resize: none" rows="6"
+					cols="80" class="textarea"></textarea></td>
+		</tr>
+		<tr>
+			<th>Start Date</th>
+			<td><input type="text" id ="compStartDate" name="compStartDate" class="textbox" /></td>
+			<th style="width: 70px;">End Date</th>
+			<td><input type="text" id="compEndDate" name="compEndDate" class="textbox" /></td>
+		</tr>
+		<tr>
+			<th>Resource</th>
+			<td colspan="3">
+				<select id = "compResourceList" name="compResourceList" class="textbox" >
+					<option value="0">Select Resource</option>		
+					<c:forEach items="${viewProjRelDetails.resources}" var="resource">
+					        <option value="${resource.id}" <c:if test="${resource.selected==true}">selected</c:if> >${resource.label}</option>
+					 </c:forEach>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<th>Work Description</th>
+			<td colspan="3"><textarea id="workDesc" style="overflow: auto; resize: none" rows="6"
+					cols="80" class="textarea"></textarea></td>
+		</tr>
+	</table>
+</div>
 <table class="ebdtable" id = "componentTable" style="width:100%;margin-top: 25px;">
 		<thead>
 			<th colspan="2" width="50px;"><a href="#" id="addNewCompnt"><img class="imgLink" 	alt="add comnponent" src="./resources/addnews.gif" width="20px;"></a></th>

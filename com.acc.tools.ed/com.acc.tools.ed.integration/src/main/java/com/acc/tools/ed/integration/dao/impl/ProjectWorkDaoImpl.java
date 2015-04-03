@@ -107,14 +107,17 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 		return status;
 	}
 
-	private Map<Integer,List<TaskForm>> getMyReviewTasks(Integer userId){
+	private Map<Integer,ComponentForm> getMyReviewTasks(Integer userId){
 		
-		final Map<Integer,List<TaskForm>> reviewTaskMap=new HashMap<Integer,List<TaskForm>>();
+		final Map<Integer,TaskForm> taskMap=new HashMap<Integer,TaskForm>();
+		final Map<Integer,ComponentForm> compMap=new HashMap<Integer, ComponentForm>();
 		
 		try{
 			
 			final StringBuffer taskTable =new StringBuffer();
-			taskTable.append("SELECT T.COMPNT_ID,T.TASK_ID,T.EMP_ID,T.EMP_NM,T.TASK_NAME,T.TASK_DESC FROM (EDB_TASK_MASTER T LEFT JOIN EDB_TASK_REVW R ON T.TASK_ID=R.TASK_ID) LEFT JOIN EDB_TASK_REVW_HISTORY H ON T.TASK_ID=H.TASK_ID ");
+			taskTable.append("SELECT C.COMPNT_ID AS COMPONENT_ID, C.COMPNT_NAME, C.COMPNT_FUNC_DESC, C.COMPNT_PHASE, C.COMPNT_ST_DT, C.COMPNT_END_DT,CE.WORK_DESC, T.TASK_ID, ");
+			taskTable.append("T.EMP_ID, T.EMP_NM AS EMP_RESOURCE_NAME, T.TASK_NAME, T.TASK_DESC,T.TASK_STATUS,T.TASK_TYPE,T.TASK_CT_DT FROM (((EDB_TASK_MASTER AS T LEFT JOIN EDB_TASK_REVW AS R ON T.TASK_ID=R.TASK_ID) LEFT JOIN EDB_TASK_REVW_HISTORY AS H ");
+			taskTable.append("ON T.TASK_ID=H.TASK_ID) LEFT JOIN EDB_PROJ_COMPNT AS C ON T.COMPNT_ID = C.COMPNT_ID) LEFT JOIN EDB_COMPNT_EMP CE ON CE.COMPNT_ID=C.COMPNT_ID ");
 			taskTable.append(" WHERE R.TASK_REVIWER_ID="+userId);
 			log.debug("Review Task Query :{}",taskTable.toString());
 			
@@ -122,20 +125,39 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 			ResultSet rs=stmt.executeQuery(taskTable.toString());
 			
 			while(rs.next()){
-				final TaskForm reviewTask=new TaskForm();
-				final int componentId=rs.getInt("COMPNT_ID");
-				reviewTask.setComponentId(componentId);
-				reviewTask.setTaskId(rs.getInt("TASK_ID"));
-				reviewTask.setEmployeeId(rs.getInt("EMP_ID"));
-				reviewTask.setEmployeeName(rs.getString("EMP_NM"));
-				reviewTask.setTaskName(rs.getString("TASK_NAME"));
-				reviewTask.setTaskDesc(rs.getString("TASK_DESC"));
-				if(!reviewTaskMap.isEmpty() && reviewTaskMap.containsKey(componentId)){
-					reviewTaskMap.get(componentId).add(reviewTask);
-				} else {
-					final List<TaskForm> reviewTasks=new ArrayList<TaskForm>();
-					reviewTasks.add(reviewTask);
-					reviewTaskMap.put(componentId, reviewTasks);
+				final int componentId=rs.getInt("COMPONENT_ID");
+				final int taskId=rs.getInt("TASK_ID");
+				if(componentId!=0){
+					if(!compMap.isEmpty() && compMap.containsKey(componentId)){
+						final ComponentForm component=compMap.get(componentId);
+						if(taskId!=0){
+							if(!taskMap.containsKey(taskId)){
+								final TaskForm task=new TaskForm();
+								mapTaskData(rs, task,component.getComponentId(),taskId);
+								if(component.getTaskFormList()==null){
+									component.setTaskFormList(new ArrayList<TaskForm>());
+								}
+								component.getTaskFormList().add(task);
+								taskMap.put(taskId, task);
+							}
+						}
+					} else {
+						final ComponentForm component=new ComponentForm(); 
+						component.setComponentId(componentId);
+						mapComponentData(rs,null,component);
+						if(taskId!=0){
+							if(!taskMap.containsKey(taskId)){
+								final TaskForm task=new TaskForm();
+								mapTaskData(rs, task,component.getComponentId(),taskId);
+								if(component.getTaskFormList()==null){
+									component.setTaskFormList(new ArrayList<TaskForm>());
+								}
+								component.getTaskFormList().add(task);
+								taskMap.put(taskId, task);
+							}
+						}
+						compMap.put(componentId, component);
+					}
 				}
 			}
 			
@@ -143,7 +165,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 			log.error("Error fetching my review tasks",e);
 		}
 		
-		return reviewTaskMap;
+		return compMap;
 	}
 	
 	public List<ProjectForm> getMyTasks(Integer userId) {
@@ -295,24 +317,38 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 				
 			}
 			//Add review task to my task bucket
-			final Map<Integer,List<TaskForm>> reviewTaskMap=getMyReviewTasks(userId);
+			final Map<Integer,ComponentForm> reviewCompMap=getMyReviewTasks(userId);
 			for(ProjectForm project :projectTasks){
 				for(ReleaseForm release:project.getReleases()){
+					final List<Integer> addedComponents=new ArrayList<Integer>();
 					for(ComponentForm component:release.getComponents()){
 						final int componentId=component.getComponentId();
 						log.debug("Component Id :{} Name:{} ",componentId,component.getComponentName());
-						if(!reviewTaskMap.isEmpty() && reviewTaskMap.containsKey(componentId)){
-							List<TaskForm> reviewTasks=reviewTaskMap.get(componentId);
-							log.debug("\t Review Task size:{} ",reviewTasks.size());
+						if(!reviewCompMap.isEmpty() && reviewCompMap.containsKey(componentId)){
+							ComponentForm reviewComponent=reviewCompMap.get(componentId);
+							List<TaskForm> reviewTasks=reviewComponent.getTaskFormList();
 							List<TaskForm> myTasks=component.getTaskFormList();
 							if(myTasks==null){
 								myTasks=new ArrayList<TaskForm>();
 								component.setTaskFormList(myTasks);
 							}
-							log.debug("\t Work Task size:{} ",myTasks.size());
-							myTasks.addAll(reviewTasks);
+							if(reviewTasks!=null){
+								myTasks.addAll(reviewTasks);
+							}
+							addedComponents.add(componentId);
+						} 
+					}
+					for(ComponentForm component:reviewCompMap.values()){
+						final int componentId=component.getComponentId();
+						List<ComponentForm> compList=release.getComponents();
+						if(compList==null){
+							compList=new ArrayList<ComponentForm>();
+						}
+						if(!addedComponents.contains(componentId)){
+							compList.add(component);
 						}
 					}
+
 				}
 			}
 			

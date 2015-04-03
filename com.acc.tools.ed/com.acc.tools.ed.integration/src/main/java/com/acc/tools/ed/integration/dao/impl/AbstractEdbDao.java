@@ -72,19 +72,21 @@ public class AbstractEdbDao {
 	        } else {
 	               component.setEndDate(null);
 	        }
-	        if(release.getComponents()==null){
-	        	release.setComponents(new ArrayList<ComponentForm>());
-	        }
-	        release.getComponents().add(component);
-	        if(release.getTeamTasks()==null){
-	        	release.setTeamTasks(new HashMap<String, List<ComponentForm>>());
-	        }
-	        if(release.getTeamTasks().containsKey(component.getResourceName())){
-	        	release.getTeamTasks().get(component.getResourceName()).add(component);
-	        } else {
-	        	List<ComponentForm> empComponents=new ArrayList<ComponentForm>();
-	        	empComponents.add(component);
-	        	release.getTeamTasks().put(component.getResourceName(), empComponents);	
+	        if(release!=null){
+		        if(release.getComponents()==null){
+		        	release.setComponents(new ArrayList<ComponentForm>());
+		        }
+		        release.getComponents().add(component);
+		        if(release.getTeamTasks()==null){
+		        	release.setTeamTasks(new HashMap<String, List<ComponentForm>>());
+		        }
+		        if(release.getTeamTasks().containsKey(component.getResourceName())){
+		        	release.getTeamTasks().get(component.getResourceName()).add(component);
+		        } else {
+		        	List<ComponentForm> empComponents=new ArrayList<ComponentForm>();
+		        	empComponents.add(component);
+		        	release.getTeamTasks().put(component.getResourceName(), empComponents);	
+		        }
 	        }
 		}
 	}
