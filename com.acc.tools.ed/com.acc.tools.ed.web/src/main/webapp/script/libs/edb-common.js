@@ -75,7 +75,6 @@ var edb=(function($){
 	function constructJSONString(formFields,formObject) {
 			
 			var jsonObject={};
-			
 			for(var formField in formFields){
 				var dataType=formFields[formField].dataType;
 				if(dataType=="int" || dataType=="string"){
@@ -91,11 +90,40 @@ var edb=(function($){
 						}
 					}
 				} else if(dataType=="array"){
-					var formFieldValue=formObject.find("*[id^='"+formField+"']");
+					var formFieldValue=formObject.find("*[name^='"+formField+"']");
 					jsonObjectArray=[];
 					formFieldValue.each(function(index, obj){
 						jsonObjectArray.push(obj.value);
 					});
+					jsonObject[formField]=jsonObjectArray;
+				} else if(dataType=="object"){
+					var itemObject=formFields[formField].itemElement;
+					jsonObjectArray=[];
+					for(var att in itemObject){
+						var formFieldValue=formObject.find("*[name^='"+att+"']");
+						var attType=itemObject[att].dataType;
+						formFieldValue.each(function(index, obj){
+							//alert(att+" | "+index+" | "+obj.id);
+							var jasonItemObject=jsonObjectArray[index];
+							if(jasonItemObject==undefined){
+								jasonItemObject={};
+							}
+							if(obj.type=="checkbox"){
+								if(obj.checked){
+									jasonItemObject[att]="true";
+								}else{
+									jasonItemObject[att]="false";
+								}
+							} else {
+								if(attType=="string"){
+									jasonItemObject[att]=obj.value;
+								} else {
+									jasonItemObject[att]=parseInt(obj.value);
+								}
+							}
+							jsonObjectArray[index]=jasonItemObject;
+						});
+					}
 					jsonObject[formField]=jsonObjectArray;
 				}
 				

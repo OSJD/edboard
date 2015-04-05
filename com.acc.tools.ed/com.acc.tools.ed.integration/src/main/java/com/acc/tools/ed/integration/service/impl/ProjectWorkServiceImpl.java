@@ -47,9 +47,9 @@ public class ProjectWorkServiceImpl implements ProjectWorkService {
 		
 		projectWorkDao.deleteTasks(taskId);
 	}
-	public List<TaskForm> editTasks(TaskForm taskForm) {
+	public int[] addTaskReviewComments(TaskForm taskForm) {
 		
-		return projectWorkDao.editTasks(taskForm);
+		return projectWorkDao.addTaskReviewComments(taskForm);
 	}
 	public void saveTasks(TaskForm taskForm) {
 		

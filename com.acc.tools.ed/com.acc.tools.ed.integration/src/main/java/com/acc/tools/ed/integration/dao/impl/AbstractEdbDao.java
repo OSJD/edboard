@@ -24,6 +24,7 @@ import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.ReleaseForm;
 import com.acc.tools.ed.integration.dto.TaskForm;
 import com.acc.tools.ed.integration.dto.TaskLedgerForm;
+import com.acc.tools.ed.integration.dto.TaskReviewHistory;
 
 
 public class AbstractEdbDao {
@@ -99,6 +100,15 @@ public class AbstractEdbDao {
 		ledgerForm.setTaskStatus(rs.getString("TASK_STATUS"));
 		ledgerForm.setTaskActivityDate(new DateTime(rs.getDate("TASK_ACTIVITI_DT").getTime()).toString("MM/dd/yyyy"));
 		taskLedger.add(ledgerForm);
+	}
+	
+	public void mapTaskReviewHistory(ResultSet rs,List<TaskReviewHistory> historys) throws SQLException{
+		final TaskReviewHistory history=new TaskReviewHistory();
+		history.setReviewHistoryId(rs.getInt("ID"));
+		history.setReviewComment(rs.getString("TASK_REVIEW_COMMENTS"));
+		history.setDevResponse(rs.getString("TASK_DEV_COMMENTS"));
+		history.setIsReviewValid(rs.getString("TASK_REVIEW_VALID"));
+		historys.add(history);
 	}
 	
 	public void mapTaskData(ResultSet rs,TaskForm taskForm,Integer componentId,Integer taskId) throws SQLException{

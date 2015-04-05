@@ -22,6 +22,7 @@ import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.TaskForm;
 import com.acc.tools.ed.integration.dto.TaskLedgerForm;
+import com.acc.tools.ed.integration.dto.TaskReviewHistory;
 import com.acc.tools.ed.integration.service.ProjectManagementService;
 import com.acc.tools.ed.integration.service.ProjectWorkService;
 import com.acc.tools.ed.web.controller.common.AbstractEdbBaseController;
@@ -82,7 +83,9 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 	public @ResponseBody TaskForm getTaskByTaskId(
 			@ModelAttribute("taskId") Integer taskId,
 			Model model){
-		return projectWorkService.getTaskByTaskId(taskId);
+		final TaskForm taskForm=projectWorkService.getTaskByTaskId(taskId);
+		
+		return taskForm;
 	}
 	
 	
@@ -139,9 +142,11 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 	
 	@RequestMapping(value = "/editTask.do")
 	public @ResponseBody List<TaskForm> editTask(@RequestBody TaskForm taskform,Model model) {
+		for(TaskReviewHistory r: taskform.getTaskReviewHistory()){
+			LOG.debug("Review Comments:{}",r.getReviewComment());
+		}
 		
-		LOG.debug("Task Id :[{}] review Comments:[{}]",taskform.getTaskId(),taskform.getReviewCommentInput());
-		List<TaskForm> taskFormList = projectWorkService.editTasks(taskform);
+		projectWorkService.addTaskReviewComments(taskform);
 		return null;
 	}
 

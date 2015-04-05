@@ -225,12 +225,25 @@ $(document).ready(
 					click:function(){
 						var jsonString=edb.jsonString({
 							"taskId":{dataType:"int"},
-							"reviewCommentInput":{
-													dataType:"array",
-													itemType:"string"
+							"taskLedger":{
+											dataType:"object",
+											itemElement:{
+												"taskActivity":{dataType:"string"},
+												"taskHrs":{dataType:"int"},
+												"taskReviewUser":{dataType:"string"},
+												"taskStatus":{dataType:"string"}
+											}								
+										  },
+							"taskReviewHistory":{
+													dataType:"object",
+													itemElement:{
+														"reviewHistoryId":{dataType:"int"},
+														"reviewComment":{dataType:"string"},
+														"isReviewValid":{dataType:"string"}
+													}
 												 }
 							},$("#editTaskForm"));
-					//	alert(jsonString);
+						alert(jsonString);
 						$.ajax({
 							type : "POST",
 							url : "./editTask.do",
@@ -239,13 +252,12 @@ $(document).ready(
 							beforeSend : function() {
 							},
 							success : function(response) {
-								//$("#pwMainContainer #taskTable"+cId).find('tr[id="'+taskId+'"]').replaceWith(response);
-								alert(response);
+								editTaskDialog.dialog("close");
 							},
-							error : function(data) {
-								$("#editTaskPanel").dialog("close");
-								$("#projectWorkMenu").click();
-	
+							error : function(jqXHR, exception) {
+								/*$("#editTaskPanel").dialog("close");
+								$("#projectWorkMenu").click();*/
+								alert(jqXHR.status+" | "+exception);
 							},
 							complete:function(data){
 								addTaskDialog.dialog("close");
@@ -344,6 +356,16 @@ $(document).ready(
 						$("#editTaskActivitySelect").append("<option value='"+activity[index].taskLedgerId+"'>"+activity[index].taskActivityDate+"</option>");
 						context.addAttribute(activity[index].taskLedgerId,activity[index]);
 					}
+					var reviewHistory=task.taskReviewHistory;
+					for(var index in reviewHistory){
+						//alert(reviewHistory[index].reviewComment+" | "+reviewHistory[index].devResponse+" | "+reviewHistory[index].isReviewValid);
+						var reviewCommentRowNumber=$('#rcTable tr:last').index()+2;
+						var row="<tr><td><input type=\"hidden\" id=\"reviewHistoryId"+reviewCommentRowNumber+"\" value=\""+reviewHistory[index].reviewHistoryId+"\"><textarea cols=\"60\" rows=\"5\" name=\"reviewComment"+reviewCommentRowNumber+"\" id=\"reviewComment"+reviewCommentRowNumber+"\">"+reviewHistory[index].reviewComment+"</textarea></td>"+
+							"<td><div style=\"width:365px;height: 75px;overflow: auto;\">"+reviewHistory[index].devResponse+"</div></td>"+
+							"<td><input type=\"checkbox\" name=\"isReviewValid"+reviewCommentRowNumber+"\" id=\"isReviewValid"+reviewCommentRowNumber+"\" checked=\"checked\"></td></tr>";
+						$("#rcTable").append(row);
+						$("#rcMainDiv").animate({ scrollTop: $("#rcMainDiv")[0].scrollHeight}, 1000);
+					}
 
 				},
 				error : function(data) {
@@ -357,11 +379,12 @@ $(document).ready(
 		
 		$("#editReviewRow").button().on("click",function(){
 			$(this).unbind("click");
-			var reviewCommentRowNumber=$('#reviewCommentsTable tr:last').index()+2;
-			var row="<tr><td><textarea cols=\"60\" rows=\"5\" id=\"reviewCommentInput"+reviewCommentRowNumber+"\">"+reviewCommentRowNumber+"</textarea></td>"+
-				"<td></td><td></td></tr>";
-			$("#reviewCommentsTable").append(row);
-			$("#reviewCommentsDiv").animate({ scrollTop: $("#reviewCommentsDiv")[0].scrollHeight}, 1000);
+			var reviewCommentRowNumber=$('#rcTable tr:last').index()+2;
+			var row="<tr><td><input type=\"hidden\" id=\"reviewHistoryId"+reviewCommentRowNumber+"\" value=\"0\"><textarea cols=\"60\" rows=\"5\" name=\"reviewComment"+reviewCommentRowNumber+"\" id=\"reviewComment"+reviewCommentRowNumber+"\"></textarea></td>"+
+				"<td><div style=\"width:365px;height: 75px;overflow: auto;\"></div></td>"+
+				"<td><input type=\"checkbox\" name=\"isReviewValid"+reviewCommentRowNumber+"\" id=\"isReviewValid"+reviewCommentRowNumber+"\" value=\"Y\"></td></tr>";
+			$("#rcTable").append(row);
+			$("#rcMainDiv").animate({ scrollTop: $("#rcMainDiv")[0].scrollHeight}, 1000);
 		});
 	
 		$(".addTaskPopup").on("click", function() {

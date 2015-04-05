@@ -26,6 +26,7 @@ import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.ReleaseForm;
 import com.acc.tools.ed.integration.dto.TaskForm;
 import com.acc.tools.ed.integration.dto.TaskLedgerForm;
+import com.acc.tools.ed.integration.dto.TaskReviewHistory;
 import com.acc.tools.ed.integration.dto.VacationForm;
 
 
@@ -566,28 +567,30 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 
 	}
 
-	public List<TaskForm> editTasks(TaskForm taskform) {
-		List<TaskForm>taskFormList= new ArrayList<TaskForm>();
-		
+	public int[] addTaskReviewComments(TaskForm taskform) {
+		int[] status=null;
 		try{
-			final String addTaskCommentQuery = "insert into EDB_TASK_REVW_HISTORY(TASK_ID,TASK_REVIEW_COMMENTS,TASK_REVIEW_DT) values (?,?,?)";
+			final String addTaskCommentQuery = "insert into EDB_TASK_REVW_HISTORY(TASK_ID,TASK_REVIEW_COMMENTS,TASK_REVIEW_DT,TASK_REVIEW_VALID) values (?,?,?,?)";
 			final PreparedStatement pstm = getConnection().prepareStatement(addTaskCommentQuery);
-			for(String reviewComment:taskform.getReviewCommentInput()){
-				final DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy ");
-				final Date date = new Date();
-				pstm.setInt(1, taskform.getTaskId());
-				pstm.setString(2, reviewComment);
-				pstm.setString(3, dateFormat.format(date));
-				pstm.addBatch();
+			for(TaskReviewHistory reviewComment:taskform.getTaskReviewHistory()){
+				if(reviewComment.getReviewHistoryId()==0){
+					final DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy ");
+					final Date date = new Date();
+					pstm.setInt(1, taskform.getTaskId());
+					pstm.setString(2, reviewComment.getReviewComment());
+					pstm.setString(3, dateFormat.format(date));
+					pstm.setBoolean(4, Boolean.parseBoolean(reviewComment.getIsReviewValid()));
+					pstm.addBatch();
+				}
 			}
-			pstm.executeBatch();
+			status=pstm.executeBatch();
 			pstm.close();
 		}
 		catch(Exception e){
 			log.error("Error editing Task review history for task id:"+taskform.getTaskId(),e);
 		}
 
-		return taskFormList;
+		return status;
 	}
 
 	public void saveTasks(TaskForm taskForm) {
@@ -675,12 +678,13 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 		final Map<Integer,TaskForm> taskMap=new HashMap<Integer, TaskForm>();
 		try {
 
-			final String relTable="SELECT T.TASK_ID,T.TASK_NAME,T.TASK_TYPE,T.TASK_DESC,T.TASK_ST_DT,T.TASK_ET_DT,L.TASK_STATUS,L.TASK_LDGR_ID,L.TASK_HRS,L.TASK_ACTIVITY, "
-					+ " L.TASK_ACTIVITI_DT,R.TASK_REVIWER_ID,E.EMP_RESOURCE_NAME FROM ((EDB_TASK_MASTER AS T  LEFT JOIN EDB_TASK_LEDGER AS L ON T.TASK_ID=L.TASK_ID) "
-					+ " LEFT JOIN EDB_TASK_REVW AS R ON T.TASK_ID=R.TASK_ID) LEFT JOIN EDB_MSTR_EMP_DTLS AS E ON E.EMP_ID=R.TASK_REVIWER_ID WHERE T.TASK_ID="+taskId;
-			log.debug("getTaskById Query :{}",relTable);
+			final String taskByTaskIdQuery="SELECT T.TASK_ID,T.TASK_NAME,T.TASK_TYPE,T.TASK_DESC,T.TASK_ST_DT,T.TASK_ET_DT,L.TASK_STATUS,L.TASK_LDGR_ID,L.TASK_HRS,"
+					+ "L.TASK_ACTIVITY,  L.TASK_ACTIVITI_DT,R.TASK_REVIWER_ID,E.EMP_RESOURCE_NAME,H.ID,H.TASK_REVIEW_COMMENTS,H.TASK_REVIEW_VALID,H.TASK_DEV_COMMENTS "
+					+ "FROM (((EDB_TASK_MASTER AS T  LEFT JOIN EDB_TASK_LEDGER AS L ON T.TASK_ID=L.TASK_ID)  LEFT JOIN EDB_TASK_REVW AS R ON T.TASK_ID=R.TASK_ID) "
+					+ "LEFT JOIN EDB_MSTR_EMP_DTLS AS E ON E.EMP_ID=R.TASK_REVIWER_ID) LEFT JOIN EDB_TASK_REVW_HISTORY H ON H.TASK_ID=T.TASK_ID WHERE T.TASK_ID="+taskId;
+			log.debug("getTaskById Query :{}",taskByTaskIdQuery);
 			Statement selectStatement = getConnection().createStatement();
-			ResultSet rs = selectStatement.executeQuery(relTable);
+			ResultSet rs = selectStatement.executeQuery(taskByTaskIdQuery);
 			while (rs.next()) {
 				if(!taskMap.isEmpty() && taskMap.containsKey(taskId)){
 					final TaskForm taskForm=taskMap.get(taskId);
@@ -688,8 +692,14 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 					if(taskLedger==null){
 						taskLedger=new ArrayList<TaskLedgerForm>();
 					}
+					List<TaskReviewHistory> historys=taskForm.getTaskReviewHistory();
+					if(historys==null){
+						historys=new ArrayList<TaskReviewHistory>();
+					}
 					mapTaskLedgerData(rs, taskLedger);
+					mapTaskReviewHistory(rs,historys);
 					taskForm.setTaskLedger(taskLedger);
+					taskForm.setTaskReviewHistory(historys);
 					
 				} else {
 					final TaskForm taskform=new TaskForm();
@@ -703,6 +713,9 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 					final List<TaskLedgerForm> taskLedger=new ArrayList<TaskLedgerForm>(); 
 					taskform.setTaskLedger(taskLedger);
 					mapTaskLedgerData(rs, taskLedger);
+					final List<TaskReviewHistory> historys=new ArrayList<TaskReviewHistory>();
+					taskform.setTaskReviewHistory(historys);
+					mapTaskReviewHistory(rs,historys);
 					taskMap.put(taskId, taskform);
 					
 				}

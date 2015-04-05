@@ -72,19 +72,22 @@
 								</tr>
 								<tr>
 									<td>
-										<textarea rows="5" cols="100" name="editTaskDvlprComments" id="editTaskDvlprComments"></textarea>
+										<textarea rows="5" cols="100" name="taskActivity" id="editTaskDvlprComments"></textarea>
 									</td>
-									<td><input type="text" name="editTaskHrs" id="editTaskHrs" class="textbox" style="width:35px;" /></td>
+									<td><input type="text" name="taskHrs" id="editTaskHrs" class="textbox" style="width:35px;" /></td>
 									<td>
-										<select name="editTaskStatus" id="editTaskStatus" style="width:135px;">
+										<select name="taskStatus" id="editTaskStatus" style="width:135px;">
 											<option value="0">---Select---</option>
-											<option value="1">Completed</option>
-											<option value="2">In Progress</option>
-											<option value="3">On Hold</option>
+											<option value="1">Build Completed</option>
+											<option value="2">Build In Progress</option>
+											<option value="3">Build On Hold</option>
+											<option value="4">Review Completed</option>
+											<option value="5">Review In Progress</option>
+											<option value="6">Review On Hold</option>
 										</select>
 									</td>
 									<td>
-										<select name="editTaskReviewUser" id="editTaskReviewUser" style="width:200px;">
+										<select name="taskReviewUser" id="editTaskReviewUser" style="width:200px;">
 										</select>
 									</td>
 								</tr>	
@@ -112,22 +115,8 @@
 	 											</td>
 	 											
 												<td colspan="3">
-													<div id="reviewCommentsDiv" style="height: 175px;overflow: auto;">
-														<table id="reviewCommentsTable">
-															<tr>
-																<td>
-																	<div id="reviewCommentTxtId" style="height: 75px;overflow: auto;">
-																		<textarea cols="60" rows="5" id="reviewCommentInput1"></textarea>
-																	</div>
-																</td>
-																<td>
-																	<div id="developerCommentsId" style="width:365px;height: 75px;overflow: auto;">
-																		<textarea cols="60" rows="5" disabled="disabled"></textarea>
-																	</div>
-																</td>
-																<td style="width: 20px;"></td>
-															</tr>
-														</table>
+													<div id="rcMainDiv" style="height: 175px;overflow: auto;">
+														<table id="rcTable"></table>
 													</div>
 												</td>
 											</tr>	 										
