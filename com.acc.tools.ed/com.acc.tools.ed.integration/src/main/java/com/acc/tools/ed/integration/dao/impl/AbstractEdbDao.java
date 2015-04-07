@@ -92,9 +92,9 @@ public class AbstractEdbDao {
 		}
 	}
 	
-	public void mapTaskLedgerData(ResultSet rs,List<TaskLedgerForm> taskLedger) throws SQLException{
+	public void mapTaskLedgerData(ResultSet rs,List<TaskLedgerForm> taskLedger,int taskLedgerId) throws SQLException{
 		final TaskLedgerForm ledgerForm=new TaskLedgerForm();
-		ledgerForm.setTaskLedgerId(rs.getInt("TASK_LDGR_ID"));
+		ledgerForm.setTaskLedgerId(taskLedgerId);
 		ledgerForm.setTaskHrs(rs.getInt("TASK_HRS"));
 		ledgerForm.setTaskActivity(rs.getString("TASK_ACTIVITY"));
 		ledgerForm.setTaskStatus(rs.getString("TASK_STATUS"));
@@ -102,10 +102,15 @@ public class AbstractEdbDao {
 		taskLedger.add(ledgerForm);
 	}
 	
-	public void mapTaskReviewHistory(ResultSet rs,List<TaskReviewHistory> historys) throws SQLException{
+	public void mapTaskReviewHistory(ResultSet rs,List<TaskReviewHistory> historys,int reviewCommentId) throws SQLException{
 		final TaskReviewHistory history=new TaskReviewHistory();
-		history.setReviewHistoryId(rs.getInt("ID"));
-		history.setReviewComment(rs.getString("TASK_REVIEW_COMMENTS"));
+		history.setReviewHistoryId(reviewCommentId);
+		final String reviewComment=rs.getString("TASK_REVIEW_COMMENTS");
+		if(reviewComment!=null && reviewComment.length()>0){
+			history.setReviewComment(reviewComment);
+		}else {
+			history.setReviewComment("");
+		}
 		history.setDevResponse(rs.getString("TASK_DEV_COMMENTS"));
 		history.setIsReviewValid(rs.getString("TASK_REVIEW_VALID"));
 		historys.add(history);

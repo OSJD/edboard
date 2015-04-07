@@ -134,6 +134,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 						if(taskId!=0){
 							if(!taskMap.containsKey(taskId)){
 								final TaskForm task=new TaskForm();
+								task.setWorkType("Review");
 								mapTaskData(rs, task,component.getComponentId(),taskId);
 								if(component.getTaskFormList()==null){
 									component.setTaskFormList(new ArrayList<TaskForm>());
@@ -149,6 +150,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 						if(taskId!=0){
 							if(!taskMap.containsKey(taskId)){
 								final TaskForm task=new TaskForm();
+								task.setWorkType("Review");
 								mapTaskData(rs, task,component.getComponentId(),taskId);
 								if(component.getTaskFormList()==null){
 									component.setTaskFormList(new ArrayList<TaskForm>());
@@ -207,6 +209,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 								if(taskId!=0){
 									if(!taskMap.isEmpty() && !taskMap.containsKey(taskId)){
 										final TaskForm task=new TaskForm();
+										task.setWorkType("Build");
 										mapTaskData(rs, task,component.getComponentId(),taskId);
 										if(component.getTaskFormList()==null){
 											component.setTaskFormList(new ArrayList<TaskForm>());
@@ -222,6 +225,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 								if(taskId!=0){
 									if(!taskMap.isEmpty() && !taskMap.containsKey(taskId)){
 										final TaskForm task=new TaskForm();
+										task.setWorkType("Build");
 										mapTaskData(rs, task,component.getComponentId(),taskId);
 										if(component.getTaskFormList()==null){
 											component.setTaskFormList(new ArrayList<TaskForm>());
@@ -243,6 +247,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 								if(taskId!=0){
 									if(!taskMap.isEmpty() && !taskMap.containsKey(taskId)){
 										final TaskForm task=new TaskForm();
+										task.setWorkType("Build");
 										mapTaskData(rs, task,component.getComponentId(),taskId);
 										if(component.getTaskFormList()==null){
 											component.setTaskFormList(new ArrayList<TaskForm>());
@@ -258,6 +263,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 								if(taskId!=0){
 									if(!taskMap.isEmpty() && !taskMap.containsKey(taskId)){
 										final TaskForm task=new TaskForm();
+										task.setWorkType("Build");
 										mapTaskData(rs, task,component.getComponentId(),taskId);
 										if(component.getTaskFormList()==null){
 											component.setTaskFormList(new ArrayList<TaskForm>());
@@ -284,6 +290,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 							if(taskId!=0){
 								if(!taskMap.containsKey(taskId)){
 									final TaskForm task=new TaskForm();
+									task.setWorkType("Build");
 									mapTaskData(rs, task,component.getComponentId(),taskId);
 									if(component.getTaskFormList()==null){
 										component.setTaskFormList(new ArrayList<TaskForm>());
@@ -299,6 +306,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 							if(taskId!=0){
 								if(!taskMap.containsKey(taskId)){
 									final TaskForm task=new TaskForm();
+									task.setWorkType("Build");
 									mapTaskData(rs, task,component.getComponentId(),taskId);
 									if(component.getTaskFormList()==null){
 										component.setTaskFormList(new ArrayList<TaskForm>());
@@ -676,6 +684,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 	public TaskForm getTaskByTaskId(Integer taskId){
 		
 		final Map<Integer,TaskForm> taskMap=new HashMap<Integer, TaskForm>();
+		final Map<Integer,String> reviewCommentsMap=new HashMap<Integer, String>();
 		try {
 
 			final String taskByTaskIdQuery="SELECT T.TASK_ID,T.TASK_NAME,T.TASK_TYPE,T.TASK_DESC,T.TASK_ST_DT,T.TASK_ET_DT,L.TASK_STATUS,L.TASK_LDGR_ID,L.TASK_HRS,"
@@ -686,6 +695,8 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 			Statement selectStatement = getConnection().createStatement();
 			ResultSet rs = selectStatement.executeQuery(taskByTaskIdQuery);
 			while (rs.next()) {
+				final int reviewCommentId=rs.getInt("ID");
+				final int taskLedgerId=rs.getInt("TASK_LDGR_ID");
 				if(!taskMap.isEmpty() && taskMap.containsKey(taskId)){
 					final TaskForm taskForm=taskMap.get(taskId);
 					List<TaskLedgerForm> taskLedger=taskForm.getTaskLedger();
@@ -696,8 +707,15 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 					if(historys==null){
 						historys=new ArrayList<TaskReviewHistory>();
 					}
-					mapTaskLedgerData(rs, taskLedger);
-					mapTaskReviewHistory(rs,historys);
+					
+					if(!reviewCommentsMap.containsKey(taskLedgerId)){
+						mapTaskLedgerData(rs, taskLedger,taskLedgerId);
+						reviewCommentsMap.put(taskLedgerId, "PRESENT");
+					}
+					if(!reviewCommentsMap.containsKey(reviewCommentId)){
+						mapTaskReviewHistory(rs,historys,reviewCommentId);
+						reviewCommentsMap.put(reviewCommentId, "PRESENT");
+					}
 					taskForm.setTaskLedger(taskLedger);
 					taskForm.setTaskReviewHistory(historys);
 					
@@ -712,10 +730,16 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 					//taskform.setTaskStatus(rs.getString("TASK_STATUS"));
 					final List<TaskLedgerForm> taskLedger=new ArrayList<TaskLedgerForm>(); 
 					taskform.setTaskLedger(taskLedger);
-					mapTaskLedgerData(rs, taskLedger);
 					final List<TaskReviewHistory> historys=new ArrayList<TaskReviewHistory>();
 					taskform.setTaskReviewHistory(historys);
-					mapTaskReviewHistory(rs,historys);
+					if(!reviewCommentsMap.containsKey(taskLedgerId)){
+						mapTaskLedgerData(rs, taskLedger,taskLedgerId);
+						reviewCommentsMap.put(taskLedgerId, "PRESENT");
+					}
+					if(!reviewCommentsMap.containsKey(reviewCommentId)){
+						mapTaskReviewHistory(rs,historys,reviewCommentId);
+						reviewCommentsMap.put(reviewCommentId, "PRESENT");
+					}
 					taskMap.put(taskId, taskform);
 					
 				}

@@ -90,9 +90,12 @@
 									<td>
 										<select name="taskStatus" id="taskStatus" style="width:135px;">
 											<option value="0">---Select---</option>
-											<option value="1">Completed</option>
-											<option value="2">In Progress</option>
-											<option value="3">On Hold</option>
+											<option value="1">Build Completed</option>
+											<option value="2">Build In Progress</option>
+											<option value="3">Build On Hold</option>
+											<option value="4">Review Completed</option>
+											<option value="5">Review In Progress</option>
+											<option value="6">Review On Hold</option>
 										</select>
 									</td>
 									<td>

@@ -77,11 +77,12 @@
 								<tr id="component${component.componentId}" class="taskData">
 									<td colspan="10" style="background-color: white;">
 										<table class="innertable1"
-											id="taskTable${component.componentId}" style="margin-left: 20px;">
+											id="taskTable${component.componentId}">
 											<tbody>
 												<tr>
 													<th style="width: 150px;">Task Name</th>
 													<th style="width: 320px;">Task Description</th>
+													<th style="width: 75px;">Work Type</th>
 													<th style="width: 75px;">Create Date</th>
 													<th style="width: 75px;">Start Date</th>
 													<th style="width: 75px;">End Date</th>
@@ -95,7 +96,7 @@
 												<c:choose>
 													<c:when test="${empty component.taskFormList}">
 														<tr id="NoTask${component.componentId}">
-															<td colspan="10"
+															<td colspan="11"
 																style="font-weight: bold; text-align: center;">
 																<div id="noComponetMsg" class="boxmsg border-boxmsg"
 																	style="margin-left: 50px; width: 780px; color: red;">
@@ -112,6 +113,7 @@
 																	id="taskIdValue" value="${tasks.taskId}" />
 																</td>
 																<td>${tasks.taskDesc}</td>
+																<td>${tasks.workType}</td>
 																<td>${tasks.taskStartDate}</td>
 																<td>${tasks.taskStartDate}</td>
 																<td>${tasks.taskEndDate}</td>
