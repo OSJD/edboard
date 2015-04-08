@@ -121,7 +121,7 @@
 																<td></td>
 																<td></td>
 																<td>
-																	<a href="#" class="editTaskPopup" taskId="${tasks.taskId}" id="${component.componentId}">
+																	<a href="#" class="editTaskPopup" taskId="${tasks.taskId}" id="${component.componentId}" workType="${tasks.workType}">
 																		<img class="imgLink" alt="edit Task" src="./resources/edit.gif" width="20px;">
 																	</a>
 																</td>
