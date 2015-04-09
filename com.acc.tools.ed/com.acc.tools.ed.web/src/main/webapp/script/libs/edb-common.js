@@ -110,9 +110,9 @@ var edb=(function($){
 							}
 							if(obj.type=="checkbox"){
 								if(obj.checked){
-									jasonItemObject[att]="true";
+									jasonItemObject[att]="TRUE";
 								}else{
-									jasonItemObject[att]="false";
+									jasonItemObject[att]="FALSE";
 								}
 							} else {
 								if(attType=="string"){

@@ -15,7 +15,7 @@ public interface ProjectWorkDao {
 	public List<ProjectForm> getMyTeamTasks(Integer supervisorId);
 	public void deleteTasks(int taskId);
 	public int[] addTaskReviewComments(TaskForm taskform);
-	public void saveTasks(TaskForm taskForm);
+	public int[] addTaskReviewDeveloperComments(TaskForm taskForm);
 	public TaskForm retrieveTasks();
 	public List<ReferenceData> getTasksByComponentId(Integer componentId,Integer employeeId);
 	public TaskForm getTaskByTaskId(Integer taskId);

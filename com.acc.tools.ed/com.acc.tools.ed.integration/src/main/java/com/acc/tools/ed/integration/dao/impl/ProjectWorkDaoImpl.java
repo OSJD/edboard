@@ -601,42 +601,34 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 		return status;
 	}
 
-	public void saveTasks(TaskForm taskForm) {
+	public int[] addTaskReviewDeveloperComments(TaskForm taskForm) {
 		
+		int status[]={};
 		
-		try {
+		try{
 			
-			String addTaskQuery = "UPDATE EDB_TASK_MASTER SET COMPNT_ID = ?, TASK_NAME =?, TASK_DESC=?,TASK_HRS=?,TASK_STATUS=?,TASK_TYPE=?,TASK_CT_DT=?,TASK_ST_DT=?,TASK_ET_DT=?,TASK_COMMENTS=? WHERE TASK_ID =?";
-			PreparedStatement pstm = getConnection().prepareStatement(addTaskQuery);
-			pstm.setInt(1, taskForm.getComponentId());
-			pstm.setString(2, taskForm.getTaskName());
-			pstm.setString(3, taskForm.getTaskDesc());
-			pstm.setInt(4, Integer.parseInt(String.valueOf(taskForm.getTaskHrs())));
-			pstm.setString(5, taskForm.getTaskStatus());
-			pstm.setString(6, taskForm.getTaskType());
-			pstm.setString(7, taskForm.getTaskCreateDate());
-			pstm.setString(8, taskForm.getTaskStartDate());
-			pstm.setString(9, taskForm.getTaskEndDate());
-			pstm.setInt(10, taskForm.getTaskId());
-			pstm.setString(11, taskForm.getTaskComments());
-			pstm.executeUpdate();
-			pstm.close();
-			
-			
-/*			String addTaskHistoryQuery = "UPDATE EDB_TASK_REVW_HISTORY SET TASK_ACTIONS=?,TASK_REVIEW_USER=?,TASK_REVIEW_COMMENTS=? WHERE TASK_ID=?";
+			String addTaskHistoryQuery = "UPDATE EDB_TASK_REVW_HISTORY SET TASK_DEV_COMMENTS=?,TASK_DEV_DT=?,TASK_REVIEW_VALID=? WHERE TASK_ID=? AND ID=?";
 			PreparedStatement pstmHistory = getConnection().prepareStatement(addTaskHistoryQuery);
-			pstmHistory.setString(1, taskForm.getTaskAction());
-			pstmHistory.setString(2, taskForm.getTaskReviewUser());
-			pstmHistory.setString(3, taskForm.getRejComment());
-			pstmHistory.setInt(4, taskForm.getTaskId());
-			pstmHistory.executeUpdate();
-			pstmHistory.close();*/
-			
-			//componentList = getMyTasks(userId).getReleases().get(0).getComponents();
+			final DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy ");
+			final Date date = new Date();
+			for(TaskReviewHistory reviewComment:taskForm.getTaskReviewHistory()){
+				if(reviewComment.getReviewHistoryId()>0 && reviewComment.getDevResponse().length()>0){
+					pstmHistory.setString(1, reviewComment.getDevResponse());
+					pstmHistory.setString(2, dateFormat.format(date));
+					pstmHistory.setBoolean(3, Boolean.parseBoolean(reviewComment.getIsReviewValid()));
+					pstmHistory.setInt(4, taskForm.getTaskId());
+					pstmHistory.setInt(5, reviewComment.getReviewHistoryId());
+					pstmHistory.addBatch();
+				}
+			}
+			pstmHistory.executeBatch();
+			pstmHistory.close();
+
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("Error updating developer comments",e);
 		}
+		return status;
 		
 	}
 
@@ -710,11 +702,11 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 					
 					if(!reviewCommentsMap.containsKey(taskLedgerId)){
 						mapTaskLedgerData(rs, taskLedger,taskLedgerId);
-						reviewCommentsMap.put(taskLedgerId, "PRESENT");
+						reviewCommentsMap.put(taskLedgerId, "LEDGER");
 					}
 					if(!reviewCommentsMap.containsKey(reviewCommentId)){
 						mapTaskReviewHistory(rs,historys,reviewCommentId);
-						reviewCommentsMap.put(reviewCommentId, "PRESENT");
+						reviewCommentsMap.put(reviewCommentId, "REVIEW");
 					}
 					taskForm.setTaskLedger(taskLedger);
 					taskForm.setTaskReviewHistory(historys);
@@ -966,9 +958,6 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 			pstm.setString(5, ledgerForm.getTaskStatus());
 			pstm.executeUpdate();
 			pstm.close();
-
-
-
 		}
 		catch(Exception e){
 			log.error("Error adding Task ledger for task id:"+ledgerForm.getTaskId(),e);

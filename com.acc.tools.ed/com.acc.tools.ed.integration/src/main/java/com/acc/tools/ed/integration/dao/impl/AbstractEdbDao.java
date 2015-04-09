@@ -106,12 +106,18 @@ public class AbstractEdbDao {
 		final TaskReviewHistory history=new TaskReviewHistory();
 		history.setReviewHistoryId(reviewCommentId);
 		final String reviewComment=rs.getString("TASK_REVIEW_COMMENTS");
+		final String devComment=rs.getString("TASK_DEV_COMMENTS");
 		if(reviewComment!=null && reviewComment.length()>0){
 			history.setReviewComment(reviewComment);
 		}else {
 			history.setReviewComment("");
 		}
-		history.setDevResponse(rs.getString("TASK_DEV_COMMENTS"));
+		if(devComment!=null && devComment.length()>0){
+			history.setDevResponse(devComment);
+		}else {
+			history.setDevResponse("");
+		}
+		
 		history.setIsReviewValid(rs.getString("TASK_REVIEW_VALID"));
 		historys.add(history);
 	}

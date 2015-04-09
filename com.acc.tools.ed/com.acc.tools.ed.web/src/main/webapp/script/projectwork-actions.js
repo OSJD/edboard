@@ -168,11 +168,16 @@ $(document).ready(
 						"taskStartDate":{dataType:"string"},
 						"taskEndDate":{dataType:"string"},
 						"taskDesc":{dataType:"string"},
-						"taskComments":{dataType:"string"},
-						"taskHrs":{dataType:"int"},
 						"taskReviewUser":{dataType:"int"},
 						"componentId":{dataType:"int"},
-						"taskStatus":{dataType:"string"},
+						"taskLedger":{
+							dataType:"object",
+							itemElement:{
+								"taskActivity":{dataType:"string"},
+								"taskHrs":{dataType:"int"},
+								"taskStatus":{dataType:"string"}
+							}								
+						  }
 						},$("#addTaskForm"));
 					//alert(jsonString);
 					
@@ -230,7 +235,6 @@ $(document).ready(
 											itemElement:{
 												"taskActivity":{dataType:"string"},
 												"taskHrs":{dataType:"int"},
-												"taskReviewUser":{dataType:"string"},
 												"taskStatus":{dataType:"string"}
 											}								
 										  },
@@ -359,23 +363,23 @@ $(document).ready(
 						context.addAttribute(activity[index].taskLedgerId,activity[index]);
 					}
 					var reviewHistory=task.taskReviewHistory;
+					$("#rcTable > tbody > tr").remove();
 					for(var index in reviewHistory){
 						//alert(reviewHistory[index].reviewComment+" | "+reviewHistory[index].devResponse+" | "+reviewHistory[index].isReviewValid);
 						var reviewCommentRowNumber=$('#rcTable tr:last').index()+2;
-						$("#rcTable tr").remove();
 						if(workType=="Review"){
-							var rowForReviewer="<tr><td><input type=\"hidden\" id=\"reviewHistoryId"+reviewCommentRowNumber+"\" value=\""+reviewHistory[index].reviewHistoryId+"\"><textarea cols=\"60\" rows=\"5\" name=\"reviewComment"+reviewCommentRowNumber+"\" id=\"reviewComment"+reviewCommentRowNumber+"\">"+reviewHistory[index].reviewComment+"</textarea></td>"+
+							var rowForReviewer="<tr><td><input type=\"hidden\" name=\"reviewHistoryId"+reviewCommentRowNumber+"\" id=\"reviewHistoryId"+reviewCommentRowNumber+"\" value=\""+reviewHistory[index].reviewHistoryId+"\"><textarea cols=\"60\" rows=\"5\" name=\"reviewComment"+reviewCommentRowNumber+"\" id=\"reviewComment"+reviewCommentRowNumber+"\">"+reviewHistory[index].reviewComment+"</textarea></td>"+
 								"<td><div style=\"width:365px;height: 75px;overflow: auto;\">"+reviewHistory[index].devResponse+"</div></td>"+
 								"<td><input type=\"checkbox\" name=\"isReviewValid"+reviewCommentRowNumber+"\" id=\"isReviewValid"+reviewCommentRowNumber+"\" checked=\"checked\"></td></tr>";
-							$("#rcTable").append(rowForReviewer);
+							$("#rcTable tbody").append(rowForReviewer);
 						}else {
-							var rowForDeveloper="<tr><td><input type=\"hidden\" id=\"reviewHistoryId"+reviewCommentRowNumber+"\" value=\""+reviewHistory[index].reviewHistoryId+"\"><div style=\"width:365px;height: 75px;overflow: auto;\">"+reviewHistory[index].reviewComment+"</div></td>"+
+							var rowForDeveloper="<tr><td><input type=\"hidden\" name=\"reviewHistoryId"+reviewCommentRowNumber+"\" id=\"reviewHistoryId"+reviewCommentRowNumber+"\" value=\""+reviewHistory[index].reviewHistoryId+"\"><div style=\"width:365px;height: 75px;overflow: auto;\">"+reviewHistory[index].reviewComment+"</div></td>"+
 								"<td><textarea cols=\"60\" rows=\"5\" name=\"devResponse"+reviewCommentRowNumber+"\" id=\"devResponse"+reviewCommentRowNumber+"\">"+reviewHistory[index].devResponse+"</textarea></td>"+
 								"<td><input type=\"checkbox\" name=\"isReviewValid"+reviewCommentRowNumber+"\" id=\"isReviewValid"+reviewCommentRowNumber+"\" checked=\"checked\"></td></tr>";
-							$("#rcTable").append(rowForDeveloper);
+							$("#rcTable tbody").append(rowForDeveloper);
 						}
-						$("#rcMainDiv").animate({ scrollTop: $("#rcMainDiv")[0].scrollHeight}, 1000);
 					}
+					$("#rcMainDiv").animate({ scrollTop: $("#rcMainDiv")[0].scrollHeight}, 1000);
 
 				},
 				error : function(data) {
@@ -390,7 +394,7 @@ $(document).ready(
 		$("#editReviewRow").button().on("click",function(){
 			$(this).unbind("click");
 			var reviewCommentRowNumber=$('#rcTable tr:last').index()+2;
-			var row="<tr><td><input type=\"hidden\" id=\"reviewHistoryId"+reviewCommentRowNumber+"\" value=\"0\"><textarea cols=\"60\" rows=\"5\" name=\"reviewComment"+reviewCommentRowNumber+"\" id=\"reviewComment"+reviewCommentRowNumber+"\"></textarea></td>"+
+			var row="<tr><td><input type=\"hidden\" name=\"reviewHistoryId"+reviewCommentRowNumber+"\"=\"reviewHistoryId"+reviewCommentRowNumber+"\" id=\"reviewHistoryId"+reviewCommentRowNumber+"\" value=\"0\"><textarea cols=\"60\" rows=\"5\" name=\"reviewComment"+reviewCommentRowNumber+"\" id=\"reviewComment"+reviewCommentRowNumber+"\"></textarea></td>"+
 				"<td><div style=\"width:365px;height: 75px;overflow: auto;\"></div></td>"+
 				"<td><input type=\"checkbox\" name=\"isReviewValid"+reviewCommentRowNumber+"\" id=\"isReviewValid"+reviewCommentRowNumber+"\" value=\"Y\"></td></tr>";
 			$("#rcTable").append(row);
@@ -652,4 +656,3 @@ function reset()
 	$("#taskReviewUser").val('');
 	$("#taskComments").val('');
 }
-

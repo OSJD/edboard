@@ -116,7 +116,7 @@
 	 											
 												<td colspan="3">
 													<div id="rcMainDiv" style="height: 175px;overflow: auto;">
-														<table id="rcTable"></table>
+														<table id="rcTable"><tbody></tbody></table>
 													</div>
 												</td>
 											</tr>	 										

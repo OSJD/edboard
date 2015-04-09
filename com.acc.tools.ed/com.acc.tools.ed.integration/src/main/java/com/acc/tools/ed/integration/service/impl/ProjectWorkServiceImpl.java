@@ -51,9 +51,9 @@ public class ProjectWorkServiceImpl implements ProjectWorkService {
 		
 		return projectWorkDao.addTaskReviewComments(taskForm);
 	}
-	public void saveTasks(TaskForm taskForm) {
+	public int[] addTaskReviewDeveloperComments(TaskForm taskForm){
 		
-		projectWorkDao.saveTasks(taskForm);
+		return projectWorkDao.addTaskReviewDeveloperComments(taskForm);
 	}
 	public TaskForm retrieveTasks() {
 		
