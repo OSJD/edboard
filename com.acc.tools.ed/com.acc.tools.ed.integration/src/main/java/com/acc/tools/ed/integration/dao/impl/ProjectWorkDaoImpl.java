@@ -184,6 +184,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 	       
 	        componentTable.append("SELECT C.COMPNT_ID as COMPONENT_ID,C.COMPNT_NAME,C.COMPNT_FUNC_DESC,C.COMPNT_PHASE,C.COMPNT_ST_DT,C.COMPNT_END_DT, ");
 	        componentTable.append(" M.*, T.TASK_ID AS TSK_ID,T.TASK_NAME,T.TASK_DESC,T.TASK_STATUS,T.TASK_TYPE,T.TASK_CT_DT,P.PROJ_NAME, CE.EMP_ID, CE.WORK_DESC,ED.EMP_RESOURCE_NAME "); 
+	        componentTable.append(" ,T.TASK_ST_DT,T.TASK_ET_DT,T.TASK_STATUS  ");
 	        componentTable.append("	FROM ((((EDB_PROJECT AS P LEFT JOIN EDB_MILESTONE AS M ON P.PROJ_ID = M.PROJ_ID)  LEFT JOIN EDB_PROJ_COMPNT AS C ON M.MLSTN_ID = C.MLSTN_ID) "); 
 	        componentTable.append(" LEFT JOIN EDB_COMPNT_EMP AS CE ON CE.COMPNT_ID=C.COMPNT_ID) LEFT JOIN EDB_TASK_MASTER AS T ON (CE.COMPNT_ID=T.COMPNT_ID AND T.EMP_ID="+userId+")) "); 
 	        componentTable.append(" LEFT JOIN EDB_MSTR_EMP_DTLS AS ED ON  CE.EMP_ID= ED.EMP_ID WHERE CE.EMP_ID="+userId);

@@ -98,7 +98,13 @@ public class AbstractEdbDao {
 		ledgerForm.setTaskHrs(rs.getInt("TASK_HRS"));
 		ledgerForm.setTaskDvlprComments(rs.getString("TASK_ACTIVITY"));
 		ledgerForm.setTaskStatus(Integer.toString(rs.getInt("TASK_STATUS")));
-		ledgerForm.setTaskActivityDate(new DateTime(rs.getDate("TASK_ACTIVITI_DT").getTime()).toString("MM/dd/yyyy"));
+		
+		if(null!=rs.getDate("TASK_ACTIVITI_DT")){
+			ledgerForm.setTaskActivityDate(new DateTime(rs.getDate("TASK_ACTIVITI_DT").getTime()).toString("MM/dd/yyyy"));
+		}else{
+			ledgerForm.setTaskActivityDate(null);
+		}
+		
 		ledgerForm.setTaskReviewUser(rs.getInt("TASK_REVIWER_ID"));
 		log.debug("Task Ledger id:{} | Housrs:{} | Activity:{} | Status :{} | Date :{} ",new Object[]{ledgerForm.getTaskLedgerId(),ledgerForm.getTaskHrs(),
 				ledgerForm.getTaskDvlprComments(),ledgerForm.getTaskStatus(),ledgerForm.getTaskActivityDate()});
@@ -125,14 +131,43 @@ public class AbstractEdbDao {
 		historys.add(history);
 	}
 	
-	public void mapTaskData(ResultSet rs,TaskForm taskForm,Integer componentId,Integer taskId) throws SQLException{
+	public void mapTaskData(ResultSet rs,TaskForm taskForm,Integer componentId,Integer taskId) throws SQLException, ParseException{
 		taskForm.setTaskId(taskId);
 		taskForm.setTaskName(rs.getString("TASK_NAME"));
 		taskForm.setComponentId(componentId);
 		taskForm.setTaskDesc(rs.getString("TASK_DESC"));
 		taskForm.setTaskStatus(rs.getString("TASK_STATUS"));
 		taskForm.setTaskType(rs.getString("TASK_TYPE"));
-		taskForm.setTaskCreateDate(rs.getString("TASK_CT_DT"));
+		
+		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        String taskCrtDt = rs.getString("TASK_CT_DT");
+        if(taskCrtDt != null) {
+               Date taskCreateDate =  sdf1.parse(taskCrtDt);
+               sdf1.applyPattern("MM/dd/yyyy");
+               taskForm.setTaskCreateDate(sdf1.format(taskCreateDate));                                   
+        } else {
+        	taskForm.setTaskCreateDate(null);
+        }
+        
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        String taskStDt = rs.getString("TASK_ST_DT");
+        if(taskCrtDt != null) {
+               Date taskStartDate =  sdf2.parse(taskStDt);
+               sdf2.applyPattern("MM/dd/yyyy");
+               taskForm.setTaskStartDate(sdf2.format(taskStartDate));                                   
+        } else {
+        	taskForm.setTaskStartDate(null);
+        }
+        
+        SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        String taskEtDt = rs.getString("TASK_ET_DT");
+        if(taskCrtDt != null) {
+               Date taskEndDate =  sdf3.parse(taskEtDt);
+               sdf3.applyPattern("MM/dd/yyyy");
+               taskForm.setTaskEndDate(sdf3.format(taskEndDate));                                   
+        } else {
+        	taskForm.setTaskEndDate(null);
+        }
 	}
 	
 	public void mapReleaseData(ResultSet rs,ProjectForm project,ReleaseForm release,Integer releaseId) throws SQLException{
