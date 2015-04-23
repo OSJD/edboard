@@ -637,7 +637,7 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 		List<ReferenceData> prjLeadList = new ArrayList<ReferenceData>();
 		
 		try {
-			String resourceQuery = "SELECT * FROM EDB_MSTR_EMP_DTLS WHERE EMP_LEVEL IN ('AM','TL')";
+			String resourceQuery = "SELECT * FROM EDB_MSTR_EMP_DTLS WHERE EMP_ROLE IN ('SUPERVISOR','Lead')";
 			Statement selectStatement = getConnection().createStatement();
 			ResultSet rs = selectStatement.executeQuery(resourceQuery);
 			

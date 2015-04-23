@@ -96,9 +96,12 @@ public class AbstractEdbDao {
 		final TaskLedgerForm ledgerForm=new TaskLedgerForm();
 		ledgerForm.setTaskLedgerId(taskLedgerId);
 		ledgerForm.setTaskHrs(rs.getInt("TASK_HRS"));
-		ledgerForm.setTaskActivity(rs.getString("TASK_ACTIVITY"));
-		ledgerForm.setTaskStatus(rs.getString("TASK_STATUS"));
+		ledgerForm.setTaskDvlprComments(rs.getString("TASK_ACTIVITY"));
+		ledgerForm.setTaskStatus(Integer.toString(rs.getInt("TASK_STATUS")));
 		ledgerForm.setTaskActivityDate(new DateTime(rs.getDate("TASK_ACTIVITI_DT").getTime()).toString("MM/dd/yyyy"));
+		ledgerForm.setTaskReviewUser(rs.getInt("TASK_REVIWER_ID"));
+		log.debug("Task Ledger id:{} | Housrs:{} | Activity:{} | Status :{} | Date :{} ",new Object[]{ledgerForm.getTaskLedgerId(),ledgerForm.getTaskHrs(),
+				ledgerForm.getTaskDvlprComments(),ledgerForm.getTaskStatus(),ledgerForm.getTaskActivityDate()});
 		taskLedger.add(ledgerForm);
 	}
 	

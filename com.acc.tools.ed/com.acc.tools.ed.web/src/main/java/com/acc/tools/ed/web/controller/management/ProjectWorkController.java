@@ -130,7 +130,7 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 		final TaskLedgerForm ledgerForm=new TaskLedgerForm();
 		ledgerForm.setTaskId(taskId);
 		ledgerForm.setTaskHrs(taskLedgerform.getTaskHrs());
-		ledgerForm.setTaskActivity(taskLedgerform.getTaskActivity());
+		ledgerForm.setTaskDvlprComments(taskLedgerform.getTaskDvlprComments());
 		ledgerForm.setTaskStatus(taskLedgerform.getTaskStatus());
 		getProjectWorkService().addTaskLedger(ledgerForm);
 	}

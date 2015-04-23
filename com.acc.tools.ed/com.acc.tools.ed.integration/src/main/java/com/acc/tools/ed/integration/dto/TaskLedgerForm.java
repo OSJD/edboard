@@ -11,9 +11,10 @@ public class TaskLedgerForm implements Serializable {
 	private int taskLedgerId;
 	private int taskId;
 	private int taskHrs;
-	private String taskActivity;
+	private String taskDvlprComments;
 	private String taskActivityDate;
 	private String taskStatus;
+	private int taskReviewUser;
 	
 	public int getTaskId() {
 		return taskId;
@@ -26,12 +27,6 @@ public class TaskLedgerForm implements Serializable {
 	}
 	public void setTaskHrs(int taskHrs) {
 		this.taskHrs = taskHrs;
-	}
-	public String getTaskActivity() {
-		return taskActivity;
-	}
-	public void setTaskActivity(String taskActivity) {
-		this.taskActivity = taskActivity;
 	}
 	public String getTaskActivityDate() {
 		return taskActivityDate;
@@ -50,6 +45,18 @@ public class TaskLedgerForm implements Serializable {
 	}
 	public void setTaskStatus(String taskStatus) {
 		this.taskStatus = taskStatus;
+	}
+	public int getTaskReviewUser() {
+		return taskReviewUser;
+	}
+	public void setTaskReviewUser(int taskReviewUser) {
+		this.taskReviewUser = taskReviewUser;
+	}
+	public String getTaskDvlprComments() {
+		return taskDvlprComments;
+	}
+	public void setTaskDvlprComments(String taskDvlprComments) {
+		this.taskDvlprComments = taskDvlprComments;
 	}
 	
 

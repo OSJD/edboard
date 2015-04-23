@@ -173,7 +173,7 @@ $(document).ready(
 						"taskLedger":{
 							dataType:"object",
 							itemElement:{
-								"taskActivity":{dataType:"string"},
+								"taskDvlprComments":{dataType:"string"},
 								"taskHrs":{dataType:"int"},
 								"taskStatus":{dataType:"string"}
 							}								
@@ -233,7 +233,7 @@ $(document).ready(
 							"taskLedger":{
 											dataType:"object",
 											itemElement:{
-												"taskActivity":{dataType:"string"},
+												"taskDvlprComments":{dataType:"string"},
 												"taskHrs":{dataType:"int"},
 												"taskStatus":{dataType:"string"}
 											}								
@@ -557,7 +557,7 @@ $(document).ready(
 			if(activity!=-1){
 				var context=edb.getEDBContextInstance();
 				var taskActivityObject=context.getAttribute(activity);
-				$("#editTaskDvlprComments").val(taskActivityObject.taskActivity).attr("disabled", "disabled");
+				$("#editTaskDvlprComments").val(taskActivityObject.taskDvlprComments).attr("disabled", "disabled");
 				$("#editTaskHrs").val(taskActivityObject.taskHrs).attr("disabled", "disabled");
 				$("#editTaskStatus").val(taskActivityObject.taskStatus).attr("disabled", "disabled");
 				$("#editTaskReviewUser").val(taskActivityObject.taskReviewUser).attr("disabled", "disabled");
@@ -576,10 +576,11 @@ $(document).ready(
 			if(activity!=-1){
 				var context=edb.getEDBContextInstance();
 				var taskActivityObject=context.getAttribute(activity);
-				$("#taskDvlprComments").val(taskActivityObject.taskActivity).attr("disabled", "disabled");
+				$("#taskDvlprComments").val(taskActivityObject.taskDvlprComments).attr("disabled", "disabled");
 				$("#taskHrs").val(taskActivityObject.taskHrs).attr("disabled", "disabled");
 				$("#taskStatus").val(taskActivityObject.taskStatus).attr("disabled", "disabled");
 				$("#taskReviewUser").val(taskActivityObject.taskReviewUser).attr("disabled", "disabled");
+				alert(taskActivityObject.taskStatus +"|"+taskActivityObject.taskReviewUser);
 			} else {
 				$("#taskActivityDateId").html("Date :"+$.datepicker.formatDate('mm/dd/yy', new Date()));
 				$("#taskDvlprComments").val("").removeAttr('disabled');

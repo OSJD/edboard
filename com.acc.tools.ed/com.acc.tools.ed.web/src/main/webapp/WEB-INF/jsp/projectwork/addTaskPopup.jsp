@@ -51,16 +51,13 @@
 							<option value="0">---Select---</option>
 							<option value="1">Assigned</option>
 							<option value="2">Adhoc</option>
-							<option value="3">Value Added</option>
+							<option value="3">CI Work</option>
 						</select>
 					</td>
-					<td><div id="editTaskStartDateId"><input type="text" name="taskStartDate" id="taskStartDateId" class="textbox" style="width:75px;" /></div></td>
+					<td><input type="text" name="taskStartDate" id="taskStartDateId" class="textbox" style="width:75px;" /></td>
 
-					<td><div id="editTaskEndDateId"><input type="text" name="taskEndDate" id="taskEndDateId" class="textbox" style="width:75px;" /></div></td>
-					<td colspan="3"><textarea name="taskDesc" id="taskDesc" rows="5" cols="90"></textarea>
-					
-					</td>
-
+					<td><input type="text" name="taskEndDate" id="taskEndDateId" class="textbox" style="width:75px;" /></td>
+					<td colspan="3"><textarea name="taskDesc" id="taskDesc" rows="5" cols="90"></textarea></td>
 				</tr>
 
 					<tr>
@@ -84,7 +81,7 @@
 								</tr>
 								<tr>
 									<td>
-										<textarea rows="5" cols="100" name="taskComments" id="taskDvlprComments"></textarea>
+										<textarea rows="5" cols="100" name="taskDvlprComments" id="taskDvlprComments"></textarea>
 									</td>
 									<td><input type="text" name="taskHrs" id="taskHrs" class="textbox" style="width:35px;" /></td>
 									<td>

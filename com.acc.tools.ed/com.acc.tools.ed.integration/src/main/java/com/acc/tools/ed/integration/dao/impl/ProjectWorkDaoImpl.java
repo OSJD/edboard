@@ -719,7 +719,6 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 					taskform.setTaskType(rs.getString("TASK_TYPE"));
 					taskform.setTaskStartDate(new DateTime(rs.getDate("TASK_ST_DT").getTime()).toString("MM/dd/yyyy"));
 					taskform.setTaskEndDate(new DateTime(rs.getDate("TASK_ET_DT").getTime()).toString("MM/dd/yyyy"));
-					//taskform.setTaskStatus(rs.getString("TASK_STATUS"));
 					final List<TaskLedgerForm> taskLedger=new ArrayList<TaskLedgerForm>(); 
 					taskform.setTaskLedger(taskLedger);
 					final List<TaskReviewHistory> historys=new ArrayList<TaskReviewHistory>();
@@ -953,7 +952,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 			PreparedStatement pstm = getConnection().prepareStatement(addTaskCommentQuery);
 			pstm.setInt(1, ledgerForm.getTaskId());
 			pstm.setInt(2, ledgerForm.getTaskHrs());
-			pstm.setString(3, ledgerForm.getTaskActivity());
+			pstm.setString(3, ledgerForm.getTaskDvlprComments());
 			pstm.setString(4, dateFormat.format(date));
 			pstm.setString(5, ledgerForm.getTaskStatus());
 			pstm.executeUpdate();
