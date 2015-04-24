@@ -72,7 +72,7 @@
 								</tr>
 								<tr>
 									<td>
-										<textarea rows="5" cols="100" name="taskActivity" id="editTaskDvlprComments"></textarea>
+										<textarea rows="5" cols="100" name="taskDvlprComments" id="editTaskDvlprComments"></textarea>
 									</td>
 									<td><input type="text" name="taskHrs" id="editTaskHrs" class="textbox" style="width:35px;" /></td>
 									<td>
@@ -84,6 +84,10 @@
 											<option value="4">Review Completed</option>
 											<option value="5">Review In Progress</option>
 											<option value="6">Review On Hold</option>
+											<option value="7">Rework Completed</option>
+											<option value="8">Rework In Progress</option>
+											<option value="9">Rework On Hold</option>
+											<option value="10">Task Closed</option>												
 										</select>
 									</td>
 									<td>

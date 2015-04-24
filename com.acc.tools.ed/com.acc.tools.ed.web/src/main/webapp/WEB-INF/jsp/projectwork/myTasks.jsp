@@ -88,7 +88,7 @@
 													<th style="width: 75px;">End Date</th>
 													<th style="width: 60px;">Status</th>
 													<th style="width: 60px;">System Status</th>
-													<th style="width: 220px;">System Comments</th>
+													<th style="width: 220px;">Build By/Review By</th>
 													<th colspan="2" style="width: 40px;">Actions</th>
 
 												</tr>
@@ -119,9 +119,9 @@
 																<td>${tasks.taskEndDate}</td>
 																<td>${tasks.taskStatus}</td>
 																<td></td>
-																<td></td>
+																<td>${tasks.taskReviewUser}</td>
 																<td>
-																	<a href="#" class="editTaskPopup" taskId="${tasks.taskId}" id="${component.componentId}" workType="${tasks.workType}">
+																	<a href="#" class="editTaskPopup" projectId="${project.projectId}" taskId="${tasks.taskId}" id="${component.componentId}" workType="${tasks.workType}">
 																		<img class="imgLink" alt="edit Task" src="./resources/edit.gif" width="20px;">
 																	</a>
 																</td>

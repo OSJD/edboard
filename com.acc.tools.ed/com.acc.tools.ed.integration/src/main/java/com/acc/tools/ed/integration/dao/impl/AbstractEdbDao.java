@@ -98,11 +98,11 @@ public class AbstractEdbDao {
 		ledgerForm.setTaskHrs(rs.getInt("TASK_HRS"));
 		ledgerForm.setTaskDvlprComments(rs.getString("TASK_ACTIVITY"));
 		ledgerForm.setTaskStatus(Integer.toString(rs.getInt("TASK_STATUS")));
-		
-		if(null!=rs.getDate("TASK_ACTIVITI_DT")){
-			ledgerForm.setTaskActivityDate(new DateTime(rs.getDate("TASK_ACTIVITI_DT").getTime()).toString("MM/dd/yyyy"));
+		final Date taskActivityDate=rs.getDate("TASK_ACTIVITI_DT");
+		if(null!=taskActivityDate){
+			ledgerForm.setTaskActivityDate(new DateTime(taskActivityDate.getTime()).toString("MM/dd/yyyy"));
 		}else{
-			ledgerForm.setTaskActivityDate(null);
+			ledgerForm.setTaskActivityDate("ERROR");
 		}
 		
 		ledgerForm.setTaskReviewUser(rs.getInt("TASK_REVIWER_ID"));
@@ -138,6 +138,9 @@ public class AbstractEdbDao {
 		taskForm.setTaskDesc(rs.getString("TASK_DESC"));
 		taskForm.setTaskStatus(rs.getString("TASK_STATUS"));
 		taskForm.setTaskType(rs.getString("TASK_TYPE"));
+		taskForm.setTaskReviewUser(rs.getInt("TASK_REVIWER_ID"));
+		//taskForm.setTaskType(rs.getString("TASK_ASSIGNED_DT"));
+
 		
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         String taskCrtDt = rs.getString("TASK_CT_DT");

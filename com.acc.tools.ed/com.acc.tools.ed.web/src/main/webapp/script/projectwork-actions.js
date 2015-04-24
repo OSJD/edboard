@@ -150,7 +150,7 @@ $(document).ready(
 		
 		var addTaskDialog=$("#addTaskPanel").dialog({
 			autoOpen : false,
-			height : 780,
+			height : 810,
 			width : 1150,
 			modal : true,
 			buttons : {
@@ -248,7 +248,7 @@ $(document).ready(
 													}
 												 }
 							},$("#editTaskForm"));
-						alert(jsonString);
+						//alert(jsonString);
 						$.ajax({
 							type : "POST",
 							url : "./editTask.do",
@@ -335,6 +335,7 @@ $(document).ready(
 			var componentId=$(this).attr("id");
 			var taskId=$(this).attr("taskId");
 			var workType=$(this).attr("workType");
+			var projectId=$(this).attr("projectId");			
 			$("#editTaskProjectName").html($("#projName"+componentId).val());
 			$("#editTaskReleaseName").html($("#releaseName"+componentId).val());
 			$("#editTaskComponentName").html($("#componentName"+componentId).val());
@@ -346,8 +347,20 @@ $(document).ready(
 				type : "POST",
 				url : "./getTaskByTaskId.do",
 				dataType:'json',
-				data : {taskId:taskId},
-				success : function(task) {
+				data : {taskId:taskId,
+					projectId:projectId},
+				success : function(response) {
+					
+					// Reviewer List
+					var reviewers=response["reviewerList"];
+					$("#editTaskReviewUser option").remove();
+					$("#editTaskReviewUser").append("<option value='-1'>--- Select ---</option>")
+					for(var index in reviewers){
+						$("#editTaskReviewUser").append("<option value='"+reviewers[index].id+"'>"+reviewers[index].label+"</option>")
+					}
+					
+					//Task object
+					var task=response["task"];
 					$("#editTaskName").html(task.taskName);
 					$("#editTaskType").html(task.taskType); 
 					$("#editTaskDesc").html(task.taskDesc); 
@@ -380,7 +393,6 @@ $(document).ready(
 						}
 					}
 					$("#rcMainDiv").animate({ scrollTop: $("#rcMainDiv")[0].scrollHeight}, 1000);
-
 				},
 				error : function(data) {
 					alert(data.error);
@@ -528,8 +540,10 @@ $(document).ready(
 					type : "POST",
 					url : "./getTaskByTaskId.do",
 					dataType:'json',
-					data : {taskId:taskId},
-					success : function(task) {
+					data : {taskId:taskId,
+						projectId:0},
+					success : function(response) {
+						var task=response["task"];
 						$("#taskType").val(task.taskType).attr("disabled", "disabled"); 
 						$("#taskDesc").val(task.taskDesc).attr("disabled", "disabled"); 
 						$("#taskStartDateId").val(task.taskStartDate).attr("disabled", "disabled"); 
@@ -580,7 +594,7 @@ $(document).ready(
 				$("#taskHrs").val(taskActivityObject.taskHrs).attr("disabled", "disabled");
 				$("#taskStatus").val(taskActivityObject.taskStatus).attr("disabled", "disabled");
 				$("#taskReviewUser").val(taskActivityObject.taskReviewUser).attr("disabled", "disabled");
-				alert(taskActivityObject.taskStatus +"|"+taskActivityObject.taskReviewUser);
+				//alert(taskActivityObject.taskStatus +"|"+taskActivityObject.taskReviewUser);
 			} else {
 				$("#taskActivityDateId").html("Date :"+$.datepicker.formatDate('mm/dd/yy', new Date()));
 				$("#taskDvlprComments").val("").removeAttr('disabled');

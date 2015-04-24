@@ -79,12 +79,19 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 
 	
 	@RequestMapping(value = "/getTaskByTaskId.do")
-	public @ResponseBody TaskForm getTaskByTaskId(
+	public @ResponseBody  Map<String,Object> getTaskByTaskId(
 			@ModelAttribute("taskId") Integer taskId,
+			@ModelAttribute("projectId") Integer projectId,
+			@ModelAttribute("edbUser")EDBUser edbUser,			
 			Model model){
 		final TaskForm taskForm=projectWorkService.getTaskByTaskId(taskId);
-		
-		return taskForm;
+		Map<String,Object> taskPopupData=new HashMap<String, Object>();
+		taskPopupData.put("task",taskForm);
+		if(projectId!=0){
+			List<ReferenceData> resources=projectManagementService.getResourcesByProjectId(projectId);
+			taskPopupData.put("reviewerList", resources);
+		}
+		return taskPopupData;
 	}
 	
 	
