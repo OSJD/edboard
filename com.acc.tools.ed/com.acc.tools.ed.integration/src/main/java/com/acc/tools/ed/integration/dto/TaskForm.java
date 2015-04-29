@@ -30,6 +30,7 @@ public class TaskForm implements Serializable {
 	private List<TaskReviewHistory> taskReviewHistory;
 	private List<String> reviewerList;
 	private String workType;
+	private String taskReviewUserName;
 
 	public int getTaskId() {
 		return taskId;
@@ -213,6 +214,14 @@ public class TaskForm implements Serializable {
 
 	public void setWorkType(String workType) {
 		this.workType = workType;
+	}
+
+	public String getTaskReviewUserName() {
+		return taskReviewUserName;
+	}
+
+	public void setTaskReviewUserName(String taskReviewUserName) {
+		this.taskReviewUserName = taskReviewUserName;
 	}
 
 }

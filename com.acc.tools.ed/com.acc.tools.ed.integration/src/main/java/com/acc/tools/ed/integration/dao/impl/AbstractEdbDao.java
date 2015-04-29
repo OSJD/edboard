@@ -173,15 +173,35 @@ public class AbstractEdbDao {
         }
 	}
 	
-	public void mapReleaseData(ResultSet rs,ProjectForm project,ReleaseForm release,Integer releaseId) throws SQLException{
+	public void mapReleaseData(ResultSet rs,ProjectForm project,ReleaseForm release,Integer releaseId) throws SQLException, ParseException{
 		if(project.getReleases()==null){
 			project.setReleases(new ArrayList<ReleaseForm>());
 		}
 		release.setReleaseId(releaseId);
 		release.setReleaseName(rs.getString("MLSTN_NAME"));
 		release.setReleaseDesc(rs.getString("MLSTN_DESC"));
-		release.setReleaseStartDate(rs.getString("MLSTN_ST_DT"));
-		release.setReleaseEndDate(rs.getString("MLSTN_END_DT"));
+		
+		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        String releaseStDt = rs.getString("MLSTN_ST_DT");
+        if(releaseStDt != null) {
+               Date releaseStartDate =  sdf1.parse(releaseStDt);
+               sdf1.applyPattern("MM/dd/yyyy");
+               release.setReleaseStartDate(sdf1.format(releaseStartDate));                                   
+        } else {
+        	release.setReleaseStartDate(null);
+        }
+        
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        String releaseEnDt = rs.getString("MLSTN_END_DT");
+        if(releaseEnDt != null) {
+               Date releaseEndDate =  sdf2.parse(releaseEnDt);
+               sdf2.applyPattern("MM/dd/yyyy");
+               release.setReleaseEndDate(sdf2.format(releaseEndDate));                                   
+        } else {
+        	release.setReleaseEndDate(null);
+        }
+		
+		
 		project.getReleases().add(release);
 	}
 	public void mapUserData(ResultSet rs,ReleaseForm release,ReferenceData userData) throws SQLException{

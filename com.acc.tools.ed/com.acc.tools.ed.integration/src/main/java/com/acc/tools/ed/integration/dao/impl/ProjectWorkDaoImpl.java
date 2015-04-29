@@ -117,7 +117,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 			
 			final StringBuffer taskTable =new StringBuffer();
 			taskTable.append("SELECT C.COMPNT_ID AS COMPONENT_ID, C.COMPNT_NAME, C.COMPNT_FUNC_DESC, C.COMPNT_PHASE, C.COMPNT_ST_DT, C.COMPNT_END_DT,CE.WORK_DESC, T.TASK_ID,T.TASK_ST_DT,T.TASK_ET_DT,  ");
-			taskTable.append("T.EMP_ID, T.EMP_NM AS EMP_RESOURCE_NAME, T.TASK_NAME, T.TASK_DESC,T.TASK_STATUS,T.TASK_TYPE,T.TASK_CT_DT FROM (((EDB_TASK_MASTER AS T LEFT JOIN EDB_TASK_REVW AS R ON T.TASK_ID=R.TASK_ID) LEFT JOIN EDB_TASK_REVW_HISTORY AS H ");
+			taskTable.append("T.EMP_ID, T.EMP_NM AS EMP_RESOURCE_NAME, T.TASK_NAME, T.TASK_DESC,T.TASK_STATUS,T.TASK_TYPE,T.TASK_CT_DT,R.TASK_REVIWER_ID FROM (((EDB_TASK_MASTER AS T LEFT JOIN EDB_TASK_REVW AS R ON T.TASK_ID=R.TASK_ID) LEFT JOIN EDB_TASK_REVW_HISTORY AS H ");
 			taskTable.append("ON T.TASK_ID=H.TASK_ID) LEFT JOIN EDB_PROJ_COMPNT AS C ON T.COMPNT_ID = C.COMPNT_ID) LEFT JOIN EDB_COMPNT_EMP CE ON CE.COMPNT_ID=C.COMPNT_ID ");
 			taskTable.append(" WHERE R.TASK_REVIWER_ID="+userId);
 			log.debug("Review Task Query :{}",taskTable.toString());
@@ -136,6 +136,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 								final TaskForm task=new TaskForm();
 								task.setWorkType("Review");
 								mapTaskData(rs, task,component.getComponentId(),taskId);
+								task.setTaskReviewUserName(getEmpNameByEmpId(task.getTaskReviewUser()));
 								if(component.getTaskFormList()==null){
 									component.setTaskFormList(new ArrayList<TaskForm>());
 								}
@@ -152,6 +153,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 								final TaskForm task=new TaskForm();
 								task.setWorkType("Review");
 								mapTaskData(rs, task,component.getComponentId(),taskId);
+								task.setTaskReviewUserName(getEmpNameByEmpId(task.getTaskReviewUser()));
 								if(component.getTaskFormList()==null){
 									component.setTaskFormList(new ArrayList<TaskForm>());
 								}
@@ -212,6 +214,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 										final TaskForm task=new TaskForm();
 										task.setWorkType("Build");
 										mapTaskData(rs, task,component.getComponentId(),taskId);
+										task.setTaskReviewUserName(getEmpNameByEmpId(task.getTaskReviewUser()));
 										if(component.getTaskFormList()==null){
 											component.setTaskFormList(new ArrayList<TaskForm>());
 										}
@@ -228,6 +231,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 										final TaskForm task=new TaskForm();
 										task.setWorkType("Build");
 										mapTaskData(rs, task,component.getComponentId(),taskId);
+										task.setTaskReviewUserName(getEmpNameByEmpId(task.getTaskReviewUser()));
 										if(component.getTaskFormList()==null){
 											component.setTaskFormList(new ArrayList<TaskForm>());
 										}
@@ -250,6 +254,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 										final TaskForm task=new TaskForm();
 										task.setWorkType("Build");
 										mapTaskData(rs, task,component.getComponentId(),taskId);
+										task.setTaskReviewUserName(getEmpNameByEmpId(task.getTaskReviewUser()));
 										if(component.getTaskFormList()==null){
 											component.setTaskFormList(new ArrayList<TaskForm>());
 										}
@@ -266,6 +271,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 										final TaskForm task=new TaskForm();
 										task.setWorkType("Build");
 										mapTaskData(rs, task,component.getComponentId(),taskId);
+										task.setTaskReviewUserName(getEmpNameByEmpId(task.getTaskReviewUser()));
 										if(component.getTaskFormList()==null){
 											component.setTaskFormList(new ArrayList<TaskForm>());
 										}
@@ -293,6 +299,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 									final TaskForm task=new TaskForm();
 									task.setWorkType("Build");
 									mapTaskData(rs, task,component.getComponentId(),taskId);
+									task.setTaskReviewUserName(getEmpNameByEmpId(task.getTaskReviewUser()));
 									if(component.getTaskFormList()==null){
 										component.setTaskFormList(new ArrayList<TaskForm>());
 									}
@@ -309,6 +316,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 									final TaskForm task=new TaskForm();
 									task.setWorkType("Build");
 									mapTaskData(rs, task,component.getComponentId(),taskId);
+									task.setTaskReviewUserName(getEmpNameByEmpId(task.getTaskReviewUser()));
 									if(component.getTaskFormList()==null){
 										component.setTaskFormList(new ArrayList<TaskForm>());
 									}
@@ -411,6 +419,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 								if(taskId!=0){
 									final TaskForm task=new TaskForm();
 									mapTaskData(rs, task,component.getComponentId(),taskId);
+									task.setTaskReviewUserName(getEmpNameByEmpId(task.getTaskReviewUser()));
 									if(component.getTaskFormList()==null){
 										component.setTaskFormList(new ArrayList<TaskForm>());
 									}
@@ -429,6 +438,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 								if(taskId!=0){
 									final TaskForm task=new TaskForm();
 									mapTaskData(rs, task,component.getComponentId(),taskId);
+									task.setTaskReviewUserName(getEmpNameByEmpId(task.getTaskReviewUser()));
 									if(component.getTaskFormList()==null){
 										component.setTaskFormList(new ArrayList<TaskForm>());
 									}
@@ -452,6 +462,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 							if(taskId!=0){
 								final TaskForm task=new TaskForm();
 								mapTaskData(rs, task,component.getComponentId(),taskId);
+								task.setTaskReviewUserName(getEmpNameByEmpId(task.getTaskReviewUser()));
 								if(component.getTaskFormList()==null){
 									component.setTaskFormList(new ArrayList<TaskForm>());
 								}
@@ -643,6 +654,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 			ResultSet rs = selectStatement.executeQuery(relTable);
 			while (rs.next()) {
 				taskForm.setTaskId(rs.getInt("TASK_ID"));
+				taskForm.setTaskCreateDate(new DateTime(rs.getDate("TASK_CT_DT").getTime()).toString("MM/dd/yyyy"));
 			}
 				
 		} catch (Exception e) {
@@ -963,5 +975,31 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 			log.error("Error adding Task ledger for task id:"+ledgerForm.getTaskId(),e);
 		}
 
+	}
+	
+	public String getEmpNameByEmpId(Integer empId){
+
+		String empName = "";
+		
+		try {
+
+					
+			String empNameQuery = " SELECT EMP_RESOURCE_NAME FROM EDB_MSTR_EMP_DTLS WHERE EMP_ID="+empId;
+			
+			log.debug("empNameQuery : {}",empNameQuery);
+			Statement selectStatement = getConnection().createStatement();
+			ResultSet rs = selectStatement.executeQuery(empNameQuery);
+			
+			while(rs.next())
+			{
+				empName = rs.getString("EMP_RESOURCE_NAME");
+			}
+			
+		} catch(Exception e) {
+			log.error("Error while retrieving empName for the id:"+empId,e);
+		}
+		
+		return empName;
+		
 	}
 }

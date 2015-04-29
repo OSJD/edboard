@@ -119,7 +119,7 @@
 																<td>${tasks.taskEndDate}</td>
 																<td>${tasks.taskStatus}</td>
 																<td></td>
-																<td>${tasks.taskReviewUser}</td>
+																<td>${tasks.taskReviewUserName}</td>
 																<td>
 																	<a href="#" class="editTaskPopup" projectId="${project.projectId}" taskId="${tasks.taskId}" id="${component.componentId}" workType="${tasks.workType}">
 																		<img class="imgLink" alt="edit Task" src="./resources/edit.gif" width="20px;">

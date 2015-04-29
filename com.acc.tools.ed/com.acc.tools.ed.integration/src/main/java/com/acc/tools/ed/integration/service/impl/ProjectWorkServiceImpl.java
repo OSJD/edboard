@@ -92,4 +92,8 @@ public class ProjectWorkServiceImpl implements ProjectWorkService {
 	public void assignTaskReviewer(Integer taskId,Integer reviewerId,String status){
 		projectWorkDao.assignTaskReviewer(taskId, reviewerId, status);
 	}
+
+	public String getEmpNameByEmpId(Integer empId) {
+		return projectWorkDao.getEmpNameByEmpId(empId);
+	}
 }

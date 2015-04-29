@@ -110,25 +110,27 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 			Model model) {
 		
 		LOG.debug("Task Id:{} | Task Name:{} | Today Work:{} | Status:{}",new Object[]{taskform.getTaskId(),taskform.getTaskName(),taskform.getTaskComments(),taskform.getTaskStatus()});
-		if(taskform.getTaskId()>0){
-			for(TaskLedgerForm ledger:taskform.getTaskLedger()){
-				addTaskLedger(taskform.getTaskId(),ledger);
-			}
-			if(taskform.getTaskReviewUser()>0){
-				getProjectWorkService().assignTaskReviewer(taskform.getTaskId(), taskform.getTaskReviewUser(), "1");
-			}
-		}else{
+		
+		if(taskform.getTaskId() == -1){
 			taskform.setEmployeeId(edbUser.getEmployeeId());
 			taskform.setEmployeeName(edbUser.getEnterpriseId());
 			final int taskId=getProjectWorkService().addTasks(taskform);
-			taskform.setTaskId(taskId);			
-			for(TaskLedgerForm ledger:taskform.getTaskLedger()){
-				addTaskLedger(taskform.getTaskId(),ledger);
-			}
+			taskform.setTaskId(taskId);	
+		}
+		
+		if(taskform.getTaskReviewUser()>0){
+			getProjectWorkService().assignTaskReviewer(taskform.getTaskId(), taskform.getTaskReviewUser(), "1");
+			taskform.setTaskReviewUserName(projectWorkService.getEmpNameByEmpId(taskform.getTaskReviewUser()));
+		}
+		
+		for(TaskLedgerForm ledger:taskform.getTaskLedger()){
+			addTaskLedger(taskform.getTaskId(),ledger);
 		}
 		
 		TaskForm taskData=projectWorkService.retrieveTasks();
 		taskform.setTaskId(taskData.getTaskId());
+		taskform.setTaskCreateDate(taskData.getTaskCreateDate());
+		taskform.setWorkType("Build");
 		model.addAttribute("addTaskForm", taskform);
 		return "/projectwork/newTask";
 	}

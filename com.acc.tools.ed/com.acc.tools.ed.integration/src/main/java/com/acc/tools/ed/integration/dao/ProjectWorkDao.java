@@ -29,5 +29,6 @@ public interface ProjectWorkDao {
 	public String editVacation(VacationForm vacationForm);
 	public void addTaskLedger(TaskLedgerForm ledgerForm);
 	public void assignTaskReviewer(Integer taskId,Integer reviewerId,String status);
+	public String getEmpNameByEmpId(Integer employeeId);
 	
 }
