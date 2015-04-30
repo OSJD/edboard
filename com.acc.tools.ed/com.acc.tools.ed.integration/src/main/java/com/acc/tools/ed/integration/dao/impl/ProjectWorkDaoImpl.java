@@ -323,6 +323,8 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 									component.getTaskFormList().add(task);
 									taskMap.put(taskId, task);
 								}
+							}else{
+								taskMap.put(taskId,null);
 							}
 							compMap.put(componentId, component);
 						}
