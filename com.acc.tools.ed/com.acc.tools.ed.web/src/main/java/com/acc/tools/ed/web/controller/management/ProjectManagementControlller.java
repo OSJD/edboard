@@ -246,17 +246,16 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 							days[dayPosition(day)]=hours;
 						} else {
 							final ReleaseWeek releaseWeek=new ReleaseWeek();
-							System.out.println("tempDateEnd:"+tempDateEnd.toString("MM/dd/yyyy"));
-							if(weekHoursMap.size()>=1){
-								releaseWeek.setWeekStart(tempDateEnd.plusDays(1));	
-							}else{
-								releaseWeek.setWeekStart(dateStart);
-							}
-							releaseWeek.setWeekStart(dateStart);
 							final Long[] days=releaseWeek.getHours();
 							int dayPosition=dayPosition(day);
-							tempDateEnd=dateStart.plusDays(6-dayPosition);
-							releaseWeek.setWeekEnd(tempDateEnd);
+							if(weekHoursMap.size()>=1){
+								releaseWeek.setWeekStart(tempDateEnd.plusDays(1));
+								releaseWeek.setWeekEnd(tempDateEnd.plusDays(7-dayPosition));
+							}else{
+								releaseWeek.setWeekStart(dateStart);
+								tempDateEnd=dateStart.plusDays(6-dayPosition);
+								releaseWeek.setWeekEnd(tempDateEnd);
+							}
 							days[dayPosition]=hours;
 							weekHoursMap.put(week, releaseWeek);
 						}
