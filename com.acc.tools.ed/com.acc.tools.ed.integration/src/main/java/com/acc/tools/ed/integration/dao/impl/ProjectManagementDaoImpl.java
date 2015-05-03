@@ -1016,7 +1016,7 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 			status=preparedStatement.executeUpdate();
 			preparedStatement.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("Failed to delete Release plan for Release id"+releaseId,e);
 		}
 		return status;
 	}

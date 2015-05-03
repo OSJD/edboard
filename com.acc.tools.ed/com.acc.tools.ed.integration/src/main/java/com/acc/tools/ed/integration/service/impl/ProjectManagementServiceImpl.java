@@ -132,6 +132,10 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 				weekPlan.setHours(""+hours);	
 			} else {
 				vacationDaysToWeekPlanMapping(vacationDates,weekPlan,dateStart);
+				final int hours=Integer.parseInt(weekPlan.getHours());
+				if(hours>0){
+					weekPlannedHours=weekPlannedHours+hours;
+				}
 			}
 			
 			weekPlanList.add(weekPlan);
@@ -148,6 +152,10 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 				weekPlan.setHours(""+hours);	
 			} else {
 				vacationDaysToWeekPlanMapping(vacationDates,weekPlan,dateStart);
+				final int hours=Integer.parseInt(weekPlan.getHours());
+				if(hours>0){
+					weekPlannedHours=weekPlannedHours+hours;
+				}
 			}
 			weekPlanList.add(weekPlan);
 			weeksWorkPlanMap.put("Week-"+weekCount, weekPlanList);

@@ -2,8 +2,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
-<%@ include file="/WEB-INF/jsp/includes/document-header.jsp"%>
-<script src="<%=request.getContextPath()%>/script/libs/edb-common.js"></script>
 
 <script>
 	$(document).ready(function() {

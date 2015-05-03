@@ -388,26 +388,30 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 		final List<ProjectForm> projectTasks=new ArrayList<ProjectForm>();
 		final Map<Integer,ProjectForm> projMap = new HashMap<Integer, ProjectForm>();
 		final Map<Integer,ReleaseForm> relMap = new HashMap<Integer, ReleaseForm>();
-	
+		final Map<Integer,ComponentForm> compMap=new HashMap<Integer, ComponentForm>();
+		final Map<Integer,TaskForm> taskMap=new HashMap<Integer, TaskForm>();	
 		try{
 	        final List<ReferenceData> userIdList =getMyTeamIds(supervisorId);
 	        for(int i=0;i<userIdList.size();i++){
 	        	final StringBuffer componentTable =new StringBuffer();
 	        	ReferenceData userData=userIdList.get(i);
 	        
-	        	componentTable.append(" SELECT C.COMPNT_ID as COMPONENT_ID,C.COMPNT_NAME,C.COMPNT_FUNC_DESC,C.COMPNT_PHASE,C.COMPNT_ST_DT,C.COMPNT_END_DT, M.*, T.*,H.*, P.PROJ_NAME, CE.EMP_ID, CE.WORK_DESC, ED.EMP_RESOURCE_NAME FROM (((EDB_PROJECT AS P LEFT JOIN EDB_MILESTONE AS M ON P.PROJ_ID = M.PROJ_ID) ");
-		        componentTable.append(" LEFT JOIN (EDB_PROJ_COMPNT AS C LEFT JOIN EDB_TASK_MASTER AS T ON C.COMPNT_ID = T.COMPNT_ID) ON M.MLSTN_ID = C.MLSTN_ID) ");
-		        componentTable.append(" LEFT JOIN (EDB_COMPNT_EMP AS CE LEFT JOIN EDB_MSTR_EMP_DTLS AS ED ON CE.EMP_ID = ED.EMP_ID) ON CE.COMPNT_ID=C.COMPNT_ID) LEFT JOIN EDB_TASK_REVW_HISTORY AS H ON T.TASK_ID=H.TASK_ID  WHERE CE.EMP_ID="+userData.getId());
+		        componentTable.append("SELECT C.COMPNT_ID as COMPONENT_ID,C.COMPNT_NAME,C.COMPNT_FUNC_DESC,C.COMPNT_PHASE,C.COMPNT_ST_DT,C.COMPNT_END_DT,  M.*, T.TASK_ID AS TSK_ID,");
+		        componentTable.append("T.TASK_NAME,T.TASK_DESC,T.TASK_STATUS,T.TASK_TYPE,T.TASK_CT_DT,P.PROJ_NAME, CE.EMP_ID, CE.WORK_DESC,ED.EMP_RESOURCE_NAME  ,T.TASK_ST_DT,");
+		        componentTable.append("T.TASK_ET_DT,T.TASK_STATUS,TR.TASK_REVIWER_ID,TR.TASK_ASSIGNED_DT  	FROM (((((EDB_PROJECT AS P LEFT JOIN EDB_MILESTONE AS M ON P.PROJ_ID = M.PROJ_ID)");
+		        componentTable.append(" LEFT JOIN EDB_PROJ_COMPNT AS C ON M.MLSTN_ID = C.MLSTN_ID)  LEFT JOIN EDB_COMPNT_EMP AS CE ON CE.COMPNT_ID=C.COMPNT_ID) ");
+		        componentTable.append("LEFT JOIN EDB_TASK_MASTER AS T ON (CE.COMPNT_ID=T.COMPNT_ID AND T.EMP_ID="+userData.getId()+")) LEFT JOIN EDB_TASK_REVW TR ON T.TASK_ID=TR.TASK_ID)");
+		        componentTable.append("LEFT JOIN EDB_MSTR_EMP_DTLS AS ED ON  CE.EMP_ID= ED.EMP_ID WHERE CE.EMP_ID="+userData.getId()); 		        
 	
-				log.debug("My Team Tasks Query:{}",componentTable.toString());
-				final Statement stmt=getConnection().createStatement();
-				final ResultSet rs=stmt.executeQuery(componentTable.toString());
+				log.debug("My Tasks Query:{}",componentTable.toString());
+				Statement stmt=getConnection().createStatement();
+				ResultSet rs=stmt.executeQuery(componentTable.toString());
 				while(rs.next()){
 					final int projectId=rs.getInt("PROJ_ID");
 					final int releaseId = rs.getInt("MLSTN_ID");
 					final int componentId=rs.getInt("COMPONENT_ID");
-					final int taskId=rs.getInt("TASK_ID");
-		
+					final int taskId=rs.getInt("TSK_ID");
+
 					
 					if(!projMap.isEmpty() && projMap.containsKey(projectId)){
 						//second record occurrence
@@ -415,36 +419,79 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 						if(!relMap.isEmpty() && relMap.containsKey(releaseId)){
 							ReleaseForm release=relMap.get(releaseId);
 							if(componentId!=0){
-								final ComponentForm component=new ComponentForm(); 
-								component.setComponentId(componentId);
-								mapComponentData(rs, release,component);
-								if(taskId!=0){
-									final TaskForm task=new TaskForm();
-									mapTaskData(rs, task,component.getComponentId(),taskId);
-									task.setTaskReviewUserName(getEmpNameByEmpId(task.getTaskReviewUser()));
-									if(component.getTaskFormList()==null){
-										component.setTaskFormList(new ArrayList<TaskForm>());
+								if(!compMap.isEmpty() && compMap.containsKey(componentId)){
+									final ComponentForm component=compMap.get(componentId);
+									if(taskId!=0){
+										if(!taskMap.isEmpty() && !taskMap.containsKey(taskId)){
+											final TaskForm task=new TaskForm();
+											task.setWorkType("Build");
+											mapTaskData(rs, task,component.getComponentId(),taskId);
+											task.setTaskReviewUserName(getEmpNameByEmpId(task.getTaskReviewUser()));
+											if(component.getTaskFormList()==null){
+												component.setTaskFormList(new ArrayList<TaskForm>());
+											}
+											component.getTaskFormList().add(task);
+											taskMap.put(taskId, task);
+										}
 									}
-									component.getTaskFormList().add(task);
+								} else {
+									final ComponentForm component=new ComponentForm(); 
+									component.setComponentId(componentId);
+									mapComponentData(rs, release,component);
+									if(taskId!=0){
+										if(!taskMap.isEmpty() && !taskMap.containsKey(taskId)){
+											final TaskForm task=new TaskForm();
+											task.setWorkType("Build");
+											mapTaskData(rs, task,component.getComponentId(),taskId);
+											task.setTaskReviewUserName(getEmpNameByEmpId(task.getTaskReviewUser()));
+											if(component.getTaskFormList()==null){
+												component.setTaskFormList(new ArrayList<TaskForm>());
+											}
+											component.getTaskFormList().add(task);
+											taskMap.put(taskId, task);
+										}
+									}
+									compMap.put(componentId, component);
 								}
-	
 							}
-							
+
 						} else {
 							final ReleaseForm release=new ReleaseForm();
 							mapReleaseData(rs, project, release, releaseId);
 							if(componentId!=0){
-								final ComponentForm component=new ComponentForm(); 
-								component.setComponentId(componentId);
-								mapComponentData(rs, release,component);
-								if(taskId!=0){
-									final TaskForm task=new TaskForm();
-									mapTaskData(rs, task,component.getComponentId(),taskId);
-									task.setTaskReviewUserName(getEmpNameByEmpId(task.getTaskReviewUser()));
-									if(component.getTaskFormList()==null){
-										component.setTaskFormList(new ArrayList<TaskForm>());
+								if(!compMap.isEmpty() && compMap.containsKey(componentId)){
+									final ComponentForm component=compMap.get(componentId);
+									if(taskId!=0){
+										if(!taskMap.isEmpty() && !taskMap.containsKey(taskId)){
+											final TaskForm task=new TaskForm();
+											task.setWorkType("Build");
+											mapTaskData(rs, task,component.getComponentId(),taskId);
+											task.setTaskReviewUserName(getEmpNameByEmpId(task.getTaskReviewUser()));
+											if(component.getTaskFormList()==null){
+												component.setTaskFormList(new ArrayList<TaskForm>());
+											}
+											component.getTaskFormList().add(task);
+											taskMap.put(taskId, task);
+										}
 									}
-									component.getTaskFormList().add(task);
+								} else {
+									final ComponentForm component=new ComponentForm(); 
+									component.setComponentId(componentId);
+									mapComponentData(rs, release,component);
+									if(taskId!=0){
+										if(!taskMap.isEmpty() && !taskMap.containsKey(taskId)){
+											final TaskForm task=new TaskForm();
+											task.setWorkType("Build");
+											mapTaskData(rs, task,component.getComponentId(),taskId);
+											task.setTaskReviewUserName(getEmpNameByEmpId(task.getTaskReviewUser()));
+											if(component.getTaskFormList()==null){
+												component.setTaskFormList(new ArrayList<TaskForm>());
+											}
+											component.getTaskFormList().add(task);
+											taskMap.put(taskId, task);
+										}
+									}
+									compMap.put(componentId, component);
 								}
 								relMap.put(releaseId, release);
 							}
@@ -456,30 +503,53 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 						project.setProjectName(rs.getString("PROJ_NAME"));
 						final ReleaseForm release=new ReleaseForm();
 						mapReleaseData(rs, project, release, releaseId);
-						mapUserData(rs, release,userData);
 						if(componentId!=0){
-							final ComponentForm component=new ComponentForm(); 
-							component.setComponentId(componentId);
-							mapComponentData(rs, release,component);
-							if(taskId!=0){
-								final TaskForm task=new TaskForm();
-								mapTaskData(rs, task,component.getComponentId(),taskId);
-								task.setTaskReviewUserName(getEmpNameByEmpId(task.getTaskReviewUser()));
-								if(component.getTaskFormList()==null){
-									component.setTaskFormList(new ArrayList<TaskForm>());
+							if(!compMap.isEmpty() && compMap.containsKey(componentId)){
+								final ComponentForm component=compMap.get(componentId);
+								if(taskId!=0){
+									if(!taskMap.containsKey(taskId)){
+										final TaskForm task=new TaskForm();
+										task.setWorkType("Build");
+										mapTaskData(rs, task,component.getComponentId(),taskId);
+										task.setTaskReviewUserName(getEmpNameByEmpId(task.getTaskReviewUser()));
+										if(component.getTaskFormList()==null){
+											component.setTaskFormList(new ArrayList<TaskForm>());
+										}
+										component.getTaskFormList().add(task);
+										taskMap.put(taskId, task);
+									}
 								}
-								component.getTaskFormList().add(task);
+							} else {
+								final ComponentForm component=new ComponentForm(); 
+								component.setComponentId(componentId);
+								mapComponentData(rs, release,component);
+								if(taskId!=0){
+									if(!taskMap.containsKey(taskId)){
+										final TaskForm task=new TaskForm();
+										task.setWorkType("Build");
+										mapTaskData(rs, task,component.getComponentId(),taskId);
+										task.setTaskReviewUserName(getEmpNameByEmpId(task.getTaskReviewUser()));
+										if(component.getTaskFormList()==null){
+											component.setTaskFormList(new ArrayList<TaskForm>());
+										}
+										component.getTaskFormList().add(task);
+										taskMap.put(taskId, task);
+									}
+								}else{
+									taskMap.put(taskId,null);
+								}
+								compMap.put(componentId, component);
 							}
 							projMap.put(projectId, project);
 							relMap.put(releaseId, release);
 							projectTasks.add(project);
+						
 						}
 					}
 					
 				}
-			
-			
-			stmt.close();
+				
+				stmt.close();
 	        }
 		}catch(Exception e)	{
 			log.error("Error retreiving employee table :",e);

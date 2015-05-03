@@ -30,7 +30,7 @@ public class ResourceManagementControlller extends AbstractEdbBaseController {
 			LOG.debug("Name [{}]", emp.getEmployeeName());
 		}
 		model.addAttribute("empList", empList);
-		return "/resourcemanagement/index";
+		return "/resourcemanagement/resourceManagement";
 	}
 
 }

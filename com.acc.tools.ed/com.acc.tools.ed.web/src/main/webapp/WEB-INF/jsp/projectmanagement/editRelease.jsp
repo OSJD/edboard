@@ -1,7 +1,7 @@
 	<div id="editrelease-popup" title="Edit Release">	
 	<form id="editReleaseForm">
 			<fieldset>
-				<legend>Add Release</legend>
+				<legend>Edit Release</legend>
 				<table class="ebdtable" id="release" style="width: 100%;">
 					<tr>
 						<th style="text-align: right; height: 25px;">Project Name</th>
@@ -36,7 +36,7 @@
 				 			</a>
 			 			</td>
 					</tr>
-					<tr id="viewReleasePlan"><td colspan="6"><span style="color: red;">Please Click on "Create Release Plan" button to add release plan.</span></td></tr>	
+					<tr id="viewReleasePlan"><td colspan="6"><span style="color: red;">Please Click on "Get Release Plan" button to edit resource work hours.</span></td></tr>	
 				</table>
 			</fieldset>
 		</form>

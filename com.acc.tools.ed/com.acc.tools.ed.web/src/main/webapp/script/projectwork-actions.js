@@ -584,8 +584,7 @@ $(document).ready(
 			}
 		});
 
-		$("#taskActivitySelect").on("change",function(){
-			$(this).unbind("change");
+		$("#taskActivitySelect").unbind("change").on("change",function(){
 			var activity=$("#taskActivitySelect").val();
 			if(activity!=-1){
 				var context=edb.getEDBContextInstance();

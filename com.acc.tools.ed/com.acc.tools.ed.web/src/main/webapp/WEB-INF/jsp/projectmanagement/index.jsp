@@ -10,6 +10,8 @@
 <%@ include file="/WEB-INF/jsp/includes/document-header.jsp"%>
 <script src="<%=request.getContextPath()%>/script/projectmanagement-actions.js"></script>
 <script src="<%=request.getContextPath()%>/script/projectwork-actions.js"></script>
+<script src="<%=request.getContextPath()%>/script/libs/edb-common.js"></script>
+<script src="<%=request.getContextPath()%>/script/libs/edb-object-model.js"></script>
 </head>
 <body id="mainBody">
 	<%@ include file="/WEB-INF/jsp/projectmanagement/projects.jsp" %>
@@ -30,7 +32,7 @@
 			<td>
 				<div id="tabs" style="width:100%;height:100%; padding-right: 0px;">
 					<!-- MAIN MENU -->
-					<%@ include file="/WEB-INF/jsp/includes/menu.jsp"%>
+				 	<%@ include file="/WEB-INF/jsp/includes/menu.jsp"%>
 
 					   <jstl:choose>
 							<jstl:when test="${edbUser.role !='Dvlp'}">
@@ -44,9 +46,31 @@
 										</div>
 									</div>
 								</div>
+								<div id="projectWorkTab">
+									<!-- SUB MENU-->
+									<%@ include file="/WEB-INF/jsp/projectwork/submenu.jsp"%>
+									<div id="pwMainContainer" 
+										style="width: 100%; padding-top: 10px; height: 100%; overflow: auto;">
+										<jsp:include page="/WEB-INF/jsp/projectwork/myTasks.jsp" flush="true"></jsp:include>
+									</div>
+								</div>
+								<div id="resourceManagementTab">
+									<!-- SUB MENU-->
+									<%@ include file="/WEB-INF/jsp/resourcemanagement/submenu.jsp"%>
+									<div id="rmMainContainer" style="margin-top: 20px;">
+										<jsp:include page="/WEB-INF/jsp/resourcemanagement/resourceManagement.jsp" flush="true"></jsp:include>
+									</div>
+								</div>
 							</jstl:when>
 							<jstl:otherwise><!-- DEVELOPER -->
-								<div id="projectPlanTab" style="clear: both;"></div>
+								<div id="projectWorkTab">
+									<!-- SUB MENU-->
+									<%@ include file="/WEB-INF/jsp/projectwork/submenu.jsp"%>
+									<div id="pwMainContainer" 
+										style="width: 100%; padding-top: 10px; height: 100%; overflow: auto;">
+										<jsp:include page="/WEB-INF/jsp/projectwork/myTasks.jsp" flush="true"></jsp:include>
+									</div>
+								</div>
 							</jstl:otherwise>
 					   </jstl:choose>
 				</div>

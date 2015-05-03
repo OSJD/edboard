@@ -1,16 +1,14 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@ include file="/WEB-INF/jsp/includes/document-header.jsp"%>
 <script src="<%=request.getContextPath()%>/script/resourcemanagement-actions.js"></script>
-<form id="resourceFileUploadForm" method="post" action="./upload.do"
-	enctype="multipart/form-data">
+<form id="resourceFileUploadForm" method="post">
 	<!-- File input -->
 	<table class="ebdtableheader" style="width: 850px;">
 		<tr>
 			<th><a href="#" class="button" id="addResource" style="width: 100px;">Add Resource</a></th>
 			<th style="width: 150px;">Upload Bulk Resource</th>
-			<th><input name="resourceFileUpload" id="resourceFileUpload" type="file" class="button" style="width: 500px;" /></th>
-			<th><input class="button" type="submit" alt="Upload" value="Upload" class="button" /></th>
+			<th><input name="resourceFileUpload" type="file" class="button" style="width: 500px;" /></th>
+			<th><input class="button" type="button" alt="Upload" value="Upload" id="resourceFileUpload" /></th>
 		</tr>
 	</table>
 </form>

@@ -24,6 +24,7 @@ import com.acc.tools.ed.integration.dto.EDBUser;
 import com.acc.tools.ed.integration.dto.ExcelData;
 import com.acc.tools.ed.integration.dto.MasterEmployeeDetails;
 import com.acc.tools.ed.integration.dto.ProjectForm;
+import com.acc.tools.ed.integration.dto.ReleaseForm;
 import com.acc.tools.ed.integration.service.ILoginService;
 import com.acc.tools.ed.integration.service.ProjectManagementService;
 import com.acc.tools.ed.integration.util.EDBConstants;
@@ -61,14 +62,16 @@ public class FileUploadController extends AbstractEdbBaseController{
 			 }
 			 
 		 }
-		 model.addAttribute("addProjectForm", new ProjectForm());
-		 model.addAttribute(EDBConstants.DEFAULT_TAB, EDBConstants.RESOURCE_MNG_TAB);
-		 List<MasterEmployeeDetails> empList= projectManagementService.getAllEmployees();
-			for(MasterEmployeeDetails emp : empList){
-				LOG.debug("Name [{}]", emp.getEmployeeName());
-			}
-			model.addAttribute("empList", empList);
-		 return "/projectmanagement/index";
+
+		List<MasterEmployeeDetails> empList= projectManagementService.getAllEmployees();
+
+		model.addAttribute("empList", empList);
+		model.addAttribute("addProjectForm", new ProjectForm());
+		model.addAttribute("addReleaseForm", new ReleaseForm());		
+		model.addAttribute("editProjectForm", new ProjectForm());
+		model.addAttribute(EDBConstants.DEFAULT_TAB, EDBConstants.RESOURCE_MNG_TAB);
+		
+		return "/projectmanagement/index";
 	}
 	   
 	private Collection<MasterEmployeeDetails>  createResourceData(ExcelData excelData){

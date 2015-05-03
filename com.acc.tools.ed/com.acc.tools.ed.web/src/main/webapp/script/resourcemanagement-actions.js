@@ -38,6 +38,12 @@
 							addResourceDialog.dialog("open");
 						});
 						
+						$("#resourceFileUpload").unbind("click").on("click",function(){
+							$("#resourceFileUploadForm").attr("action","./upload.do");
+							document.getElementById("resourceFileUploadForm").enctype = "multipart/form-data";
+							$("#resourceFileUploadForm").submit();
+						});
+						
 	 });
 
 	

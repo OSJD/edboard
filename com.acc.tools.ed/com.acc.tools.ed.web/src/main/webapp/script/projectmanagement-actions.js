@@ -395,15 +395,19 @@ $(document).ready(function(){
 									 });
 									jsonString=jsonString+"\"resourcesAndHours\" : {";
 									
-									for(var i=0; i<resources;i++){										
-										jsonString=jsonString+"\""+$("#resource"+i).val()+"\": [";
-										$("input[id^='resDayHour']").each(function(index, obj){
-											if(obj.id.indexOf("resDayHour"+i)==0){
-												jsonString=jsonString+obj.value+",";
-											}
-										});
-										jsonString=jsonString.substring(0,jsonString.lastIndexOf(","));
-										jsonString=jsonString+"],";
+									for(var i=0; i<resources;i++){	
+										var resourceId=$("#resource"+i).val();
+										if (typeof resourceId != 'undefined') {
+											jsonString=jsonString+"\""+resourceId+"\": [";
+											$("input[id^='resDayHour']").each(function(index, obj){
+												alert(obj.id);
+												if(obj.id.indexOf("resDayHour"+i)==0){
+													jsonString=jsonString+obj.value+",";
+												}
+											});
+											jsonString=jsonString.substring(0,jsonString.lastIndexOf(","));
+											jsonString=jsonString+"],";
+										}
 									}
 									jsonString=jsonString.substring(0,jsonString.lastIndexOf(","))+"},";
 
@@ -457,17 +461,21 @@ $(document).ready(function(){
 												jsonString=jsonString+" \""+v.name+"\":\""+v.value+"\",";
 											 }
 									 });
-									jsonString=jsonString+"\"resourcesAndHours\" : {";
+									jsonString=jsonString+"\"resourcesAndWorkHours\" : {";
 									
-									for(var i=0; i<resources;i++){										
-										jsonString=jsonString+"\""+$("#resource"+i).val()+"\": [";
-										$("input[id^='resDayHour']").each(function(index, obj){
-											if(obj.id.indexOf("resDayHour"+i)==0){
-												jsonString=jsonString+obj.value+",";
-											}
-										});
-										jsonString=jsonString.substring(0,jsonString.lastIndexOf(","));
-										jsonString=jsonString+"],";
+									for(var i=0; i<resources;i++){		
+										var resourceId=$("#resource"+i).val();
+										if (typeof resourceId != 'undefined') {
+											jsonString=jsonString+"\""+resourceId+"\": {";
+											$("input[id^='resDayHour']").each(function(index, obj){
+												var day=obj.id.split("_")[1];
+												if(obj.id.indexOf("resDayHour"+i)==0){
+													jsonString=jsonString+"\""+day+"\":"+obj.value+",";
+												}
+											});
+											jsonString=jsonString.substring(0,jsonString.lastIndexOf(","));
+											jsonString=jsonString+"},";
+										};
 									}
 									jsonString=jsonString.substring(0,jsonString.lastIndexOf(","))+"},";
 
@@ -485,7 +493,6 @@ $(document).ready(function(){
 										  },
 										success : function(response) {
 											//alert(response);
-											
 											editReleaseDialog.dialog("close");		
 										},
 										error : function(data) {	

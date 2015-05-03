@@ -33,7 +33,7 @@
 				 			</a>
 			 			</td>
 					</tr>
-					<tr id="addReleasePlan"><td colspan="6"><span style="color: red;">Please Click on "Create Release Plan" button to add release plan.</span></td></tr>	
+					<tr id="addReleasePlan"><td colspan="6"><span style="color: red;">Please Click on "Create Release Plan" button to add resource work hours.</span></td></tr>	
 				</table>
 			</fieldset>
 		</form>
