@@ -1,5 +1,6 @@
 package com.acc.tools.ed.integration.service.impl;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -23,6 +24,7 @@ import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.ReleaseForm;
 import com.acc.tools.ed.integration.dto.ReleasePlan;
+import com.acc.tools.ed.integration.dto.ReleaseWeek;
 import com.acc.tools.ed.integration.dto.ResourceWeekWorkPlan;
 import com.acc.tools.ed.integration.dto.ResourceWorkPlan;
 import com.acc.tools.ed.integration.dto.WeekDates;
@@ -458,6 +460,17 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 	
 	public List<ReferenceData> getResourcesByProjectId(Integer projectId){
 		return projectManagementDao.getResourcesByProjectId(projectId);
+	}
+
+	public void addReleasePlanUpdate(int releaseId, String empId,
+			ReleaseWeek releaseWeek, boolean isLastWeek) {
+		Long weeklyPlannedHr = 0L;	
+		for (Long hr : releaseWeek.getHours()) {
+			if(hr!=null)
+			 weeklyPlannedHr = weeklyPlannedHr +hr;
+		  }	
+		projectManagementDao.addReleasePlan(releaseId,empId,releaseWeek.getWeekStart(), releaseWeek.getWeekEnd(), Arrays.asList(releaseWeek.getHours()), weeklyPlannedHr, true);
+		
 	}
 	
 }

@@ -250,7 +250,8 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 							int dayPosition=dayPosition(day);
 							if(weekHoursMap.size()>=1){
 								releaseWeek.setWeekStart(tempDateEnd.plusDays(1));
-								releaseWeek.setWeekEnd(tempDateEnd.plusDays(7-dayPosition));
+								tempDateEnd=tempDateEnd.plusDays(7-dayPosition);
+								releaseWeek.setWeekEnd(tempDateEnd);
 							}else{
 								releaseWeek.setWeekStart(dateStart);
 								tempDateEnd=dateStart.plusDays(6-dayPosition);
@@ -276,7 +277,7 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 							System.out.print("0 | ");
 					}
 					System.out.println();
-					
+					//getProjectManagementService().addReleasePlanUpdate(editReleaseForm.getReleaseId(),empId,releaseWeek,true);
 				}
 			}
 
