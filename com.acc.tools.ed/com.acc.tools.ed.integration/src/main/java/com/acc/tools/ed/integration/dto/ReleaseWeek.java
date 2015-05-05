@@ -14,6 +14,7 @@ public class ReleaseWeek implements Serializable{
 	private LocalDate weekStart;
 	private LocalDate weekEnd;
 	private Long[] hours=new Long[7];
+	private Long weekPlannedHr=new Long(0);
 	public LocalDate getWeekStart() {
 		return weekStart;
 	}
@@ -32,6 +33,13 @@ public class ReleaseWeek implements Serializable{
 	public void setHours(Long[] hours) {
 		this.hours = hours;
 	}
+	public Long getWeekPlannedHr() {
+		return weekPlannedHr;
+	}
+	public void setWeekPlannedHr(Long weekPlannedHr) {
+		this.weekPlannedHr = weekPlannedHr;
+	}
+
 
 
 }

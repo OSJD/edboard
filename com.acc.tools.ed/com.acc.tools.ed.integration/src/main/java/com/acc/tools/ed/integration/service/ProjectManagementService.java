@@ -1,5 +1,6 @@
 package com.acc.tools.ed.integration.service;
 
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,6 @@ import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.ReleaseForm;
 import com.acc.tools.ed.integration.dto.ReleasePlan;
-import com.acc.tools.ed.integration.dto.ReleaseWeek;
 
 public interface ProjectManagementService { 
 	public ReferenceData addProject(ProjectForm project);
@@ -44,5 +44,5 @@ public interface ProjectManagementService {
 	public ReleasePlan buildReleasePlan(DateTime relDateStart,DateTime relDateEnd,Integer projId);
 	public ReleasePlan fetchReleasePlan(DateTime relDateStart,DateTime relDateEnd,Integer releaseId,Integer projId);
 	public List<ReferenceData> getResourcesByProjectId(Integer projectId);
-	public void addReleasePlanUpdate(int releaseId, String empId, ReleaseWeek releaseWeek, boolean isLastWeek);
+	public void addReleasePlanUpdate(ReleaseForm editReleaseForm) throws ParseException;
 }

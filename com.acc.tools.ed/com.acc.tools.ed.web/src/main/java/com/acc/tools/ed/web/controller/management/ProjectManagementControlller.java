@@ -216,119 +216,15 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		final ReferenceData refData = new ReferenceData();
 		refData.setId(""+editReleaseForm.getReleaseId());
 		refData.setLabel(editReleaseForm.getReleaseName());
-		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-		LocalDate dateStart =  new LocalDate(sdf.parse(editReleaseForm.getReleaseStartDate()));
-		LocalDate dateEnd =  new LocalDate(sdf.parse(editReleaseForm.getReleaseEndDate()));	
 		LOG.debug("Edit Release Id:[{}] Start Date:[{}] End Date:[{}]",new Object[]{editReleaseForm.getReleaseId(),editReleaseForm.getReleaseStartDate(),editReleaseForm.getReleaseEndDate()});
-/*		LocalDate releaseStrtDate = dateStart;
-		LocalDate tempDateStart = dateStart;
-		LocalDate tempDateEnd = dateEnd;	
-		String weekOfYear=dateStart.weekOfWeekyear().getAsShortText();
-		int dayFromIndex;
-		int dayToIndex;	*/		
-		Map<String,Map<String,ReleaseWeek>> resourceWeekHoursMap=new HashMap<String, Map<String,ReleaseWeek>>();
 		
 		getProjectManagementService().editRelease(editReleaseForm.getReleaseId(),editReleaseForm.getReleaseArtifacts(),editReleaseForm.getReleaseStartDate(),editReleaseForm.getReleaseEndDate());
 		int status=getProjectManagementService().deleteReleasePlan(editReleaseForm.getReleaseId());
-		//if(status>0){
-
-			for(String empId : editReleaseForm.getResourcesAndWorkHours().keySet()){
-			    LocalDate tempDateEnd = new LocalDate();
-				Map<String,Long> resourceWorkHoursMap=editReleaseForm.getResourcesAndWorkHours().get(empId);
-					Map<String,ReleaseWeek> weekHoursMap=new HashMap<String, ReleaseWeek>();
-					for(String date:resourceWorkHoursMap.keySet()){
-						final String week=date.substring(0, date.length()-3);
-						final String day=date.substring(date.length()-3,date.length());
-						final Long hours=resourceWorkHoursMap.get(date);
-						if(weekHoursMap.containsKey(week)){
-							final ReleaseWeek releaseWeek=weekHoursMap.get(week);
-							final Long[] days=releaseWeek.getHours();
-							days[dayPosition(day)]=hours;
-						} else {
-							final ReleaseWeek releaseWeek=new ReleaseWeek();
-							final Long[] days=releaseWeek.getHours();
-							int dayPosition=dayPosition(day);
-							if(weekHoursMap.size()>=1){
-								releaseWeek.setWeekStart(tempDateEnd.plusDays(1));
-								tempDateEnd=tempDateEnd.plusDays(7-dayPosition);
-								releaseWeek.setWeekEnd(tempDateEnd);
-							}else{
-								releaseWeek.setWeekStart(dateStart);
-								tempDateEnd=dateStart.plusDays(6-dayPosition);
-								releaseWeek.setWeekEnd(tempDateEnd);
-							}
-							days[dayPosition]=hours;
-							weekHoursMap.put(week, releaseWeek);
-						}
-					}
-					resourceWeekHoursMap.put(empId, weekHoursMap);
-			}
-			for(String empId:resourceWeekHoursMap.keySet()){
-				System.out.println("Emp:"+empId);
-				Map<String, ReleaseWeek> empHoursMap=resourceWeekHoursMap.get(empId);
-				for(String week:empHoursMap.keySet()){
-					ReleaseWeek releaseWeek=empHoursMap.get(week);
-					System.out.println("\tWeek:"+week +" | Start:"+releaseWeek.getWeekStart().toString("MM/dd/yyyy")+"| End:"+releaseWeek.getWeekEnd().toString("MM/dd/yyyy"));	
-					System.out.print("\tHours: ");
-					for(Long hours:releaseWeek.getHours()){
-						if(hours!=null)
-						System.out.print(hours.longValue()+" | ");
-						else
-							System.out.print("0 | ");
-					}
-					System.out.println();
-					//getProjectManagementService().addReleasePlanUpdate(editReleaseForm.getReleaseId(),empId,releaseWeek,true);
-				}
-			}
-
-		//}
-			
-/*		    for ( String empId : editReleaseForm.getResourcesAndHours().keySet()) {
-		    	dayFromIndex = 0;
-		    	dayToIndex = 0;
-		    	tempDateStart = releaseStrtDate;
-		    	dateStart = releaseStrtDate;
-		    	weekOfYear=dateStart.weekOfWeekyear().getAsShortText();
-			  	while(tempDateStart.isBefore(tempDateEnd) || tempDateStart.equals(tempDateEnd)){
-												
-					if(weekOfYear.equalsIgnoreCase(tempDateStart.weekOfWeekyear().getAsShortText()))										
-						 dayToIndex++;	
-					else{										 
-					    getProjectManagementService().addReleasePlan(editReleaseForm, empId,dateStart,tempDateStart.minusDays(1),dayFromIndex,dayToIndex,false);				    
-						 weekOfYear=tempDateStart.weekOfWeekyear().getAsShortText();
-						 dateStart = tempDateStart;
-						 dayFromIndex = dayToIndex++;
-					    }
-					 
-					tempDateStart = tempDateStart.plusDays(1);
-			    }			  					 
-			  	getProjectManagementService().addReleasePlan(editReleaseForm,empId,dateStart,tempDateStart.minusDays(1),dayFromIndex,dayToIndex,true);     
-			     
-			}*/
-		//}
-		
-		
-		return refData;
-	}
-	
-	private int dayPosition(String day){
-		int dayPosition=0;
-		if(day.equalsIgnoreCase("Mon")){
-			dayPosition=0;
-		}else if(day.equalsIgnoreCase("Tue")){
-			dayPosition=1;
-		}else if(day.equalsIgnoreCase("Wed")){
-			dayPosition=2;							
-		}else if(day.equalsIgnoreCase("Thu")){
-			dayPosition=3;
-		}else if(day.equalsIgnoreCase("Fri")){
-			dayPosition=4;
-		}else if(day.equalsIgnoreCase("Sat")){
-			dayPosition=5;
-		}else if(day.equalsIgnoreCase("Sun")){
-			dayPosition=6;
+		if(status>0){
+			getProjectManagementService().addReleasePlanUpdate(editReleaseForm);
 		}
-		return dayPosition;
+			
+		return refData;
 	}
 	
 	@RequestMapping(value = "/editProject.do")

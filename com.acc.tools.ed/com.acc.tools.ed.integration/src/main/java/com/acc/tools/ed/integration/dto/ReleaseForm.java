@@ -19,6 +19,7 @@ public class ReleaseForm implements Serializable{
 	private String releaseEndDate;
 	private String releaseDesc;
 	private List<ComponentForm> components;
+	@Deprecated
 	private Map<String,List<Long>> resourcesAndHours;
 	private Map<String,Map<String,Long>> resourcesAndWorkHours;
 	private List<ReferenceData> userData;

@@ -1,7 +1,9 @@
 package com.acc.tools.ed.integration.service.impl;
 
-import java.util.Arrays;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -66,7 +68,7 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 			 if(hr!=null)
 			 weeklyPlannedHr = weeklyPlannedHr +hr;
 		  }		
-		projectManagementDao.addReleasePlan(releaseForm.getReleaseId(),empId,weekDateStart, weekDateEnd, weekHourSubList, weeklyPlannedHr, isLastWeek);
+		//projectManagementDao.addReleasePlan(releaseForm.getReleaseId(),empId,weekDateStart, weekDateEnd, weekHourSubList, weeklyPlannedHr, isLastWeek);
 	}
 	
 	public ReleasePlan fetchReleasePlan(DateTime relDateStart,DateTime relDateEnd,Integer releaseId,Integer projId) {
@@ -462,15 +464,70 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 		return projectManagementDao.getResourcesByProjectId(projectId);
 	}
 
-	public void addReleasePlanUpdate(int releaseId, String empId,
-			ReleaseWeek releaseWeek, boolean isLastWeek) {
-		Long weeklyPlannedHr = 0L;	
-		for (Long hr : releaseWeek.getHours()) {
-			if(hr!=null)
-			 weeklyPlannedHr = weeklyPlannedHr +hr;
-		  }	
-		projectManagementDao.addReleasePlan(releaseId,empId,releaseWeek.getWeekStart(), releaseWeek.getWeekEnd(), Arrays.asList(releaseWeek.getHours()), weeklyPlannedHr, true);
+	public void addReleasePlanUpdate(ReleaseForm editReleaseForm) throws ParseException {
 		
+		final Map<String,Map<String,ReleaseWeek>> resourceWeekHoursMap=new HashMap<String, Map<String,ReleaseWeek>>();
+		final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+		final LocalDate dateStart =  new LocalDate(sdf.parse(editReleaseForm.getReleaseStartDate()));
+		
+		for(String empId : editReleaseForm.getResourcesAndWorkHours().keySet()){
+		    LocalDate tempDateEnd = new LocalDate();
+			Map<String,Long> resourceWorkHoursMap=editReleaseForm.getResourcesAndWorkHours().get(empId);
+				Map<String,ReleaseWeek> weekHoursMap=new HashMap<String, ReleaseWeek>();
+				for(String date:resourceWorkHoursMap.keySet()){
+					final String week=date.substring(0, date.length()-3);
+					final String day=date.substring(date.length()-3,date.length());
+					final Long hours=resourceWorkHoursMap.get(date);
+					if(weekHoursMap.containsKey(week)){
+						final ReleaseWeek releaseWeek=weekHoursMap.get(week);
+						final Long[] days=releaseWeek.getHours();
+						days[dayPosition(day)]=hours;
+						Long weekPlannedHr=releaseWeek.getWeekPlannedHr();
+						releaseWeek.setWeekPlannedHr(weekPlannedHr+hours);
+					} else {
+						final ReleaseWeek releaseWeek=new ReleaseWeek();
+						final Long[] days=releaseWeek.getHours();
+						int dayPosition=dayPosition(day);
+						if(weekHoursMap.size()>=1){
+							releaseWeek.setWeekStart(tempDateEnd.plusDays(1));
+							tempDateEnd=tempDateEnd.plusDays(7-dayPosition);
+							releaseWeek.setWeekEnd(tempDateEnd);
+						}else{
+							releaseWeek.setWeekStart(dateStart);
+							tempDateEnd=dateStart.plusDays(6-dayPosition);
+							releaseWeek.setWeekEnd(tempDateEnd);
+						}
+						days[dayPosition]=hours;
+						Long weekPlannedHr=releaseWeek.getWeekPlannedHr();
+						releaseWeek.setWeekPlannedHr(weekPlannedHr+hours);
+						weekHoursMap.put(week, releaseWeek);
+					}
+				}
+				resourceWeekHoursMap.put(empId, weekHoursMap);
+		}
+		
+		projectManagementDao.addReleasePlan(editReleaseForm.getReleaseId(),resourceWeekHoursMap);
+		
+	}
+	
+	private int dayPosition(String day){
+		int dayPosition=0;
+		if(day.equalsIgnoreCase("Mon")){
+			dayPosition=0;
+		}else if(day.equalsIgnoreCase("Tue")){
+			dayPosition=1;
+		}else if(day.equalsIgnoreCase("Wed")){
+			dayPosition=2;							
+		}else if(day.equalsIgnoreCase("Thu")){
+			dayPosition=3;
+		}else if(day.equalsIgnoreCase("Fri")){
+			dayPosition=4;
+		}else if(day.equalsIgnoreCase("Sat")){
+			dayPosition=5;
+		}else if(day.equalsIgnoreCase("Sun")){
+			dayPosition=6;
+		}
+		return dayPosition;
 	}
 	
 }

@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -26,6 +25,7 @@ import com.acc.tools.ed.integration.dto.MasterEmployeeDetails;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.ReleaseForm;
+import com.acc.tools.ed.integration.dto.ReleaseWeek;
 import com.acc.tools.ed.integration.dto.WeekDates;
 
 /**
@@ -830,63 +830,31 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
      * Method to save release details.
      *
      */
-	public void addReleasePlan(int releaseId, String empId,
-			LocalDate weekDateStart, LocalDate weekDateEnd,
-			List<Long> weekHourList, Long weeklyPlannedHr, boolean isLastWeek) {
+	public void addReleasePlan(int releaseId,Map<String,Map<String,ReleaseWeek>> resourceWeekHoursMap) {
 		
-		    int index=1;
-		    final int initalPreparedStmtIndexVal = 5;
-		    final int daysPerWeek = 7;
-		    List<Long> hrs = new ArrayList<Long>(daysPerWeek);
+
 		try{
-            // Day1 in the query is Monday like wise Day2 Tuesday... and Day7 Sunday. A Week is from Monday to Sunday
 			final String insertReleasePlan="insert into EDB_RELEASE_PLAN(MLSTN_ID,EMP_ID,WEEK_ST_DT,WEEK_ED_DT,DAY1,DAY2,DAY3,DAY4,DAY5,DAY6,DAY7,PLND_HRS) values (?,?,?,?,?,?,?,?,?,?,?,?)";
 			PreparedStatement  preparedStatement = getConnection().prepareStatement(insertReleasePlan);
-			
-			preparedStatement.setInt(index++, releaseId);
-			preparedStatement.setInt(index++,Integer.valueOf(empId).intValue());
-			preparedStatement.setString(index++, weekDateStart.toString("yyyy-MM-dd"));
-			preparedStatement.setString(index++, weekDateEnd.toString("yyyy-MM-dd"));
-			//Below condition will be true if the release start date is in Mid of the week
-			if(weekHourList.size()<daysPerWeek && !isLastWeek){				
-				for (; index < initalPreparedStmtIndexVal+(daysPerWeek-weekHourList.size()); index++) {					
-					     preparedStatement.setInt(index,0);
-				}
-				for (int j=0; j < weekHourList.size(); j++) {
-					if(weekHourList.get(j)!=null)
-					  preparedStatement.setInt(index++,weekHourList.get(j).intValue());
-					else
-					  preparedStatement.setInt(index++,0);	
-				}
-			}
-			//Below condition will be true if the release end date is in the Mid of the week and also if both release start and End date fall in the same week
-			else if(weekHourList.size()<daysPerWeek && isLastWeek){		
-				
-				for (int i = 0,j=0; i < daysPerWeek; i++) {
-					if(i>= (weekDateStart.getDayOfWeek()-1) && i<= (weekDateEnd.getDayOfWeek()-1))
-						hrs.add(i,weekHourList.get(j++) );
-					else 
-						hrs.add(i, 0L);
-				}
-				for (Long hr : hrs) {
-					if(hr!=null)
-					  preparedStatement.setInt(index++,hr.intValue());
-					else
-					  preparedStatement.setInt(index++,0);
+			for(String empId : resourceWeekHoursMap.keySet()){
+				for(ReleaseWeek weekHours:resourceWeekHoursMap.get(empId).values()){
+					preparedStatement.setInt(1, releaseId);
+					preparedStatement.setInt(2,Integer.valueOf(empId).intValue());
+					preparedStatement.setString(3, weekHours.getWeekStart().toString("yyyy-MM-dd"));
+					preparedStatement.setString(4, weekHours.getWeekEnd().toString("yyyy-MM-dd"));
+					int index=5;
+					for(Long workHrs:weekHours.getHours()){
+						if(workHrs!=null){
+							preparedStatement.setInt(index++,workHrs.intValue());
+						}else{
+							preparedStatement.setInt(index++,0);
+						}
+					}
+					preparedStatement.setInt(12,weekHours.getWeekPlannedHr().intValue());	
+					preparedStatement.addBatch();
 				}
 			}
-			// This condition is for all 7 days in a week to be saved in DB. That is if the date range is from Mon-Sun.
-			else{
-			for (int i = initalPreparedStmtIndexVal; i < (initalPreparedStmtIndexVal+weekHourList.size()); i++) {
-				if(weekHourList.get(i-initalPreparedStmtIndexVal)!=null)
-				  preparedStatement.setInt(index++,weekHourList.get(i-initalPreparedStmtIndexVal).intValue());
-				else
-			      preparedStatement.setInt(index++,0);	
-			  }
-			}
-			preparedStatement.setInt(index++,weeklyPlannedHr.intValue());				
-			
-			preparedStatement.executeUpdate();
+			preparedStatement.executeBatch();
 			preparedStatement.close();
 			
 		}catch(Exception e)	{
