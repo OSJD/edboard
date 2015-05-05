@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.joda.time.DateTime;
+import org.joda.time.Interval;
+import org.joda.time.Period;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -938,6 +940,7 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 			while (rs.next()) {
 				final int employeeId=rs.getInt("EMP_ID");
 				final DateTime startDate=new DateTime(rs.getDate("WEEK_ST_DT").getTime());
+				final DateTime endDate=new DateTime(rs.getDate("WEEK_ED_DT").getTime());
 				final int day1= rs.getInt("DAY1");
 				final int day2= rs.getInt("DAY2");
 				final int day3= rs.getInt("DAY3");
@@ -956,13 +959,17 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 					dateHours.put(startDate.plusDays(6), day7);
 				} else {
 					final Map<DateTime,Integer> dateHours=new HashMap<DateTime,Integer>();
-					dateHours.put(startDate,day1);
-					dateHours.put(startDate.plusDays(1), day2);
-					dateHours.put(startDate.plusDays(2), day3);
-					dateHours.put(startDate.plusDays(3), day4);
-					dateHours.put(startDate.plusDays(4), day5);
-					dateHours.put(startDate.plusDays(5), day6);
-					dateHours.put(startDate.plusDays(6), day7);					
+					Interval interval = new Interval(startDate, endDate);
+					Period period= interval.toPeriod();
+					int daysDiff = period.getDays()+1;
+					DateTime newStartDate = startDate.minusDays(7-daysDiff);
+					dateHours.put(newStartDate,day1);
+					dateHours.put(newStartDate.plusDays(1), day2);
+					dateHours.put(newStartDate.plusDays(2), day3);
+					dateHours.put(newStartDate.plusDays(3), day4);
+					dateHours.put(newStartDate.plusDays(4), day5);
+					dateHours.put(newStartDate.plusDays(5), day6);
+					dateHours.put(newStartDate.plusDays(6), day7);					
 					resourceHoursMap.put(employeeId, dateHours);
 				}
 			}
