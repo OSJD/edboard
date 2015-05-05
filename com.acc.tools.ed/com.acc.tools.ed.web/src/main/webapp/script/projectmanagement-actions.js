@@ -616,7 +616,7 @@ $(document).ready(function(){
 											buttonText: 'Show Date',
 											buttonImageOnly: true,
 											buttonImage: 'resources/cal.gif',
-											dateFormat: 'dd/mm/yy',
+											dateFormat: 'mm/dd/yy',
 											constrainInput: true,
 											minDate:projStartDate,
 											maxDate:projEndDate
@@ -627,7 +627,7 @@ $(document).ready(function(){
 											buttonText: 'Show Date',
 											buttonImageOnly: true,
 											buttonImage: 'resources/cal.gif',
-											dateFormat: 'dd/mm/yy',
+											dateFormat: 'mm/dd/yy',
 											constrainInput: true,
 											minDate:projStartDate,
 											maxDate:projEndDate
