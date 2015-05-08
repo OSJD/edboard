@@ -10,10 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.acc.tools.ed.integration.dto.EDBUser;
 import com.acc.tools.ed.integration.dto.ProjectForm;
@@ -63,7 +65,8 @@ public class LoginController extends AbstractEdbBaseController{
 	@RequestMapping(value="/login.do")
 	public String handleLogins(
 			Model model,
-			@RequestParam(required = false) String enterpriseId
+			@RequestParam(required = false) String enterpriseId,
+			final RedirectAttributes redirectAttributes
 			) throws Exception{
 		
 		EDBUser user=null;
@@ -87,17 +90,20 @@ public class LoginController extends AbstractEdbBaseController{
 				LOG.debug("Login - Adding user to session - User Id:[{}] Role:[{}]",user.getEmployeeId(),user.getRole());
 				return "/projectmanagement/index";
 			}else {
-				model.addAttribute("status", "User Not Registered!Please reach out to your supervisor!");
-				return "redirect:/loginError";
+				redirectAttributes.addFlashAttribute("status", "User Not Registered!Please reach out to your supervisor!");
+				//model.addAttribute("status", "User Not Registered!Please reach out to your supervisor!");
+				return "redirect:/loginError.do";
 			}
 		} else {
-			model.addAttribute("status", "Please use EDB application with Windows Admin access!");
-			return "redirect:/loginError";
+			redirectAttributes.addFlashAttribute("status", "Please use EDB application with Windows Admin access!");
+			//model.addAttribute("status", "Please use EDB application with Windows Admin access!");
+			return "redirect:/loginError.do";
 		}
 	}
 	
 	@RequestMapping(value="/loginError.do")
-	public String loginError(Model model){
+	public String loginError(@ModelAttribute("status") final String status,Model model){
+		model.addAttribute("status", status);
 		return "/login/index";
 	}
 	

@@ -79,15 +79,19 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 	public @ResponseBody Map<String,Object> viewProjectDetails(@RequestParam("projectId") int projectId, Model model){
 		
 		LOG.debug("View Project details of project Id:{}",projectId);
-		final Map<String,Object> initialProjSetupDeteails=new HashMap<String,Object>(); 
-		initialProjSetupDeteails.put("programList",getProgramList());
-		initialProjSetupDeteails.put("resourceList",getResourceList());
-		initialProjSetupDeteails.put("projectLeadList",getProjectLeadList());
+		final Map<String,Object> initialProjSetupDeteails=new HashMap<String,Object>();
+		List<ReferenceData> resourceList = getResourceList();
 		ProjectForm projectDetails = getProjectManagementService().viewProject(projectId);
 		
 		LOG.debug("Project details :{}",projectDetails.toString());
 		
+		resourceList.removeAll(projectDetails.getResources());
+		
 		initialProjSetupDeteails.put("projectDetails", projectDetails);
+		initialProjSetupDeteails.put("resourceList",resourceList);
+		initialProjSetupDeteails.put("programList",getProgramList());
+		initialProjSetupDeteails.put("projectLeadList",getProjectLeadList());
+
 		return initialProjSetupDeteails;
 	}
 	
