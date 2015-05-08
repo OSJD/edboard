@@ -173,7 +173,10 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		LOG.debug("Project Id:{} | Release Id:[{}]",
 				addReleaseForm.getProjectId(), addReleaseForm.getReleaseId());
 		final ReferenceData refData = getProjectManagementService().addRelease(addReleaseForm);
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		
+		// Replaced the addReleasePlan() logic with addReleasePlanUpdate()
+		
+		/*SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		LocalDate dateStart =  new LocalDate(sdf.parse(addReleaseForm.getReleaseStartDate()));
 		LocalDate dateEnd =  new LocalDate(sdf.parse(addReleaseForm.getReleaseEndDate()));	
 		LocalDate releaseStrtDate = dateStart;
@@ -185,7 +188,7 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		
 	
 			
-	    for ( String empId : addReleaseForm.getResourcesAndHours().keySet()) {
+	   for ( String empId : addReleaseForm.getResourcesAndHours().keySet()) {
 	    	dayFromIndex = 0;
 	    	dayToIndex = 0;
 	    	tempDateStart = releaseStrtDate;
@@ -206,8 +209,8 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		         }			  					 
 		     getProjectManagementService().addReleasePlan(addReleaseForm,empId,dateStart,tempDateStart.minusDays(1),dayFromIndex,dayToIndex,true);     
 		     
-		}
-		
+		}*/
+		getProjectManagementService().addReleasePlanUpdate(addReleaseForm);
 		
 		return refData;
 	}

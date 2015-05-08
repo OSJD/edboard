@@ -386,34 +386,34 @@ $(document).ready(function(){
 									var resources = $("input[id^='resource']").length;
 									var jsonString = "{";
 									$.each(releaseForm,
-									    function(i, v) {
-										 if(v.name=="releaseStartDate" || v.name=="releaseEndDate"){																															
-											jsonString=jsonString+" \""+v.name+"\":\""+$("input[id^='"+v.name+"']").val()+"\",";
-										} else {
-											jsonString=jsonString+" \""+v.name+"\":\""+v.value+"\",";
+										    function(i, v) {
+												 if(v.name=="releaseStartDate" || v.name=="releaseEndDate"){																															
+													jsonString=jsonString+" \""+v.name+"\":\""+v.value+"\",";
+												 } else {
+													jsonString=jsonString+" \""+v.name+"\":\""+v.value+"\",";
+												 }
+										 });
+										jsonString=jsonString+"\"resourcesAndWorkHours\" : {";
+										
+										for(var i=0; i<resources;i++){		
+											var resourceId=$("#resource"+i).val();
+											if (typeof resourceId != 'undefined') {
+												jsonString=jsonString+"\""+resourceId+"\": {";
+												$("input[id^='resDayHour']").each(function(index, obj){
+													var day=obj.id.split("_")[1];
+													if(obj.id.indexOf("resDayHour"+i)==0){
+														jsonString=jsonString+"\""+day+"\":"+obj.value+",";
+													}
+												});
+												jsonString=jsonString.substring(0,jsonString.lastIndexOf(","));
+												jsonString=jsonString+"},";
+											};
 										}
-									 });
-									jsonString=jsonString+"\"resourcesAndHours\" : {";
-									
-									for(var i=0; i<resources;i++){	
-										var resourceId=$("#resource"+i).val();
-										if (typeof resourceId != 'undefined') {
-											jsonString=jsonString+"\""+resourceId+"\": [";
-											$("input[id^='resDayHour']").each(function(index, obj){
-												alert(obj.id);
-												if(obj.id.indexOf("resDayHour"+i)==0){
-													jsonString=jsonString+obj.value+",";
-												}
-											});
-											jsonString=jsonString.substring(0,jsonString.lastIndexOf(","));
-											jsonString=jsonString+"],";
-										}
-									}
-									jsonString=jsonString.substring(0,jsonString.lastIndexOf(","))+"},";
+										jsonString=jsonString.substring(0,jsonString.lastIndexOf(","))+"},";
 
-									jsonString=jsonString+"\"releaseId\":\""+releaseIdCount+"\",";
-									jsonString=jsonString+"\"projectId\":\""+projectId+"\"";
-									jsonString=jsonString+"}";
+										jsonString=jsonString+"\"releaseId\":\""+releaseIdCount+"\",";
+										jsonString=jsonString+"\"projectId\":\""+projectId+"\"";
+										jsonString=jsonString+"}";
 									
 									
 									$.ajax({

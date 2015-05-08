@@ -323,8 +323,6 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 									component.getTaskFormList().add(task);
 									taskMap.put(taskId, task);
 								}
-							}else{
-								taskMap.put(taskId,null);
 							}
 							compMap.put(componentId, component);
 						}
@@ -652,6 +650,12 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 			relStatementHistory.setInt(1, taskId);
 			relStatementHistory.executeUpdate();
 			relStatementHistory.close();
+			
+			final String tskRvwTable="DELETE FROM EDB_TASK_REVW WHERE TASK_ID = ?";
+			PreparedStatement  tskRvwTableStatement = getConnection().prepareStatement(tskRvwTable);
+			tskRvwTableStatement.setInt(1, taskId);
+			tskRvwTableStatement.executeUpdate();
+			tskRvwTableStatement.close();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
