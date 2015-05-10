@@ -278,11 +278,17 @@ $(document).ready(function(){
 											   $('#projectNameEdit').val(outerValue.projectName);
 											   $('#existingProgramEdit').append('<option selected="selected" value="'+outerValue.existingProgram+'">'+outerValue.newProgramName+'</option>');
 											   $("#projectLeadEdit option:selected").text(outerValue.projectLead);
+											   alert(outerValue.projectLead);
 											   var listPhase = outerValue.phases.toString().replace(/\[+(.*?)\]+/g,"$1");
+											   
 											   $("input[id^='phasesEdit']").each(function() {
+												   
 												   if (jQuery.inArray(this.value, listPhase) != -1) {
 													   $(this).attr("checked", true);
-												   } 
+												   }else {
+													   $(this).attr("checked", false);
+												   }
+												   
 											   });
 									   }
 									});

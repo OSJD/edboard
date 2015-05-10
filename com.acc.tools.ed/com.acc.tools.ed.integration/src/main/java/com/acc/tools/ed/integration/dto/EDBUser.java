@@ -1,6 +1,7 @@
 package com.acc.tools.ed.integration.dto;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * This class will hold user information
@@ -23,6 +24,7 @@ public class EDBUser implements Serializable {
 	private Integer supervisorId;
 	private Integer projectId;
 	private String projectName;
+	private long lastLoginDB;
 	
 	public Integer getEmployeeId() {
 		return employeeId;
@@ -71,6 +73,12 @@ public class EDBUser implements Serializable {
 	}
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
+	}
+	public long getLastLoginDB() {
+		return lastLoginDB;
+	}
+	public void setLastLoginDB(long lastLoginDB) {
+		this.lastLoginDB = lastLoginDB;
 	}
 
 

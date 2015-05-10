@@ -1,8 +1,10 @@
 package com.acc.tools.ed.web.controller.login;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.acc.tools.ed.integration.dto.EDBUser;
@@ -66,11 +69,14 @@ public class LoginController extends AbstractEdbBaseController{
 	public String handleLogins(
 			Model model,
 			@RequestParam(required = false) String enterpriseId,
+			@RequestParam(required = false) Long lastLoginForm,
 			final RedirectAttributes redirectAttributes
 			) throws Exception{
-		
+		//@RequestParam(required = false) Date lastLoginForm,
+		//long lastLoginForm = System.currentTimeMillis();
 		EDBUser user=null;
 		String userName=System.getProperty("user.name");
+		
 		boolean isAdmin=isAdmin();
 		if(environment.equalsIgnoreCase("DEV") && enterpriseId!=null){
 			userName=enterpriseId;
@@ -80,15 +86,22 @@ public class LoginController extends AbstractEdbBaseController{
 		if(isAdmin){
 			user=iLoginService.searchUser(userName);
 			if(user!=null && user.getEmployeeId()!=null){
-				//session attributes
-				model.addAttribute("edbUser", user);
-				model.addAttribute("addProjectForm",new ProjectForm());
-				model.addAttribute("addTaskForm",new TaskForm());
-				model.addAttribute("editProjectForm", new ProjectForm());
-				List<ProjectForm> projData=projectWorkService.getMyTasks(user.getEmployeeId());
-				model.addAttribute("projData",projData);
-				LOG.debug("Login - Adding user to session - User Id:[{}] Role:[{}]",user.getEmployeeId(),user.getRole());
-				return "/projectmanagement/index";
+				if(lastLoginForm != null && user.getLastLoginDB()<lastLoginForm){
+					//session attributes
+					model.addAttribute("edbUser", user);
+					model.addAttribute("addProjectForm",new ProjectForm());
+					model.addAttribute("addTaskForm",new TaskForm());
+					model.addAttribute("editProjectForm", new ProjectForm());
+					List<ProjectForm> projData=projectWorkService.getMyTasks(user.getEmployeeId());
+					model.addAttribute("projData",projData);
+					iLoginService.updateLogin(lastLoginForm,user.getEmployeeId());
+					LOG.debug("Login - Adding user to session - User Id:[{}] Role:[{}]",user.getEmployeeId(),user.getRole());
+					return "/projectmanagement/index";
+				}else {
+					redirectAttributes.addFlashAttribute("status", "Session has ended!");
+					//model.addAttribute("status", "User Not Registered!Please reach out to your supervisor!");
+					return "redirect:/loginError.do";
+				}
 			}else {
 				redirectAttributes.addFlashAttribute("status", "User Not Registered!Please reach out to your supervisor!");
 				//model.addAttribute("status", "User Not Registered!Please reach out to your supervisor!");
@@ -117,4 +130,13 @@ public class LoginController extends AbstractEdbBaseController{
 	    return false;
 	}
 
+	@RequestMapping(value="/logout.do")
+	public String logout(@ModelAttribute("edbUser") final EDBUser user,Model model, HttpSession session, SessionStatus sessionStatus ){
+		
+		session.removeAttribute("edbUser");
+		session.invalidate();
+		sessionStatus.setComplete();
+		model.addAttribute("status", "You have been logged out successfully");
+		return "/login/index";
+	}
 }

@@ -9,5 +9,6 @@ public interface LoginDao {
 	
 	public EDBUser searchuser(String name)throws IOException, SQLException;
 	public EDBUser getEmployeeById(Integer employeeId) throws IOException, SQLException;
+	public void updateLogin(long lastLoginTime, Integer employeeId) throws SQLException, IOException;
 
 }

@@ -34,6 +34,7 @@
 					<!-- MAIN MENU -->
 				 	<%@ include file="/WEB-INF/jsp/includes/menu.jsp"%>
 
+
 					   <jstl:choose>
 							<jstl:when test="${edbUser.role !='Dvlp'}">
 								<div id="projectPlanTab" style="clear: both;">

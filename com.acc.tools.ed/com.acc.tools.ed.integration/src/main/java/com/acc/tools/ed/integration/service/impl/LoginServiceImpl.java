@@ -21,5 +21,10 @@ public class LoginServiceImpl implements ILoginService{
 		return loginDao.searchuser(name); 
 		
 	}
+	
+	public void updateLogin(long lastLoginTime, Integer employeeId) throws SQLException, IOException {
+		
+		loginDao.updateLogin(lastLoginTime,employeeId);
+	}
 
 }

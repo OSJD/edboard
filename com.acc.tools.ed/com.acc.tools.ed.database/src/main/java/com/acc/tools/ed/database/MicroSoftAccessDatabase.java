@@ -44,7 +44,7 @@ final public class MicroSoftAccessDatabase {
            	
 			log.debug("\t\tEngagementDashBoard Database location:[{}]",dbpath);
 			
-			String url = "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ="+dbpath+";";
+			String url = "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=G:\\"+accessDBFile+";";
 	
 			//MS Access datasource 
 			
@@ -56,3 +56,6 @@ final public class MicroSoftAccessDatabase {
     }
 
 }
+
+
+//http://www.javaworld.com/article/2072937/java-web-development/solving-the-logout-problem-properly-and-elegantly.html
