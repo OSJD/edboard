@@ -89,9 +89,9 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		
 		initialProjSetupDeteails.put("projectDetails", projectDetails);
 		initialProjSetupDeteails.put("resourceList",resourceList);
-		initialProjSetupDeteails.put("programList",getProgramList());
 		initialProjSetupDeteails.put("projectLeadList",getProjectLeadList());
-
+		initialProjSetupDeteails.put("programList",getProgramList());
+		
 		return initialProjSetupDeteails;
 	}
 	

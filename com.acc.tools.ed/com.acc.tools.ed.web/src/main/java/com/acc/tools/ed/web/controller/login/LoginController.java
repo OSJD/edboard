@@ -131,12 +131,14 @@ public class LoginController extends AbstractEdbBaseController{
 	}
 
 	@RequestMapping(value="/logout.do")
-	public String logout(@ModelAttribute("edbUser") final EDBUser user,Model model, HttpSession session, SessionStatus sessionStatus ){
-		
-		session.removeAttribute("edbUser");
-		session.invalidate();
-		sessionStatus.setComplete();
-		model.addAttribute("status", "You have been logged out successfully");
+	public String logout(Model model, HttpSession session, SessionStatus sessionStatus ){
+		if(!sessionStatus.isComplete()){
+			//EDBUser user = (EDBUser) session.getAttribute("edbUser");
+			session.removeAttribute("edbUser");
+			session.invalidate();
+			sessionStatus.setComplete();
+			model.addAttribute("status", "You have been logged out successfully");
+		} 		
 		return "/login/index";
 	}
 }
