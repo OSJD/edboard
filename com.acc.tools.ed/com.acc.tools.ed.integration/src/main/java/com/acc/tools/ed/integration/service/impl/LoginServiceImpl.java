@@ -11,20 +11,26 @@ import com.acc.tools.ed.integration.dto.EDBUser;
 import com.acc.tools.ed.integration.service.ILoginService;
 
 @Service("iLoginService")
-public class LoginServiceImpl implements ILoginService{
-	
+public class LoginServiceImpl implements ILoginService {
+
 	@Autowired
 	private LoginDao loginDao;
 
-
 	public EDBUser searchUser(String name) throws IOException, SQLException {
-		return loginDao.searchuser(name); 
-		
+		return loginDao.searchuser(name);
+
 	}
-	
-	public void updateLogin(long lastLoginTime, Integer employeeId) throws SQLException, IOException {
-		
-		loginDao.updateLogin(lastLoginTime,employeeId);
+
+	public void updateLogin(long lastLoginTime, Integer employeeId)
+			throws SQLException, IOException {
+
+		loginDao.updateLogin(lastLoginTime, employeeId);
+	}
+
+	public void updateLogout(Integer employeeId) throws SQLException,
+			IOException {
+
+		loginDao.updateLogout(employeeId);
 	}
 
 }

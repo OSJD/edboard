@@ -86,7 +86,7 @@ public class LoginController extends AbstractEdbBaseController{
 		if(isAdmin){
 			user=iLoginService.searchUser(userName);
 			if(user!=null && user.getEmployeeId()!=null){
-				if(lastLoginForm != null && user.getLastLoginDB()<lastLoginForm){
+				if(lastLoginForm != null && (user.getLastLoginTime()<lastLoginForm || !user.getLogout())){
 					//session attributes
 					model.addAttribute("edbUser", user);
 					model.addAttribute("addProjectForm",new ProjectForm());
@@ -131,9 +131,10 @@ public class LoginController extends AbstractEdbBaseController{
 	}
 
 	@RequestMapping(value="/logout.do")
-	public String logout(Model model, HttpSession session, SessionStatus sessionStatus ){
+	public String logout(Model model, HttpSession session, SessionStatus sessionStatus ) throws Exception{
 		if(!sessionStatus.isComplete()){
-			//EDBUser user = (EDBUser) session.getAttribute("edbUser");
+			EDBUser user = (EDBUser) session.getAttribute("edbUser");
+			iLoginService.updateLogout(user.getEmployeeId());
 			session.removeAttribute("edbUser");
 			session.invalidate();
 			sessionStatus.setComplete();

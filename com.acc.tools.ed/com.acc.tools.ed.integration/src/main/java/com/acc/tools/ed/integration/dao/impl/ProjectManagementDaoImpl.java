@@ -438,7 +438,7 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 		int status=0;
 		try{
 				//Project table
-				final String employeeTable="UPDATE EDB_PROJECT SET PROJ_NAME=?,PROJ_DESC = ?, PROJ_ST_DT =?, PROJ_ET_DT=?,PROJ_LEAD=?,PROJ_PHSE=? WHERE PROJ_ID =?";
+				final String employeeTable="UPDATE EDB_PROJECT SET PROJ_NAME=?,PROJ_DESC = ?, PROJ_ST_DT =?, PROJ_ET_DT=?,PROJ_LEAD=?,PROJ_PHSE=?, PRGM_ID=? WHERE PROJ_ID =?";
 				final PreparedStatement  preparedStatement = getConnection().prepareStatement(employeeTable);
 				preparedStatement.setString(1, project.getProjectName());
 				preparedStatement.setString(2, project.getProjectDescription());
@@ -446,7 +446,8 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 				preparedStatement.setString(4, project.getEndDate());
 				preparedStatement.setString(5, project.getProjectLead());
 				preparedStatement.setString(6, project.getPhases().toString());
-				preparedStatement.setInt(7, project.getProjectId());
+				preparedStatement.setInt(7, project.getExistingProgram());
+				preparedStatement.setInt(8, project.getProjectId());
 				status=preparedStatement.executeUpdate();
 				log.debug("Edit Project table status:{}",status);
 				preparedStatement.close();

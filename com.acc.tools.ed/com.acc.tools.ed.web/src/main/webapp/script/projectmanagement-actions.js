@@ -248,7 +248,7 @@ $(document).ready(function(){
 								data : {projectId : projectId},
 								success : function(response) {
 									var programId;
-									var resourceId;
+									var projectLeadId;
 									$.each(response, function(outerKey, outerValue){
 										
 									   if(outerKey=='resourceList'){
@@ -260,8 +260,7 @@ $(document).ready(function(){
 									   if(outerKey=='programList'){
 										   $('#existingProgramEdit option').remove();
 										    $.each(outerValue, function(key, value){
-										    	alert("program id:"+value.id);
-										       $('#existingProgramEdit').append('<option value="'+value.id+'">'+value.label+'</option>');
+										    	$('#existingProgramEdit').append('<option value="'+value.id+'">'+value.label+'</option>');
 										    });
 									   }
 									   if(outerKey=='projectLeadList'){
@@ -277,21 +276,18 @@ $(document).ready(function(){
 												   $('#selectedResourcesEdit').append('<option selected="selected" value="'+outerValue.resources[emp].id+'">'+outerValue.resources[emp].label+'</option>');
 											   }
 											   $("#projectIdEdit").val(outerValue.projectId);
-											   /*$("#existingProgramEdit option").map(function () {
-												   if ($(this).val() == outerValue.projectId) return this;
-									            }).attr('selected', 'selected');*/
-											
 											   $('#projectDescriptionEdit').val(outerValue.projectDescription);
 											   $('#startDateEdit').val(outerValue.startDate);
 											   $('#endDateEdit').val(outerValue.endDate);
 											   $('#projectNameEdit').val(outerValue.projectName);
+											   
 											   programId = outerValue.newProgramName;
+											   projectLeadId = outerValue.projectLead;
+											   
 											   //$('#existingProgramEdit').append('<option selected="selected" value="'+outerValue.existingProgram+'">'+outerValue.newProgramName+'</option>');
 											   //$("#projectLeadEdit option:selected").text(outerValue.projectLead);
-											   $("#projectLeadEdit option").map(function () {
-									                if ($(this).val() == outerValue.projectLead) return this;
-									            }).attr('selected', 'selected');
-											  
+											   
+											   
 											   var listPhase = outerValue.phases.toString().replace(/\[+(.*?)\]+/g,"$1");
 											   
 											   $("input[id^='phasesEdit']").each(function() {
@@ -305,8 +301,15 @@ $(document).ready(function(){
 											   });
 									   }
 									});
-									alert(programId);
-									$("#existingProgramEdit option:selected").text(programId);
+									
+									$("#existingProgramEdit option").map(function () {
+									   if ($(this).text() == programId) return this;
+						            }).attr('selected', 'selected');
+								
+									$("#projectLeadEdit option").map(function () {
+						                if ($(this).val() == projectLeadId) return this;
+						            }).attr('selected', 'selected');
+								  
 									$( "#startDateEdit" ).datepicker({
 										showOn: 'button',
 										buttonText: 'Show Date',
@@ -444,6 +447,8 @@ $(document).ready(function(){
 										contentType : 'application/json; charset=utf-8',
 										dataType : 'json',		
 										beforeSend:function(){
+											alert(jsonString);
+											return false;
 										  },
 										success : function(response) {
 											$('#releases').append('<option selected value="'+response.id+'">'+response.label+'</option>').change();

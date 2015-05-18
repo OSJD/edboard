@@ -10,4 +10,6 @@ public interface ILoginService {
 	public EDBUser searchUser(String name) throws IOException, SQLException;
 
 	public void updateLogin(long lastLoginTime, Integer employeeId) throws SQLException, IOException;
+	
+	public void updateLogout(Integer employeeId) throws SQLException, IOException;
 }

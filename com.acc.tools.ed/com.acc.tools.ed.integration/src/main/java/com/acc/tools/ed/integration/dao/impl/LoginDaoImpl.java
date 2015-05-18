@@ -22,7 +22,7 @@ public class LoginDaoImpl extends AbstractEdbDao implements LoginDao{
 		
 			final Connection connection=getConnection();
 			Statement stmt=connection.createStatement();
-			final String loginQuery="SELECT P.PROJ_ID,P.PROJ_NAME, E.EMP_ID,E.EMP_EMPLOYEE_ID,E.EMP_ROLE,E.EMP_LEVEL,E.EMP_SUP_EMP_ID, E.LASTLOGINTIME FROM "
+			final String loginQuery="SELECT P.PROJ_ID,P.PROJ_NAME, E.EMP_ID,E.EMP_EMPLOYEE_ID,E.EMP_ROLE,E.EMP_LEVEL,E.EMP_SUP_EMP_ID, E.LOGOUT, E.LASTLOGINTIME FROM "
 					+ "(EDB_MSTR_EMP_DTLS E LEFT JOIN  EDB_PROJ_EMP PE ON E.EMP_ID=PE.EMP_ID) "
 					+ " LEFT JOIN EDB_PROJECT P ON P.PROJ_ID=PE.PROJ_ID WHERE E.EMP_ENTERPRISE_ID='"+name+"'";
 			log.debug(loginQuery);
@@ -38,8 +38,9 @@ public class LoginDaoImpl extends AbstractEdbDao implements LoginDao{
 				user.setSupervisorId(resultSet.getInt("EMP_SUP_EMP_ID"));
 				user.setProjectId(resultSet.getInt("PROJ_ID"));
 				user.setProjectName(resultSet.getString("PROJ_NAME"));
-				user.setLastLoginDB(resultSet.getLong("LASTLOGINTIME"));
-			}
+				user.setLogout(resultSet.getBoolean("LOGOUT"));
+				user.setLastLoginTime(resultSet.getLong("LASTLOGINTIME"));
+			};
 
 		
 		return user;
@@ -49,7 +50,7 @@ public class LoginDaoImpl extends AbstractEdbDao implements LoginDao{
 		
 		final Connection connection=getConnection();
 		Statement stmt=connection.createStatement();
-		final String empQuery="SELECT EMP_RESOURCE_NAME,EMP_EMPLOYEE_ID,EMP_ROLE,EMP_LEVEL, LASTLOGINTIME FROM EDB_MSTR_EMP_DTLS WHERE EMP_ID="+employeeId;
+		final String empQuery="SELECT EMP_RESOURCE_NAME,EMP_EMPLOYEE_ID,EMP_ROLE,EMP_LEVEL, LOGOUT, LASTLOGINTIME FROM EDB_MSTR_EMP_DTLS WHERE EMP_ID="+employeeId;
 		log.debug("Get Employee by Id Query:{}",empQuery);
 		final ResultSet resultSet = stmt.executeQuery(empQuery);
 		EDBUser user=null;
@@ -60,7 +61,8 @@ public class LoginDaoImpl extends AbstractEdbDao implements LoginDao{
 			user.setSapId(resultSet.getInt("EMP_EMPLOYEE_ID"));
 			user.setRole(resultSet.getString("EMP_ROLE"));
 			user.setLevel(resultSet.getString("EMP_LEVEL"));
-			user.setLastLoginDB(resultSet.getLong("LASTLOGINTIME"));
+			user.setLogout(resultSet.getBoolean("LOGOUT"));
+			user.setLastLoginTime(resultSet.getLong("LASTLOGINTIME"));
 		}
 		return user;
 		
@@ -70,9 +72,17 @@ public class LoginDaoImpl extends AbstractEdbDao implements LoginDao{
 	public void updateLogin(long lastLoginTime, Integer employeeId) throws SQLException, IOException{
 		final Connection connection=getConnection();
 		Statement stmt=connection.createStatement();
-		final String updateLoginQuery="UPDATE EDB_MSTR_EMP_DTLS SET LASTLOGINTIME="+lastLoginTime+ " WHERE EMP_ID="+employeeId;
+		final String updateLoginQuery="UPDATE EDB_MSTR_EMP_DTLS SET LASTLOGINTIME="+lastLoginTime+ ", LOGOUT=NO WHERE EMP_ID="+employeeId;
 		log.debug(updateLoginQuery);
 		stmt.executeUpdate(updateLoginQuery);
+	}
+	
+	public void updateLogout(Integer employeeId) throws SQLException, IOException{
+		final Connection connection=getConnection();
+		Statement stmt=connection.createStatement();
+		final String updateLogoutQuery="UPDATE EDB_MSTR_EMP_DTLS SET LOGOUT=YES WHERE EMP_ID="+employeeId;
+		log.debug(updateLogoutQuery);
+		stmt.executeUpdate(updateLogoutQuery);
 	}
 
 }
