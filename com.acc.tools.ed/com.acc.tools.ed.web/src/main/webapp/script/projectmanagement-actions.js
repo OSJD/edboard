@@ -404,6 +404,7 @@ $(document).ready(function(){
 							modal : true,
 							buttons : {
 								"Add Release" : function() { 
+									
 									var releaseIdCount=generateId("releases")+1;
 									var projectId=$("#projectId").val();
 									var releaseForm = $('#addReleaseForm').serializeArray();
@@ -447,8 +448,7 @@ $(document).ready(function(){
 										contentType : 'application/json; charset=utf-8',
 										dataType : 'json',		
 										beforeSend:function(){
-											alert(jsonString);
-											return false;
+											
 										  },
 										success : function(response) {
 											$('#releases').append('<option selected value="'+response.id+'">'+response.label+'</option>').change();
@@ -658,6 +658,12 @@ $(document).ready(function(){
 											minDate:projStartDate,
 											maxDate:projEndDate
 										});
+										
+										$("#releaseName").val('');
+										$("#releaseArtifacts").val('');
+										$("#releaseStartDate").val('');
+										$("#releaseEndDate").val('');
+										
 									},
 									error : function(data) {	
 										$("#mainContainer").html("Application error! Please call help desk. Error:"+data.status);

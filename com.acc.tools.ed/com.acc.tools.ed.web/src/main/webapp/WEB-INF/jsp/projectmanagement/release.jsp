@@ -14,7 +14,7 @@
 					</tr>
 					<tr>
 						<th style="text-align: right;">Release Name</th>
-						<td><input type="text" name="releaseName" class="textbox" /></td>
+						<td><input type="text" name="releaseName" class="textbox"  id="releaseName"/></td>
 						<th style="text-align: right;">Rel. Start Date</th>
 						<td style="width: 200px;"><input type="text" id="releaseStartDate" name="releaseStartDate" class="textbox" /></td>
 						<th style="text-align: right;">Rel. End Date</th>
@@ -23,7 +23,7 @@
 					<tr>
 						<th style="text-align: right;">Release Artifacts</th>
 						<td  colspan="5">
-							<textarea style="overflow: auto; resize: none;width: 800px;" rows="6" name="releaseArtifacts"	 class="textarea" ></textarea>  
+							<textarea style="overflow: auto; resize: none;width: 800px;" rows="6" name="releaseArtifacts"	id="releaseArtifacts" class="textarea" ></textarea>  
 						</td>
 					</tr>	
 					<tr>
