@@ -405,6 +405,21 @@ $(document).ready(function(){
 							buttons : {
 								"Add Release" : function() { 
 									
+									
+									var releaseName=$("#releaseName").val();
+									var relStartDate=$("#releaseStartDate").val();
+									var relEndDate=$("#releaseEndDate").val();
+									var relArti=$("#releaseArtifacts").val();
+									var relPlan = $('#addReleasePlan').html();
+									if(releaseName=='' || relStartDate=='' || relEndDate=='' || relArti==''){
+										alert("Missing Required Values!")
+										return false;
+										
+									} else if (relPlan=='') {
+										alert("Missing Release Plan!")
+										return false;
+									}
+									
 									var releaseIdCount=generateId("releases")+1;
 									var projectId=$("#projectId").val();
 									var releaseForm = $('#addReleaseForm').serializeArray();
@@ -448,6 +463,7 @@ $(document).ready(function(){
 										contentType : 'application/json; charset=utf-8',
 										dataType : 'json',		
 										beforeSend:function(){
+											
 											
 										  },
 										success : function(response) {
@@ -663,6 +679,7 @@ $(document).ready(function(){
 										$("#releaseArtifacts").val('');
 										$("#releaseStartDate").val('');
 										$("#releaseEndDate").val('');
+										$('#addReleasePlan').html('');
 										
 									},
 									error : function(data) {	
@@ -680,6 +697,11 @@ $(document).ready(function(){
 							var releaseStDt=$("#releaseStartDate").val();
 							var releaseEndDt=$("#releaseEndDate").val();
 							var projId = $("#projects").val();
+							if(releaseStDt == '' || releaseEndDt == ''){
+								alert("Please select the release start date and end date to create the release plan!");
+								return false;
+							} 
+														
 							$.ajax({
 								url : "./createReleasePlan.do",
 								data : "releaseStartDate="+releaseStDt+"&releaseEndDate="+releaseEndDt+"&projId="+projId,									
@@ -698,6 +720,12 @@ $(document).ready(function(){
 							var releaseEndDate=$("#editReleaseEndDate").val();
 							var releaseId = $("#releases option:selected").val();
 							var projectId=$("#projects option:selected").val();
+							
+							if(releaseStDt == '' || releaseEndDt == '' ){
+								alert("Please select the release start date and end date to get the release plan!");
+								return false;
+							} 
+							
 							$.ajax({
 								url : "./getReleasePlan.do",
 								data : {releaseStartDate:releaseStartDate,
