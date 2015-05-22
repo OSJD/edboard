@@ -721,7 +721,7 @@ $(document).ready(function(){
 							var releaseId = $("#releases option:selected").val();
 							var projectId=$("#projects option:selected").val();
 							
-							if(releaseStDt == '' || releaseEndDt == '' ){
+							if(releaseStartDate == '' || releaseEndDate == '' ){
 								alert("Please select the release start date and end date to get the release plan!");
 								return false;
 							} 
@@ -907,4 +907,13 @@ $(document).ready(function(){
 	}
 
 
+	function calculateTtlHrs(week){
+		var ttlHrs = 0;
+		$('input[type=text][id*='+week+']').each(function(){
+			if(this.id != week){
+				ttlHrs = ttlHrs+Number($(this).val());
+			}
+		});
+		$('#'+week).html(ttlHrs);
+	}
 	
