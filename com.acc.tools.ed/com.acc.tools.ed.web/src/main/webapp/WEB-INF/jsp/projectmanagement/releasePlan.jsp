@@ -42,7 +42,7 @@
 														<input type="hidden" size="1" value="${dayPlan.hours}" id="resDayHour${wrkStatus.index}_${weekPlan.key}${dayPlan.day}"></input>
 													</c:when>
 													<c:otherwise>
-														<div style="width: 20px;text-align:center; "><input type="text" size="1" value="${dayPlan.hours}" id="resDayHour${wrkStatus.index}_${weekPlan.key}${dayPlan.day}"></input></div>
+														<div style="width: 20px;text-align:center; "><input type="text" size="1" value="${dayPlan.hours}" id="resDayHour${wrkStatus.index}_${weekPlan.key}${dayPlan.day}" onkeyup="calculateTtlHrs('${weekPlan.key}')"></input></div>
 													</c:otherwise>
 												</c:choose>
 												
@@ -61,7 +61,7 @@
 						<th style="width: 300px;">
 							<table style="width: 100%; height: 100%;">
 								<tr>
-									<th style="text-align: center;">${releaseWeekPlanHrs.value}</th>
+									<th style="text-align: center;" id="${releaseWeekPlanHrs.key}">${releaseWeekPlanHrs.value}</th>
 								</tr>
 							</table>
 						</th>
