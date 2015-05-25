@@ -54,6 +54,7 @@
 						</c:forEach>
 					</tr>
 				</c:forEach>
+				
 				<tr>
 					<th style="width: 150px;">Week Hours</th>
 					<c:forEach var="releaseWeekPlanHrs"
