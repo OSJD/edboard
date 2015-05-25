@@ -906,7 +906,6 @@ $(document).ready(function(){
 		$("select[name=projectLead] option").slice(1).remove();
 	}
 
-
 	function calculateTtlHrs(week) {
 		var ttlHrs = 0;
 		$('input[type=text][id*='+week+']').each(function(){
