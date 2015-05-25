@@ -907,7 +907,7 @@ $(document).ready(function(){
 	}
 
 
-	function calculateTtlHrs(week){
+	function calculateTtlHrs(week) {
 		var ttlHrs = 0;
 		$('input[type=text][id*='+week+']').each(function(){
 			if(this.id != week){
