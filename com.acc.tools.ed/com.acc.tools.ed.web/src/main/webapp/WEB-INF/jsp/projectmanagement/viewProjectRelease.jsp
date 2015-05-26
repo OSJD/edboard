@@ -83,8 +83,8 @@
 										}
 										
 									}
-									var newComponentRow='<tr><td><img alt="edit project" src="./resources/edit.gif" width="20px;"></td>'+
-														'<td><img alt="delete project" src="./resources/delete.gif"  width="20px;"></td>'+
+									var newComponentRow='<tr><td><img alt="edit project" src="./resources/edit.gif" width="20px;">'+
+														'<img alt="delete project" src="./resources/delete.gif"  width="20px;"></td>'+
 														'<td id="compName">'+compName+'</td><td>'+phaseId+'</td>'+
 														'<td id="compFuncDesc"><div style="height:20px;display:table-cell;vertical-align:middle;">'+functionalDesc+'</div></td>'+
 														'<td id="comStDate">'+startDate+'</td><td id="compEtDate">'+endDate+'</td><td>Not Started</td>'+
@@ -448,16 +448,19 @@
 </div>
 <table class="ebdtable" id = "componentTable" style="width:100%;margin-top: 25px;">
 		<thead>
-			<th colspan="2" width="50px;"><a href="#" id="addNewCompnt"><img class="imgLink" 	alt="add comnponent" src="./resources/addnews.gif" width="20px;"></a></th>
-			<th style="width: 160px;">Component Name</th>
-			<th style="width: 80px;">Component Phase</th>
-			<th style="width: 450px;">Functional Desc</th>
-			<th style="width: 80px;">Start Date</th>
-			<th style="width: 80px;">End Date</th>
-			<th style="width: 80px;">Status</th>
-			<th style="width: 80px;">% Completed</th>
-			<th style="width: 150px;">Resource</th>
-			<th style="width: 450px;">Work Description</th>
+			<tr>
+				<th width="50px;"><a href="#" id="addNewCompnt"><img class="imgLink" alt="add comnponent" src="./resources/addnews.gif" width="20px;"></a></th>
+				<th style="width: 160px;">Component Name</th>
+				<th style="width: 80px;">Component Phase</th>
+				<th style="width: 450px;">Functional Desc</th>
+				<th style="width: 80px;">Start Date</th>
+				<th style="width: 80px;">End Date</th>
+				<th style="width: 80px;">Status</th>
+				<th style="width: 80px;">% Completed</th>
+				<th style="width: 150px;">Resource</th>
+				<th style="width: 450px;">Work Description</th>	
+			</tr>
+			
 		</thead>
 		<tbody>
 			<c:choose>	
@@ -477,8 +480,8 @@
 		        <c:otherwise>
 		        	<c:forEach var="component" items="${viewProjRelDetails.releases[0].components}">
 						<tr>
-							<td><img alt="edit project" src="./resources/edit.gif" width="20px;"></td>
-							<td><img alt="delete project" src="./resources/delete.gif"  width="20px;"></td>
+							<td><img alt="edit project" src="./resources/edit.gif" width="20px;">
+							<img alt="delete project" src="./resources/delete.gif"  width="20px;"></td>
 							<td width="215px;" id="compName">${component.componentName}</td>
 							<td width="115px">
 								<c:choose>
@@ -500,7 +503,7 @@
 								</c:choose>
 							</td>
 							<td width="295px;" id="compFuncDesc"><div style="height:20px;display:table-cell;vertical-align:middle;">${component.functionalDesc}</div></td>
-							<td awidth="80px;" id="comStDate">${component.startDate}</td>
+							<td width="80px;" id="comStDate">${component.startDate}</td>
 							<td width="80px;" id="compEtDate">${component.endDate}</td>
 							<td width="80px">Not Started</td>
 							<td width="80px" align="center">0 % </td>
