@@ -481,6 +481,7 @@ $(document).ready(
 					$("a[class='releaseRow']").each(function(index, obj){
 						if(obj.id!=releaseId){
 							$("#release"+obj.id).hide();
+							$("#comptree"+obj.id).html("[+]");
 						} 
 					});
 				} else{
