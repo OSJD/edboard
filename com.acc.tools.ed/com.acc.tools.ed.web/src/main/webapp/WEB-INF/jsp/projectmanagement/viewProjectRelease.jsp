@@ -43,6 +43,7 @@
 							var lselectedRelease=$("#releases").val();
 							var lphaseId=$("#componentPhase").val();
 							var lworkDesc=$("#workDesc").val();
+							if((lFunctionalDesc != '') && (lCompStartDate != '') && (lCompEndDate != '') && (lworkDesc != '') && (lComponentName != '') && (lCompResource != 0) && (lselectedRelease != 0)){
 							$.ajax({
 								type : "POST",
 								url : "./addComponent.do",
@@ -96,8 +97,13 @@
 								error : function(data) {	
 									$("#mainContainer").html("Application error! Please call help desk. Error:"+data.status);
 								}
-							});	  
+							});	
 							componentPopup.dialog("close");
+							}
+							else{
+								alert("Please enter the complete details")
+							}
+							
 						},
 						Cancel : function() {
 							componentPopup.dialog("close");
@@ -107,6 +113,15 @@
 			 });
 			$("#addNewCompnt").unbind("click").on("click", function() {
 				$("#componentPopup").dialog("open");
+				$("#componentName").val(-1);
+				$("#newComp").hide();
+				$("#newComponent").val('');
+				$("#functionalDesc").val('');
+				$("#compStartDate").val('');
+				$("#compEndDate").val('');
+				$("#compResourceList").val(0);
+				$("#componentPhase").val(0);
+				$("#workDesc").val('');
 			});		
 			
 		$("#componentName").unbind("change").on("change",function(){
@@ -148,7 +163,7 @@
 						}
 					}
 				}
-		});
+		}); 
 	});
 		
 		
