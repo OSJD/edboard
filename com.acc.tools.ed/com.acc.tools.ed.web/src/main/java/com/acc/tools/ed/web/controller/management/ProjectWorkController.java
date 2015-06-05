@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.acc.tools.ed.integration.dto.EDBUser;
+import com.acc.tools.ed.integration.dto.Issue;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.TaskForm;
@@ -164,5 +165,35 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 		projectWorkService.addTaskReviewDeveloperComments(taskform);
 		return null;
 	}
-
+	
+	@RequestMapping(value = "/keyIssues.do")
+	public String keyIssues(@ModelAttribute("projectList") List<ReferenceData> projectList,Model model){
+		model.addAttribute("projectList", getProjectList());
+		return "/projectwork/keyIssues";
+	}
+	
+	@RequestMapping(value = "/getIssues.do")
+	public String getIssues(@RequestParam("projectId") Integer projectId,@RequestParam("releaseId") Integer releaseId,Model model) {
+		model.addAttribute("issueList", projectWorkService.getIssues(projectId, releaseId));
+		return "/projectwork/keyIssues";
+	}
+	
+	@RequestMapping(value = "/addIssue.do")
+	public void addIssue(@RequestParam("projectId") Integer projectId,@RequestParam("releaseId") Integer releaseId,@ModelAttribute("issue") Issue issue){
+		getProjectWorkService().addIssue(issue, projectId, releaseId);
+	}
+	
+	@RequestMapping(value = "/editIssue.do")
+	public String editIssue(@RequestParam("projectId") Integer projectId,@RequestParam("releaseId") Integer releaseId,@ModelAttribute("issue") Issue issue,Model model){
+		getProjectWorkService().editIssue(issue);
+		model.addAttribute("issueList", projectWorkService.getIssues(projectId, releaseId));
+		return "/projectwork/keyIssues";
+	}
+	
+	@RequestMapping(value = "/deleteIssue.do")
+	public String deleteIssue(@RequestParam("projectId") Integer projectId,@RequestParam("releaseId") Integer releaseId,@RequestParam("issueId") Integer issueId,Model model){
+		getProjectWorkService().deleteIssue(issueId);
+		model.addAttribute("issueList", projectWorkService.getIssues(projectId, releaseId));
+		return "/projectwork/keyIssues";
+	}
 }
