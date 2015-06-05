@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.acc.tools.ed.integration.dao.ProjectWorkDao;
+import com.acc.tools.ed.integration.dto.Issue;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.TaskForm;
@@ -95,5 +96,21 @@ public class ProjectWorkServiceImpl implements ProjectWorkService {
 
 	public String getEmpNameByEmpId(Integer empId) {
 		return projectWorkDao.getEmpNameByEmpId(empId);
+	}
+	
+	public List<Issue> getIssues(Integer projectId, Integer releaseId) {
+		return projectWorkDao.getIssues(projectId, releaseId);
+	}
+	
+	public void addIssue(Issue issue,Integer projectId,Integer releaseId) {
+		projectWorkDao.addIssue(issue, projectId, releaseId);
+	}
+	
+	public void editIssue(Issue issue) {
+		projectWorkDao.editIssue(issue);
+	}
+	
+	public void deleteIssue(Integer issueId) {
+		projectWorkDao.deleteIssue(issueId);
 	}
 }
