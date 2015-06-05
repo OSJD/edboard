@@ -157,6 +157,29 @@
 					},
 			 });
 			 
+			$("#keyIssuesTable #projects").unbind("change").on("change", function(){
+				var selectedProject=$("#keyIssuesTable #projects").val();
+				$.ajax({
+					type : "POST",
+					url : "./fetchReleases.do",
+					data : {projectId:selectedProject},
+					dataType : 'json',	
+					
+					success : function(response) {
+						$('#keyIssuesTable #releases')
+						  	.find('option')
+						  	.remove();
+						$('#keyIssuesTable #releases').append('<option value="SR">Select Release</option>');
+						for(var obj in response){
+							$('#keyIssuesTable #releases').append('<option value='+response[obj].id+'>'+response[obj].label+'</option>');
+						};
+					},
+					error : function(data) {	
+						$("#mainContainer").html("Application error! Please call help desk. Error:"+data.status);
+					}
+				});	
+			});
+			 
 		});
 		
 		function validate(){
