@@ -2,6 +2,7 @@ package com.acc.tools.ed.integration.dao;
 
 import java.util.List;
 
+import com.acc.tools.ed.integration.dto.Issue;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.TaskForm;
@@ -30,5 +31,8 @@ public interface ProjectWorkDao {
 	public void addTaskLedger(TaskLedgerForm ledgerForm);
 	public void assignTaskReviewer(Integer taskId,Integer reviewerId,String status);
 	public String getEmpNameByEmpId(Integer employeeId);
-	
+	public List<Issue> getIssues(Integer projectId,Integer releaseId);
+	public void addIssue(Issue issue,Integer projectId,Integer releaseId);
+	public void editIssue(Issue issue);
+	public void deleteIssue(Integer issueId);
 }
