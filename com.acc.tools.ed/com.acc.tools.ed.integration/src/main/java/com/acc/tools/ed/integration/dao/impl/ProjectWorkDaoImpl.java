@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import com.acc.tools.ed.integration.dao.ProjectWorkDao;
 import com.acc.tools.ed.integration.dto.ComponentForm;
+import com.acc.tools.ed.integration.dto.Issue;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.ReleaseForm;
@@ -1077,5 +1078,82 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 		
 		return empName;
 		
+	}
+	
+	public List<Issue> getIssues(Integer projectId, Integer releaseId) {
+		List<Issue> issueList = null;
+		try{
+			issueList = new ArrayList<Issue>();
+			String issueListQuery = "SELECT ISSUE_ID,ISSUE_DESC,MTGTN_PLAN,ISSUE_ST_DT,ISSUE_END_DT FROM EDB_ISSUE WHERE PROJ_ID="+projectId+" AND MLSTN_ID="+releaseId;
+			log.debug("issueListQuery : {}",issueListQuery);
+			Statement selectStatement = getConnection().createStatement();
+			ResultSet rs = selectStatement.executeQuery(issueListQuery);
+			while(rs.next())
+			{
+				Issue issue = new Issue();
+				Date openDate = rs.getDate("ISSUE_ST_DT");
+				Date closeDate = rs.getDate("ISSUE_END_DT");
+				issue.setIssueId(rs.getInt("ISSUE_ID"));
+				issue.setIssueDesc(rs.getString("ISSUE_DESC"));
+				issue.setMtgtnPlan(rs.getString("MTGTN_PLAN"));
+				if(null != openDate){
+					issue.setOpenDate(new DateTime(openDate.getTime()).toString("MM/dd/yyyy"));
+				}
+				if(null != closeDate){
+					issue.setEndDate(new DateTime(closeDate.getTime()).toString("MM/dd/yyyy"));
+				}
+				issueList.add(issue);
+			}
+		}catch(Exception e){
+			log.error("Error while retrieving issue list");
+		}
+		return issueList;
+	}
+	
+	public void addIssue(Issue issue,Integer projectId,Integer releaseId){
+		try{
+			String addIssueQuery = "INSERT INTO EDB_ISSUE (ISSUE_DESC,MTGTN_PLAN,PROJ_ID,MLSTN_ID,ISSUE_ST_DT) VALUES (?,?,?,?,?)";
+			PreparedStatement pstm = getConnection().prepareStatement(addIssueQuery);
+			pstm.setString(1, issue.getIssueDesc());
+			pstm.setString(2, issue.getMtgtnPlan());
+			pstm.setInt(3, projectId);
+			pstm.setInt(4, releaseId);
+			pstm.setString(5,issue.getOpenDate());
+			pstm.executeUpdate();
+			pstm.close();
+		}catch(Exception e){
+			log.error("Error while adding the issue.");
+		}
+	}
+	
+	public void editIssue(Issue issue) {
+		try{
+			StringBuilder str = new StringBuilder("UPDATE EDB_ISSUE SET ");
+			str.append("ISSUE_DESC='"+issue.getIssueDesc()+"',MTGTN_PLAN='"+issue.getMtgtnPlan()+"'");
+			if(null != issue.getOpenDate() && !issue.getOpenDate().isEmpty()){
+				str.append(",ISSUE_ST_DT='"+issue.getOpenDate()+"'");
+			}
+			if(null != issue.getEndDate() && !issue.getEndDate().isEmpty()){
+				str.append(",ISSUE_END_DT='"+issue.getEndDate()+"'");
+			}
+			str.append(" WHERE ISSUE_ID="+issue.getIssueId());
+			log.debug("editQuery Query :{}",str.toString());
+			Statement statement = getConnection().createStatement();
+			statement.executeUpdate(str.toString());
+		}catch(Exception e){
+			log.error("Error while editing the issue.");
+		}
+		
+	}
+	
+	public void deleteIssue(Integer issueId) {
+		try{
+			String deleteQuery = "DELETE FROM EDB_ISSUE WHERE ISSUE_ID="+issueId;
+			log.debug("deleteQuery : {}",deleteQuery);
+			Statement statement = getConnection().createStatement();
+			statement.executeUpdate(deleteQuery);
+		}catch(Exception e){
+			log.error("Error while deleting the issue.");
+		}
 	}
 }
