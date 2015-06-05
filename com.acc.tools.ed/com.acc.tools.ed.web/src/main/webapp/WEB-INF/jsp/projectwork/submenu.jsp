@@ -19,4 +19,9 @@
 				<a href="#" action="./settings.do" id="pwsubtab5" class="subtabs">Settings</a>
 			</div>
 		</jstl:if>
+		<jstl:if test="${(edbUser.role =='SUPERVISOR') || (edbUser.role =='Lead')}">
+			 <div style="text-align:center; height:18px; width: 100px;border-right: 1px solid black;margin-top: 7px;float: left;">
+				<a href="#" action="./keyIssues.do" id="pwsubtab6" class="subtabs">Key Issues</a>
+			</div> 
+		</jstl:if>
 </div>	
