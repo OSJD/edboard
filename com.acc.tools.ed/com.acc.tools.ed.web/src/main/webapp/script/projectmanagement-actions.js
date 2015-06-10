@@ -838,7 +838,26 @@ $(document).ready(function(){
 					        });
 					        return false;
 					    });	
-					    
+					     $("#startDateFilter").datepicker({
+						 	showOn: 'button',
+							buttonText: 'Show Date',
+							buttonImageOnly: true,
+							buttonImage: 'resources/cal.gif',
+							dateFormat: 'mm/dd/yy',
+							constrainInput: true,
+							changeMonth: true, 
+							changeYear: true 
+					 }); 
+					 $("#endDateFilter").datepicker({
+						 	showOn: 'button',
+							buttonText: 'Show Date',
+							buttonImageOnly: true,
+							buttonImage: 'resources/cal.gif',
+							dateFormat: 'mm/dd/yy',
+							constrainInput: true,
+							changeMonth: true, 
+							changeYear: true 
+					 });
 					
 					});
 
@@ -915,4 +934,24 @@ $(document).ready(function(){
 		});
 		$('#'+week).html(ttlHrs);
 	}
+	
+	function downloadReport(){
+		 
+		 	var lReportType= $("#reportType").val();
+			var lStartDate = $("#startDateFilter").val();
+			var lEndDate = $("#endDateFilter").val();
+			var lReportFormat = $("#reportFormat").val();
+			var lProjectId = $("#projects").val();
+			var lselectedRelease=$("#releases").val();
+			
+			if((lProjectId != '0') && (lselectedRelease != '0') && (lReportType != '0') && (lStartDate != '') && (lEndDate != '') && (lReportFormat != '0')){
+				
+				$('#statusForm').submit();
+			}else{
+				alert("Please enter the complete details");
+				
+			}
+		 
+		 
+	 }
 	
