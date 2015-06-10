@@ -4,7 +4,7 @@
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <script src="<%=request.getContextPath()%>/script/projectmanagement-actions.js"></script>
-	<form:form commandName="statusForm" action="downloadWsr.do">
+	<form:form commandName="statusForm" action="downloadWsr.do" id="statusForm">
 	
 	<table class="ebdtableheader">
 		<tr>
@@ -34,11 +34,15 @@
 					<option value="Monthly">Monthly</option>
 				</form:select></td>
 			<th style="text-align: right;">Start Date</th>
-			<td><form:input type="date" id="startDate" class="textbox"
-					path="startDate" value ="1/2/2015"/></td>
+			<td><form:input type="text" id="startDateFilter" class="textbox" path="startDate"/></td>
 			<th style="text-align: right;">End Date</th>
-			<td><form:input type="date" id="endDate" class="textbox"
-					path="endDate" value ="2/28/2015"/></td>
+			<td><form:input type="text" id="endDateFilter" class="textbox" path="endDate"/></td>
+			<th>Report Format</th>
+			<td><form:select id="reportFormat" class="textbox" path="reportFormat">
+					<option value="0">Report Format</option>
+					<option value="Word">WORD</option>
+					<option value="Pdf">PDF</option>
+				</form:select></td>
 		</tr>
 	</table>
 	<div class="boxmsg border-boxmsg" style="width: 580px; color: red;">
@@ -48,5 +52,5 @@
 	</div>
 
 <!-- <a href="./downloadWsr.do" class="button" id="downloadWsr" style="width: 100px;">Download Report</a>  -->
-<input type="submit" value="Download Report"  /> 
+<input type="button" value="Download Report" onclick = "downloadReport()"  /> 
 </form:form>
