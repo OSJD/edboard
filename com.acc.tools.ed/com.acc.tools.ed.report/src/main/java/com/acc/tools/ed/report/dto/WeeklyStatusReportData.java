@@ -21,6 +21,7 @@ public class WeeklyStatusReportData implements Serializable{
 	private List<String> currentTasks;
 	private List<String> upcomingTasks;
 	private String reportingPeriod;
+	private String reportFormat;
 	public String getProgramName() {
 		return programName;
 	}
@@ -87,5 +88,10 @@ public class WeeklyStatusReportData implements Serializable{
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
 	}
-
+	public String getReportFormat() {
+		return reportFormat;
+	}
+	public void setReportFormat(String reportFormat) {
+		this.reportFormat = reportFormat;
+	}
 }
