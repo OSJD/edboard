@@ -11,5 +11,5 @@ import com.acc.tools.ed.report.dto.WeeklyStatusReportData;
 public interface MSWordReportTemplate {
 	
 	public  OutputStream generateWordWeeklyStatusReport(WeeklyStatusReportData reportData) throws IOException, Docx4JException, URISyntaxException;
-
+	public  OutputStream generateWordWeeklyStatusReportPDF(WeeklyStatusReportData reportData) throws IOException, Docx4JException, URISyntaxException;
 }
