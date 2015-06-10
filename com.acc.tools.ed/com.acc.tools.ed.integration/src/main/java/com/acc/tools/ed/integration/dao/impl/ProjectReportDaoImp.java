@@ -28,7 +28,7 @@ public class ProjectReportDaoImp extends AbstractEdbDao implements ProjectReport
 	@Autowired
 	private MSWordReportTemplate msWordReportTemplate;
 
-	public void getAccomplishments(Integer releaseId, Integer projectId ,Integer programId,HttpServletResponse response,String startDate,String endDate,String status) {
+	public void getAccomplishments(Integer releaseId, Integer projectId ,Integer programId,HttpServletResponse response,String startDate,String endDate,String status,String reportFormat) {
 
 
 		WeeklyStatusReportData reportData=new WeeklyStatusReportData();
@@ -60,10 +60,10 @@ public class ProjectReportDaoImp extends AbstractEdbDao implements ProjectReport
 				reportData.setProgramName(rs.getString("PRGM_NAME"));
 				reportData.setProjectName(rs.getString("PROJ_NAME"));
 				reportData.setReleaseName(rs.getString("MLSTN_NAME"));
-				reportData.setStartDate("01/01/2015");
-				reportData.setEndDate("02/27/2015");
+				reportData.setStartDate(startDate);
+				reportData.setEndDate(endDate);
 				reportData.setRevisedEndDate("");
-				reportData.setStatus("NotStarted");
+				reportData.setStatus(status);
 				String milestone = rs.getString("MLSTN_DESC");
 				reportData.setMilestoneMitigation(milestone); 
 				System.out.println("final results::"+ milestone );
@@ -86,13 +86,24 @@ public class ProjectReportDaoImp extends AbstractEdbDao implements ProjectReport
 
 
 
-			ByteArrayOutputStream output=(ByteArrayOutputStream)msWordReportTemplate.generateWordWeeklyStatusReport(reportData);
-			byte[] outbytes=output.toByteArray();
-			response.setContentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-			//response.setHeader("Content-Disposition","attachment; filename=\"WeeklyStatusReport.docx\"");
-			response.setHeader("Content-Disposition", String.format("inline; filename=\"%s\" ; size=\"%d\"", "WeeklyStatusReport.docx",outbytes.length));
+			ByteArrayOutputStream output = null;
+			byte[] outbytes = null;
+			if(reportFormat.equalsIgnoreCase("Word")){
+				output=(ByteArrayOutputStream)msWordReportTemplate.generateWordWeeklyStatusReport(reportData);
+				outbytes=output.toByteArray();
+				response.setContentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+				//response.setHeader("Content-Disposition","attachment; filename=\"WeeklyStatusReport.docx\"");
+				response.setHeader("Content-Disposition", String.format("inline; filename=\"%s\" ; size=\"%d\"", "WeeklyStatusReport.docx",outbytes.length));
+			}else{
+				output=(ByteArrayOutputStream)msWordReportTemplate.generateWordWeeklyStatusReportPDF(reportData);
+				outbytes=output.toByteArray();
+				response.setContentType("application/pdf");
+				//response.setHeader("Content-Disposition","attachment; filename=\"WeeklyStatusReport.docx\"");
+				//response.setHeader("Content-Disposition", String.format("inline; filename=\"%s\" ; size=\"%d\"", "WeeklyStatusReport.pdf",outbytes.length));
+				response.setHeader("Content-Disposition","attachment;filename=\"WeeklyStatusReport.pdf\"");
+			}
 			outStream.write(outbytes);
-			output.close();
+			output.flush();
 			//outStream.flush();
 			//outStream.close();
 			response.flushBuffer();
@@ -115,7 +126,7 @@ public class ProjectReportDaoImp extends AbstractEdbDao implements ProjectReport
 		// return projectPlanData;
 	}
 
-	public void generateReport(String projectId, String releaseId,HttpServletResponse response,String startDate,String endDate,String status) {
+	public void generateReport(String projectId, String releaseId,HttpServletResponse response,String startDate,String endDate,String status,String reportFormat) {
 
 		System.out.println("reached dao impl::"+ projectId+" " +releaseId+" "+startDate+" "+ endDate);
 		String query ="SELECT PROJ_NAME,PRGM_ID FROM EDB_PROJECT WHERE PROJ_ID  = ?";
@@ -157,7 +168,7 @@ public class ProjectReportDaoImp extends AbstractEdbDao implements ProjectReport
 
 						if(mlstnName!= null)
 						{
-							getAccomplishments(relId, projId, programId,response,startDate,endDate,status);
+							getAccomplishments(relId, projId, programId,response,startDate,endDate,status,reportFormat);
 						}
 					}
 				}
