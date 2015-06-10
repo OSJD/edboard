@@ -6,5 +6,5 @@ public interface ProjectReportService {
 
 	
 	
-	public void generateReport(String projectName, String releaseName,HttpServletResponse response,String startDate,String endDate,String status);
+	public void generateReport(String projectName, String releaseName,HttpServletResponse response,String startDate,String endDate,String status,String reportFormat);
 }
