@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created using an evaluation version of JasperAssistant (http://www.jasperassistant.com) -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="tt" pageWidth="550" pageHeight="842" columnWidth="510" leftMargin="20" rightMargin="20" topMargin="30" bottomMargin="30">
+	<property name="com.jasperassistant.designer.Grid" value="false"/>
+	<property name="com.jasperassistant.designer.SnapToGrid" value="false"/>
+	<property name="com.jasperassistant.designer.GridWidth" value="12"/>
+	<property name="com.jasperassistant.designer.GridHeight" value="12"/>
+	<queryString language="XPath">
+		<![CDATA[/root/EDB]]>
+	</queryString>
+	<field name="startDate" class="java.lang.String">
+		<fieldDescription><![CDATA[/root/EDB/startDate]]></fieldDescription>
+	</field>
+	<field name="releaseName" class="java.lang.String">
+		<fieldDescription><![CDATA[/root/EDB/releaseName]]></fieldDescription>
+	</field>
+	<field name="status" class="java.lang.String">
+		<fieldDescription><![CDATA[/root/EDB/status]]></fieldDescription>
+	</field>
+	<field name="projectName" class="java.lang.String">
+		<fieldDescription><![CDATA[/root/EDB/projectName]]></fieldDescription>
+	</field>
+	<field name="endDate" class="java.lang.String">
+		<fieldDescription><![CDATA[/root/EDB/endDate]]></fieldDescription>
+	</field>
+	<sortField name="startDate"/>
+	<title>
+		<band height="50">
+			<staticText>
+				<reportElement x="2" y="9" width="509" height="34"/>
+				<textElement textAlignment="Center">
+					<font size="20"/>
+				</textElement>
+				<text><![CDATA[PROJECT STATUS REPORT]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="45">
+			<staticText>
+				<reportElement x="1" y="2" width="89" height="32"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Release Name
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="329" y="1" width="80" height="33"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Release End Date
+
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="249" y="1" width="80" height="32"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Release Start Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="91" y="3" width="157" height="32"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Project Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="409" y="0" width="75" height="34"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Status
+]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="-2" y="37" width="509" height="5"/>
+			</rectangle>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="22">
+			<elementGroup/>
+			<textField hyperlinkType="None">
+				<reportElement x="250" y="2" width="80" height="20"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{startDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="410" y="1" width="76" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{status}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="2" y="1" width="88" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{releaseName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="90" y="1" width="161" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{projectName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="330" y="2" width="80" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{endDate}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
