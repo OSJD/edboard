@@ -56,9 +56,10 @@ public class ProjectStatusReportControlller extends AbstractEdbBaseController {
 		String startDate =statusForm.getStartDate();
 		String endDate=	statusForm.getEndDate();
 		String status = statusForm.getStatus();
+		String reportFormat = statusForm.getReportFormat();
 
 		System.out.println("project name::"+projectName +"releasename::"+releaseName +"start date::"+startDate +"enddate::"+ endDate +"Status::"+ status);
-		projectReportService.generateReport(projectName, releaseName, response,startDate,endDate,status);
+		projectReportService.generateReport(projectName, releaseName, response,startDate,endDate,status,reportFormat);
 		}
 		else
 		{
