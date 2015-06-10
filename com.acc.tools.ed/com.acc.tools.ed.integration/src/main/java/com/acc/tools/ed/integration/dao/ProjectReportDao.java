@@ -8,7 +8,7 @@ public interface ProjectReportDao {
 
 	public void generateReport(String projectName, String releaseName,
 			HttpServletResponse response, String startDate, String endDate,
-			String status);
+			String status,String reportFormat);
 
 
 
