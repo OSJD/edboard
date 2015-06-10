@@ -1,5 +1,5 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@ include file="/WEB-INF/jsp/includes/document-header.jsp"%>
+<%-- <%@ include file="/WEB-INF/jsp/includes/document-header.jsp"%> --%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
