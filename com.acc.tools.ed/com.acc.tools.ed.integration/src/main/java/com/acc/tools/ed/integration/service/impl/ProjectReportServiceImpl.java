@@ -19,12 +19,12 @@ public class ProjectReportServiceImpl implements ProjectReportService{
 	private ProjectReportDao projectReportDao;
 
 
-	public void generateReport(String projectName, String releaseName,HttpServletResponse response,String startDate,String endDate,String status)
+	public void generateReport(String projectName, String releaseName,HttpServletResponse response,String startDate,String endDate,String status,String reportFormat)
 
 	{
 		try{
 			System.out.println("passing the values from impl");
-			projectReportDao.generateReport(projectName, releaseName, response, startDate, endDate,status);
+			projectReportDao.generateReport(projectName, releaseName, response, startDate, endDate,status,reportFormat);
 		}
 		catch(Exception e)
 		{
