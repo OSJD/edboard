@@ -1,14 +1,29 @@
 package com.acc.tools.ed.report.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
-import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.query.JRXPathQueryExecuterFactory;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -176,6 +191,70 @@ public class MSWordReportTemplateImpl implements MSWordReportTemplate{
 		final InputStream inputStrm= MSWordReportTemplateImpl.class.getClassLoader().getResourceAsStream(path);
 		byte[] encoded=IOUtils.toByteArray(inputStrm);
 		return new String(encoded, encoding);
+	}
+	
+	public OutputStream generateWordWeeklyStatusReportPDF(WeeklyStatusReportData reportData) throws IOException, Docx4JException, URISyntaxException {
+		
+		ByteArrayOutputStream outputPDF = null;
+		
+		StringBuilder xmlFormat = createHeaderXML();
+		
+		xmlFormat.append("<EDB>");
+		xmlFormat.append("<releaseName>").append(reportData.getReleaseName()).append("</releaseName>");
+		xmlFormat.append("<projectName>").append(reportData.getProjectName()).append("</projectName>");
+		xmlFormat.append("<startDate>").append(reportData.getStartDate()).append("</startDate>");
+		xmlFormat.append("<endDate>").append(reportData.getEndDate()).append("</endDate>");
+		xmlFormat.append("<status>").append(reportData.getStatus()).append("</status>");
+		xmlFormat.append("</EDB>");
+		xmlFormat.append("</root>");
+		System.out.println(xmlFormat.toString());
+		
+		outputPDF = GeneratestatusReportPDF(xmlFormat);
+		
+		
+		// TODO Auto-generated method stub
+		return outputPDF;
+	}
+
+	private ByteArrayOutputStream GeneratestatusReportPDF(StringBuilder xmlFormat) {
+		ByteArrayOutputStream output = null;
+		try{
+			Map<String, Object> params = new HashMap<String, Object>();
+			org.w3c.dom.Document document;
+			DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
+	    	DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
+	    	InputStream stream = new ByteArrayInputStream(xmlFormat.toString().getBytes(StandardCharsets.UTF_8));
+	
+	    	document = documentBuilder.parse(stream);
+	    	
+	    	params.put(JRXPathQueryExecuterFactory.PARAMETER_XML_DATA_DOCUMENT, document);
+	        params.put(JRXPathQueryExecuterFactory.XML_DATE_PATTERN, "yyyy-MM-dd");
+	        params.put(JRXPathQueryExecuterFactory.XML_NUMBER_PATTERN, "#,##0.##");
+	        params.put(JRXPathQueryExecuterFactory.XML_LOCALE, Locale.ENGLISH);
+	        params.put(JRParameter.REPORT_LOCALE, Locale.US);
+	       
+	        
+	        JasperReport report =  JasperCompileManager.compileReport(MSWordReportTemplateImpl.class.getClassLoader().getResourceAsStream("resources/JRXML/PROJ_STTS_RPT.jrxml"));
+	        JasperPrint print = JasperFillManager.fillReport(report,params);
+	        
+	        byte[] bytes= JasperExportManager.exportReportToPdf(print);
+	        output = new ByteArrayOutputStream(bytes.length);
+	        output.write(bytes, 0, bytes.length);
+		}catch(Exception e){
+			
+		}
+		return output;
+	}
+
+	private StringBuilder createHeaderXML() {
+		// TODO Auto-generated method stub
+		StringBuilder BaseDocument = new StringBuilder();
+		   BaseDocument.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+		   BaseDocument.append("<root>");
+		   BaseDocument.append("<Header>");
+		   BaseDocument.append("<reportTitle>").append("Status Report").append("</reportTitle>");
+		   BaseDocument.append("</Header>");
+		   return (BaseDocument);
 	}
 
 	
