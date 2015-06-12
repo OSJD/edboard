@@ -15,6 +15,8 @@ import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.ReleaseForm;
 import com.acc.tools.ed.integration.dto.ReleasePlan;
+import com.acc.tools.ed.integration.dto.ResourceDetails;
+
 
 public interface ProjectManagementService { 
 	public ReferenceData addProject(ProjectForm project);
@@ -45,4 +47,8 @@ public interface ProjectManagementService {
 	public ReleasePlan fetchReleasePlan(DateTime relDateStart,DateTime relDateEnd,Integer releaseId,Integer projId);
 	public List<ReferenceData> getResourcesByProjectId(Integer projectId);
 	public void addReleasePlanUpdate(ReleaseForm editReleaseForm) throws ParseException;
+	public List<String> getSkill();
+	public List<String> getLevel();
+	public List<String> getCapability();
+	public ReferenceData addResource(ResourceDetails resourceData);
 }
