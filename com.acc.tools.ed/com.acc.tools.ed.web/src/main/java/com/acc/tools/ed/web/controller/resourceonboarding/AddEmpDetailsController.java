@@ -15,8 +15,8 @@ import com.acc.tools.ed.web.controller.common.AbstractEdbBaseController;
 @SessionAttributes({ "edbUser" })
 public class AddEmpDetailsController extends AbstractEdbBaseController {
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(AddEmpDetailsController.class);
+	/*private static final Logger LOG = LoggerFactory
+			.getLogger(AddEmpDetailsController.class);*/
 
 	@Autowired
 	ProjectManagementService projectManagementService;
