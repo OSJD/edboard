@@ -1,6 +1,7 @@
 package com.acc.tools.ed.integration.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class ResourceDetails implements Serializable{
 
@@ -16,6 +17,12 @@ public class ResourceDetails implements Serializable{
 	private String previousLocation;
 	private String auditProcTimeStamp;
 	private String auditProcUser;
+	private List<String> skillList;
+	private String enterpriseId;
+	private String role;
+	private String projectStartDate;
+	private String projectEndDate;
+	
 	public String getResourceId() {
 		return ResourceId;
 	}
@@ -81,6 +88,67 @@ public class ResourceDetails implements Serializable{
 	}
 	public void setAuditProcUser(String auditProcUser) {
 		this.auditProcUser = auditProcUser;
+	}
+	
+	/**
+	 * @return the skillList
+	 */
+	public List<String> getSkillList() {
+		return skillList;
+	}
+	/**
+	 * @param skillList the skillList to set
+	 */
+	public void setSkillList(List<String> skillList) {
+		this.skillList = skillList;
+	}
+	/**
+	 * @return the enterpriseId
+	 */
+	public String getEnterpriseId() {
+		return enterpriseId;
+	}
+	/**
+	 * @param enterpriseId the enterpriseId to set
+	 */
+	public void setEnterpriseId(String enterpriseId) {
+		this.enterpriseId = enterpriseId;
+	}
+	/**
+	 * @return the role
+	 */
+	public String getRole() {
+		return role;
+	}
+	/**
+	 * @param role the role to set
+	 */
+	public void setRole(String role) {
+		this.role = role;
+	}
+	/**
+	 * @return the projectStartDate
+	 */
+	public String getProjectStartDate() {
+		return projectStartDate;
+	}
+	/**
+	 * @param projectStartDate the projectStartDate to set
+	 */
+	public void setProjectStartDate(String projectStartDate) {
+		this.projectStartDate = projectStartDate;
+	}
+	/**
+	 * @return the projectEndDate
+	 */
+	public String getProjectEndDate() {
+		return projectEndDate;
+	}
+	/**
+	 * @param projectEndDate the projectEndDate to set
+	 */
+	public void setProjectEndDate(String projectEndDate) {
+		this.projectEndDate = projectEndDate;
 	}
 
 }
