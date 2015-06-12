@@ -11,6 +11,7 @@ import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.ReleaseForm;
 import com.acc.tools.ed.integration.dto.ReleaseWeek;
+import com.acc.tools.ed.integration.dto.ResourceDetails;
 import com.acc.tools.ed.integration.dto.WeekDates;
 
 public interface ProjectManagementDao {
