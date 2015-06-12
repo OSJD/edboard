@@ -21,12 +21,12 @@ public class AddEmpDetailsController extends AbstractEdbBaseController {
 	@Autowired
 	ProjectManagementService projectManagementService;
 
-	@RequestMapping(value = "/addEmpDetailsForm.do")
+	/*@RequestMapping(value = "/addEmpDetailsForm.do")
 	public String addEmpDetails(Model model) {
 		//model.addAttribute("addRRDDetailsForm", new RRDDetailsForm());
 		// model.addAttribute("addReleaseForm", new ReleaseForm());
 		System.out.println("resourceonboarding");
 		return "/resourcemanagement/addempdetails";
-	}
+	}*/
 
 }
