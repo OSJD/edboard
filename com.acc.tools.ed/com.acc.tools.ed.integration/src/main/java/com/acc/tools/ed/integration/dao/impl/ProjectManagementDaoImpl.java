@@ -11,6 +11,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -807,7 +809,7 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 			//Employee table
 			final StringBuffer employeeTable=new StringBuffer();
 			employeeTable.append("SELECT EMP_RESOURCE_NAME,EMP_ENTERPRISE_ID,EMP_EMPLOYEE_ID,");
-			employeeTable.append("EMP_LEVEL,EMP_ROLE,EMP_MOBILE_NO,EMP_DOJ_ACCENTURE FROM EDB_MSTR_EMP_DTLS");
+			employeeTable.append("EMP_LEVEL,EMP_ROLE,EMP_MOBILE_NO,EMP_PROJECT_START_DATE FROM EDB_MSTR_EMP_DTLS");
 			PreparedStatement  preparedStatement = getConnection().prepareStatement(employeeTable.toString());
 			ResultSet r1 = preparedStatement.executeQuery();
 			while(r1.next()){
@@ -818,7 +820,7 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 				emp.setEmployeeLevel(r1.getString("EMP_LEVEL"));
 				emp.setEmployeeRole(r1.getString("EMP_ROLE"));
 				emp.setEmployeePrimaryContactNo(r1.getString("EMP_MOBILE_NO"));
-				emp.setAccentureDOJ(r1.getString("EMP_DOJ_ACCENTURE"));
+				emp.setAccentureDOJ(r1.getString("EMP_PROJECT_START_DATE"));
 				empList.add(emp);
 			}
 			preparedStatement.close();
@@ -831,6 +833,7 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
     
 	/**
      * Method to save release details.
+     * 
      *
      */
 	public void addReleasePlan(int releaseId,Map<String,Map<String,ReleaseWeek>> resourceWeekHoursMap) {
@@ -995,6 +998,98 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 			log.error("Failed to delete Release plan for Release id"+releaseId,e);
 		}
 		return status;
+	}
+	
+	public List<String> getSkill(){
+		try{
+			final String getskillQuery = "SELECT SKILL_NAME FROM EDB_ROT_SKILL";
+			ArrayList<String> skillList = new ArrayList<String>();
+			PreparedStatement  preparedStatement = getConnection().prepareStatement(getskillQuery);
+			ResultSet rs = preparedStatement.executeQuery();
+			while(rs.next()){
+				skillList.add(rs.getString("SKILL_NAME"));
+			}
+			return skillList;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public List<String> getLevel(){
+		try{
+			final String getLevelQuery = "SELECT LEVEL_NAME FROM EDB_ROT_LEVEL";
+			ArrayList<String> levelList = new ArrayList<String>();
+			PreparedStatement  preparedStatement = getConnection().prepareStatement(getLevelQuery);
+			ResultSet rs = preparedStatement.executeQuery();
+			while(rs.next()){
+				levelList.add(rs.getString("LEVEL_NAME"));
+			}
+			return levelList;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public List<String> getCapability(){
+		try{
+			final String getCapabilityQuery = "SELECT CAPABILITY_NAME FROM EDB_ROT_CAPABILITY";
+			ArrayList<String> capabilityList = new ArrayList<String>();
+			ArrayList<String> capListWoDuplicates = new ArrayList<String>();
+			PreparedStatement  preparedStatement = getConnection().prepareStatement(getCapabilityQuery);
+			ResultSet rs = preparedStatement.executeQuery();
+			while(rs.next()){
+				capabilityList.add(rs.getString("CAPABILITY_NAME"));
+				capListWoDuplicates = new ArrayList<String>(new LinkedHashSet<String>(capabilityList));
+			}
+			
+			return capListWoDuplicates;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public ReferenceData addResource(ResourceDetails resourceDetails) {
+		
+		final ReferenceData refData=new ReferenceData();
+
+		try{
+				//Insert Program
+				log.debug("New Program Name:{} Existing Program id:{}",resourceDetails.getEmployeeName(),resourceDetails.getEmployeeNumber());
+				if(resourceDetails.getEmployeeNumber() != null) {
+					log.debug("New Program Name:[{}] | New Program Id:[{}]",resourceDetails.getEmployeeName(),resourceDetails.getEmployeeNumber());
+					String prgInsQuery = "insert into EDB_MSTR_EMP_DTLS(EMP_RESOURCE_NAME, EMP_ENTERPRISE_ID, EMP_EMPLOYEE_ID, EMP_EMAIL, EMP_MOBILE_NO, EMP_SKILL, EMP_CAPABILITY, EMP_LEVEL, EMP_ROLE, EMP_PROJECT_START_DATE, EMP_ROLLOFF_DATE, EMP_PREVIOUS_LOCATION) values (?,?,?,?,?,?,?,?,?,?,?,?)";
+					PreparedStatement prgmPrepStmt = getConnection().prepareStatement(prgInsQuery);
+					prgmPrepStmt.setString(1, resourceDetails.getEmployeeName());
+					prgmPrepStmt.setString(2, resourceDetails.getEnterpriseId());
+					prgmPrepStmt.setString(3, resourceDetails.getEmployeeNumber());
+					prgmPrepStmt.setString(4, resourceDetails.getEmailId());
+					prgmPrepStmt.setString(5, resourceDetails.getContactNumber());
+					prgmPrepStmt.setString(6, resourceDetails.getSkill());
+					prgmPrepStmt.setString(7, resourceDetails.getCapability());
+					prgmPrepStmt.setString(8, resourceDetails.getLevel());
+					prgmPrepStmt.setString(9, resourceDetails.getRole());
+					prgmPrepStmt.setString(10, resourceDetails.getProjectStartDate());
+					prgmPrepStmt.setString(11, resourceDetails.getProjectEndDate());
+					prgmPrepStmt.setString(12, resourceDetails.getPreviousLocation());
+					prgmPrepStmt.executeUpdate();
+					prgmPrepStmt.close();
+					
+					
+				}
+							
+			}catch(Exception e)	{
+				log.error("Error inserting employee table :",e);
+				refData.setId("-1");
+				refData.setLabel(e.getMessage());
+				return refData;
+			}
+		return refData;
 	}
 }
 
