@@ -44,4 +44,8 @@ public interface ProjectManagementDao {
 	public ProjectForm getReleaseData(Integer releaseId);
 	public int releaseCountByProjectId(String projectId);
 	public List<ReferenceData> getResourcesByProjectId(Integer projectId);
+	public List<String> getSkill();
+	public List<String> getLevel();
+	public List<String> getCapability();
+	public ReferenceData addResource(ResourceDetails resourceDetails);
 }
