@@ -31,6 +31,8 @@ import com.acc.tools.ed.integration.dto.ResourceWeekWorkPlan;
 import com.acc.tools.ed.integration.dto.ResourceWorkPlan;
 import com.acc.tools.ed.integration.dto.WeekDates;
 import com.acc.tools.ed.integration.service.ProjectManagementService;
+import com.acc.tools.ed.integration.dto.ResourceDetails;
+
 
 @Service("projectManagementService")
 public class ProjectManagementServiceImpl implements ProjectManagementService{
@@ -528,6 +530,39 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 			dayPosition=6;
 		}
 		return dayPosition;
+	}
+	
+	public List<String> getSkill(){
+		return projectManagementDao.getSkill();
+	}
+	
+	public List<String> getLevel(){
+		return projectManagementDao.getLevel();
+	}
+	
+	public List<String> getCapability(){
+		return projectManagementDao.getCapability();
+	}
+	
+	
+	public ReferenceData addResource(ResourceDetails resourceDetails) {
+		try {
+			final boolean isProjectExist=projectManagementDao.isProjectExist(resourceDetails.getResourceId());
+			if(!isProjectExist){
+			 return projectManagementDao.addResource(resourceDetails);
+			} else {
+				ReferenceData errorData=new ReferenceData();
+				errorData.setId("-2");
+				errorData.setLabel("Project with name "+resourceDetails.getEmployeeName()+"already exist!");
+				return errorData;				
+			}
+		}catch (Exception e)
+		{
+			ReferenceData errorData=new ReferenceData();
+			errorData.setId("-1");
+			errorData.setLabel(e.getMessage());
+			return errorData;
+		}
 	}
 	
 }
