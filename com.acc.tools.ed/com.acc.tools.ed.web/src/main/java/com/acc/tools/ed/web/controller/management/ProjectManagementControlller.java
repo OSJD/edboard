@@ -30,6 +30,7 @@ import com.acc.tools.ed.integration.dto.ReleaseForm;
 import com.acc.tools.ed.integration.dto.ReleasePlan;
 import com.acc.tools.ed.integration.dto.ReleaseWeek;
 import com.acc.tools.ed.web.controller.common.AbstractEdbBaseController;
+import com.acc.tools.ed.integration.dto.ResourceDetails;
 
 @Controller
 @SessionAttributes({ "edbUser" }) 
@@ -44,6 +45,7 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		model.addAttribute("addProjectForm", new ProjectForm());
 		model.addAttribute("addReleaseForm", new ReleaseForm());		
 		model.addAttribute("editProjectForm", new ProjectForm());
+		model.addAttribute("addEmpDetailsForm",new ResourceDetails());
 		
 		return "/projectmanagement/projectPlan";
 	}
@@ -243,6 +245,7 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		model.addAttribute("addProjectForm", new ProjectForm());
 		model.addAttribute("addReleaseForm", new ReleaseForm());		
 		model.addAttribute("editProjectForm", new ProjectForm());
+		model.addAttribute("addEmpDetailsForm",new ResourceDetails());
 		model.addAttribute("projectList", getProjectList());
 		return "/projectmanagement/index";
 	}
