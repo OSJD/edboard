@@ -26,6 +26,8 @@ import com.acc.tools.ed.integration.dto.TaskForm;
 import com.acc.tools.ed.integration.service.ILoginService;
 import com.acc.tools.ed.integration.service.ProjectWorkService;
 import com.acc.tools.ed.web.controller.common.AbstractEdbBaseController;
+import com.acc.tools.ed.integration.dto.ResourceDetails;
+
 /**
  * 
  * @author nikhil.jagtiani
@@ -58,6 +60,7 @@ public class LoginController extends AbstractEdbBaseController{
 			model.addAttribute("addProjectForm",new ProjectForm());
 			model.addAttribute("addTaskForm",new TaskForm());
 			model.addAttribute("editProjectForm", new ProjectForm());
+			model.addAttribute("addEmpDetailsForm",new ResourceDetails());
 		return "/login/index";
 		} else {
 			return "redirect:/login.do";
@@ -92,6 +95,7 @@ public class LoginController extends AbstractEdbBaseController{
 					model.addAttribute("addProjectForm",new ProjectForm());
 					model.addAttribute("addTaskForm",new TaskForm());
 					model.addAttribute("editProjectForm", new ProjectForm());
+					model.addAttribute("addEmpDetailsForm",new ResourceDetails());
 					List<ProjectForm> projData=projectWorkService.getMyTasks(user.getEmployeeId());
 					model.addAttribute("projData",projData);
 					iLoginService.updateLogin(lastLoginForm,user.getEmployeeId());
