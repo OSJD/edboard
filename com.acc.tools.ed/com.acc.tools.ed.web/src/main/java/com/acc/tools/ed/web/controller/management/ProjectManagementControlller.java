@@ -63,6 +63,7 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		projectList.add(newProject);		
 		model.addAttribute("projectList", projectList);
 		model.addAttribute("programList",getProgramList());
+		model.addAttribute("addEmpDetailsForm",new ResourceDetails());
 		LOG.debug("Add Project retruned --> Project Id: {} | Project Name:{}", newProject.getId(),newProject.getLabel());
 		return "/projectmanagement/index";
 	}
