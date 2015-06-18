@@ -364,6 +364,10 @@ $(document).ready(function(){
 								url : "./fetchInitialProjectSetupDetails.do",
 								dataType:'json',
 								success : function(response) {
+									$('#stringResources').empty();
+									$('#selectedResources1').empty();
+									$('#projectStartDate').val('');
+									$('#projectEndDate').val('');
 									$.each(response, function(outerKey, outerValue){
 									   if(outerKey=='resourceList'){
 										    $.each(outerValue, function(key, value){
@@ -814,6 +818,7 @@ $(document).ready(function(){
 					                $("#selectedResources1").focus();
 					            $(this).remove();
 					        });
+					        sortList('selectedResources1');
 					        return false;
 					    });
 					    $('#btn-addEdit').unbind("click").on("click",function(){
@@ -829,6 +834,8 @@ $(document).ready(function(){
 					            $('#stringResources').append("<option value='"+$(this).val()+"'>"+$(this).text()+"</option>");
 					            $(this).remove();
 					        });
+					        sortList('selectedResources1');
+					        sortList('stringResources');
 					        return false;
 					    });		
 					    $('#btn-removeEdit').unbind("click").on("click",function(){
@@ -954,4 +961,11 @@ $(document).ready(function(){
 		 
 		 
 	 }
+	 
+	 function sortList(id){
+		$("#"+id).html($('#'+id+' option').sort(function(x, y){
+		       return $(x).text() < $(y).text() ? -1 : 1;
+		}))
+		$("#"+id).get(0).selectedIndex = 0;
+	}
 	
