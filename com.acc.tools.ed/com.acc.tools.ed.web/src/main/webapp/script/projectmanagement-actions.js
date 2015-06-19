@@ -827,6 +827,7 @@ $(document).ready(function(){
 					                $("#selectedResourcesEdit").focus();
 					                $(this).remove();
 					        });
+					        sortList('selectedResourcesEdit');
 					        return false;
 					    });
 					    $('#btn-remove').unbind("click").on("click",function(){
@@ -843,6 +844,8 @@ $(document).ready(function(){
 					            $('#stringResourcesEdit').append("<option value='"+$(this).val()+"'>"+$(this).text()+"</option>");
 					            $(this).remove();
 					        });
+					        sortList('selectedResourcesEdit');
+					        sortList('stringResourcesEdit');
 					        return false;
 					    });	
 					     $("#startDateFilter").datepicker({
