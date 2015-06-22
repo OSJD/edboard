@@ -557,7 +557,7 @@ $(document).ready(function(){
 						
 						$("#editRelease").button().unbind("click").on("click", function() {
 							var releaseId = $("#releases option:selected").val();
-							if(releaseId=="0"){
+							if(releaseId=="SR"){
 								alert("Please select Release!");
 							} else {
 								$.ajax({
