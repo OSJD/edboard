@@ -1228,6 +1228,44 @@ public ReferenceData addSkill(Skill skillDetails) {
 	return refData;
 }
 
+public ReferenceData updateResource(ResourceDetails resourceDetails) {
+		
+		final ReferenceData refData=new ReferenceData();
+
+		try{
+				//update Program
+				log.debug("New Program Name:{} Existing Program id:{}",resourceDetails.getEmployeeName(),resourceDetails.getEmployeeNumber());
+				if(resourceDetails.getEmployeeNumber() != null) {
+					log.debug("New Program Name:[{}] | New Program Id:[{}]",resourceDetails.getEmployeeName(),resourceDetails.getEmployeeNumber());
+					String prgInsQuery = "UPDATE EDB_MSTR_EMP_DTLS SET EMP_RESOURCE_NAME=?, EMP_ENTERPRISE_ID=?, EMP_EMAIL=?, EMP_MOBILE_NO=?, EMP_SKILL=?, EMP_CAPABILITY=?, EMP_LEVEL=?, EMP_ROLE=?, EMP_PROJECT_START_DATE=?, EMP_ROLLOFF_DATE=?, EMP_PREVIOUS_LOCATION=? WHERE EMP_EMPLOYEE_ID=?";
+					PreparedStatement prgmPrepStmt = getConnection().prepareStatement(prgInsQuery);
+					prgmPrepStmt.setString(1, resourceDetails.getEmployeeName());
+					prgmPrepStmt.setString(2, resourceDetails.getEnterpriseId());
+					prgmPrepStmt.setString(3, resourceDetails.getEmailId());
+					prgmPrepStmt.setString(4, resourceDetails.getContactNumber());
+					prgmPrepStmt.setString(5, resourceDetails.getSkill());
+					prgmPrepStmt.setString(6, resourceDetails.getCapability());
+					prgmPrepStmt.setString(7, resourceDetails.getLevel());
+					prgmPrepStmt.setString(8, resourceDetails.getRole());
+					prgmPrepStmt.setString(9, resourceDetails.getProjectStartDate());
+					prgmPrepStmt.setString(10, resourceDetails.getProjectEndDate());
+					prgmPrepStmt.setString(11, resourceDetails.getPreviousLocation());
+					prgmPrepStmt.setString(12, resourceDetails.getEmployeeNumber());
+					prgmPrepStmt.executeUpdate();
+					prgmPrepStmt.close();
+					
+					
+				}
+							
+			}catch(Exception e)	{
+				log.error("Error inserting employee table :",e);
+				refData.setId("-1");
+				refData.setLabel(e.getMessage());
+				return refData;
+			}
+		return refData;
+	}
+
 
 }
 
