@@ -23,13 +23,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.acc.tools.ed.integration.dao.ProjectManagementDao;
+import com.acc.tools.ed.integration.dto.Capability;
 import com.acc.tools.ed.integration.dto.ComponentForm;
+import com.acc.tools.ed.integration.dto.Level;
 import com.acc.tools.ed.integration.dto.MasterEmployeeDetails;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.ReleaseForm;
 import com.acc.tools.ed.integration.dto.ReleaseWeek;
 import com.acc.tools.ed.integration.dto.ResourceDetails;
+import com.acc.tools.ed.integration.dto.Skill;
 import com.acc.tools.ed.integration.dto.WeekDates;
 
 /**
@@ -1091,5 +1094,140 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 			}
 		return refData;
 	}
+	
+	
+	public boolean isCapabilityExist(String capabilityName,String capabilitySpecialty){
+		boolean isExist=false;
+		try{
+			String capabilityTable="SELECT CAPABILITY_ID FROM EDB_ROT_CAPABILITY WHERE UCase(CAPABILITY_NAME) = '"+capabilityName.toUpperCase()+"' AND UCase(Title) = '"+capabilitySpecialty.toUpperCase()+"'";
+			Statement selectStatement = getConnection().createStatement();
+			ResultSet rs=selectStatement.executeQuery(capabilityTable);
+			
+			while(rs.next()){
+				if(rs.getInt("CAPABILITY_ID")>0){
+					isExist=true;
+				}
+			}
+			
+		}catch(Exception e){
+			
+		}
+		return isExist;
+	}
+	
+public ReferenceData addCapability(Capability capabilityDetails) {
+		
+		final ReferenceData refData=new ReferenceData();
+
+		try{
+				//Insert Program
+				if(capabilityDetails.getCapabilityName() != null && capabilityDetails.getCapabilitySpecialty()!=null) {
+					log.debug("New Capability Name:{} New Capability Speciality:{}",capabilityDetails.getCapabilityName(),capabilityDetails.getCapabilitySpecialty());
+					String capInsQuery = "insert into EDB_ROT_CAPABILITY(CAPABILITY_NAME, Title) values (?,?)";
+					PreparedStatement capPrepStmt = getConnection().prepareStatement(capInsQuery);
+					capPrepStmt.setString(1, capabilityDetails.getCapabilityName());
+					capPrepStmt.setString(2, capabilityDetails.getCapabilitySpecialty());
+					capPrepStmt.executeUpdate();
+					capPrepStmt.close();
+				}
+							
+			}catch(Exception e)	{
+				log.error("Error inserting into capability table :",e);
+				refData.setId("-1");
+				refData.setLabel(e.getMessage());
+				return refData;
+			}
+		return refData;
+	}
+
+
+public boolean isLevelExist(String levelName){
+	boolean isExist=false;
+	try{
+		String levelTable="SELECT ID FROM EDB_ROT_LEVEL WHERE UCase(LEVEL_NAME) = '"+levelName.toUpperCase()+"'";
+		Statement selectStatement = getConnection().createStatement();
+		ResultSet rs=selectStatement.executeQuery(levelTable);
+		
+		while(rs.next()){
+			if(rs.getInt("ID")>0){
+				isExist=true;
+			}
+		}
+		
+	}catch(Exception e){
+		
+	}
+	return isExist;
+}
+
+public ReferenceData addLevel(Level levelDetails) {
+	
+	final ReferenceData refData=new ReferenceData();
+
+	try{
+			//Insert Program
+			if(levelDetails.getLevelName() != null) {
+				log.debug("New Level Name:{}",levelDetails.getLevelName());
+				String levInsQuery = "insert into EDB_ROT_LEVEL(LEVEL_NAME) values (?)";
+				PreparedStatement levPrepStmt = getConnection().prepareStatement(levInsQuery);
+				levPrepStmt.setString(1, levelDetails.getLevelName());
+				levPrepStmt.executeUpdate();
+				levPrepStmt.close();
+			}
+						
+		}catch(Exception e)	{
+			log.error("Error inserting into level table :",e);
+			refData.setId("-1");
+			refData.setLabel(e.getMessage());
+			return refData;
+		}
+	return refData;
+}
+
+public boolean isSkillExist(String skillCategory,String skillName){
+	boolean isExist=false;
+	try{
+		String skillTable="SELECT SKILL_ID FROM EDB_ROT_SKILL WHERE UCase(SKILL_NAME) = '"+skillName.toUpperCase()+"' AND UCase(Title) = '"+skillCategory.toUpperCase()+"'";
+		Statement selectStatement = getConnection().createStatement();
+		ResultSet rs=selectStatement.executeQuery(skillTable);
+		
+		while(rs.next()){
+			if(rs.getInt("SKILL_ID")>0){
+				isExist=true;
+			}
+		}
+		
+	}catch(Exception e){
+		
+	}
+	return isExist;
+}
+
+public ReferenceData addSkill(Skill skillDetails) {
+	
+	final ReferenceData refData=new ReferenceData();
+
+	try{
+			//Insert Program
+			if(skillDetails.getSkillName() != null && skillDetails.getSkillCategory()!=null) {
+				log.debug("New Skill Name:{} New Skill Category:{}",skillDetails.getSkillName(),skillDetails.getSkillCategory());
+				String capInsQuery = "insert into EDB_ROT_SKILL(SKILL_NAME, Title) values (?,?)";
+				PreparedStatement capPrepStmt = getConnection().prepareStatement(capInsQuery);
+				capPrepStmt.setString(1, skillDetails.getSkillName());
+				capPrepStmt.setString(2, skillDetails.getSkillCategory());
+				capPrepStmt.executeUpdate();
+				capPrepStmt.close();
+			}
+						
+		}catch(Exception e)	{
+			log.error("Error inserting into skill table :",e);
+			refData.setId("-1");
+			refData.setLabel(e.getMessage());
+			return refData;
+		}
+	return refData;
+}
+
+
 }
 

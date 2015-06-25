@@ -9,4 +9,7 @@
 	<div style="text-align:center; height:18px; width: 150px;border-right: 1px solid black;margin-top: 7px;">
 		<a href="#" action="./advancedSearch.do" id="rmSubtab3" class="subtabs">Advanced Search</a>
 	</div>
+	<div style="text-align:center; height:18px; width: 150px;border-right: 1px solid black;margin-top: 7px;">
+		<a href="#" action="./capabilitylevelskillmanagement.do" id="rmSubtab4" class="subtabs">Capability Management</a>
+	</div>
 </div>

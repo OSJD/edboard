@@ -8,14 +8,17 @@ import java.util.Map;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
+import com.acc.tools.ed.integration.dto.Capability;
 import com.acc.tools.ed.integration.dto.ComponentForm;
 import com.acc.tools.ed.integration.dto.JsonResponse;
+import com.acc.tools.ed.integration.dto.Level;
 import com.acc.tools.ed.integration.dto.MasterEmployeeDetails;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.ReleaseForm;
 import com.acc.tools.ed.integration.dto.ReleasePlan;
 import com.acc.tools.ed.integration.dto.ResourceDetails;
+import com.acc.tools.ed.integration.dto.Skill;
 
 
 public interface ProjectManagementService { 
@@ -51,4 +54,7 @@ public interface ProjectManagementService {
 	public List<String> getLevel();
 	public List<String> getCapability();
 	public ReferenceData addResource(ResourceDetails resourceData);
+	public ReferenceData addCapability(Capability capabilityDetails);
+	public ReferenceData addLevel(Level levelDetails);
+	public ReferenceData addSkill(Skill skillDetails);
 }

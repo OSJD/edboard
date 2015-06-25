@@ -18,9 +18,11 @@ import org.springframework.stereotype.Service;
 
 import com.acc.tools.ed.integration.dao.LoginDao;
 import com.acc.tools.ed.integration.dao.ProjectManagementDao;
+import com.acc.tools.ed.integration.dto.Capability;
 import com.acc.tools.ed.integration.dto.ComponentForm;
 import com.acc.tools.ed.integration.dto.EDBUser;
 import com.acc.tools.ed.integration.dto.JsonResponse;
+import com.acc.tools.ed.integration.dto.Level;
 import com.acc.tools.ed.integration.dto.MasterEmployeeDetails;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
@@ -29,6 +31,7 @@ import com.acc.tools.ed.integration.dto.ReleasePlan;
 import com.acc.tools.ed.integration.dto.ReleaseWeek;
 import com.acc.tools.ed.integration.dto.ResourceWeekWorkPlan;
 import com.acc.tools.ed.integration.dto.ResourceWorkPlan;
+import com.acc.tools.ed.integration.dto.Skill;
 import com.acc.tools.ed.integration.dto.WeekDates;
 import com.acc.tools.ed.integration.service.ProjectManagementService;
 import com.acc.tools.ed.integration.dto.ResourceDetails;
@@ -554,6 +557,66 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 				ReferenceData errorData=new ReferenceData();
 				errorData.setId("-2");
 				errorData.setLabel("Project with name "+resourceDetails.getEmployeeName()+"already exist!");
+				return errorData;				
+			}
+		}catch (Exception e)
+		{
+			ReferenceData errorData=new ReferenceData();
+			errorData.setId("-1");
+			errorData.setLabel(e.getMessage());
+			return errorData;
+		}
+	}
+	
+	public ReferenceData addCapability(Capability skillDetails){
+		try {
+			final boolean isCapabilityExist=projectManagementDao.isCapabilityExist(skillDetails.getCapabilityName(),skillDetails.getCapabilitySpecialty());
+			if(!isCapabilityExist){
+			 return projectManagementDao.addCapability(skillDetails);
+			} else {
+				ReferenceData errorData=new ReferenceData();
+				errorData.setId("-2");
+				errorData.setLabel("Capability with name "+skillDetails.getCapabilityName()+ " and speciality "+ skillDetails.getCapabilitySpecialty()+" already exists!");
+				return errorData;				
+			}
+		}catch (Exception e)
+		{
+			ReferenceData errorData=new ReferenceData();
+			errorData.setId("-1");
+			errorData.setLabel(e.getMessage());
+			return errorData;
+		}
+	}
+	
+	public ReferenceData addLevel(Level levelDetails){
+		try {
+			final boolean isLevelExist=projectManagementDao.isLevelExist(levelDetails.getLevelName());
+			if(!isLevelExist){
+			 return projectManagementDao.addLevel(levelDetails);
+			} else {
+				ReferenceData errorData=new ReferenceData();
+				errorData.setId("-2");
+				errorData.setLabel("Level with name "+levelDetails.getLevelName()+ " already exists!");
+				return errorData;				
+			}
+		}catch (Exception e)
+		{
+			ReferenceData errorData=new ReferenceData();
+			errorData.setId("-1");
+			errorData.setLabel(e.getMessage());
+			return errorData;
+		}
+	}
+	
+	public ReferenceData addSkill(Skill skillDetails){
+		try {
+			final boolean isSkillExist=projectManagementDao.isSkillExist(skillDetails.getSkillCategory(),skillDetails.getSkillName());
+			if(!isSkillExist){
+			 return projectManagementDao.addSkill(skillDetails);
+			} else {
+				ReferenceData errorData=new ReferenceData();
+				errorData.setId("-2");
+				errorData.setLabel("Skill with name "+skillDetails.getSkillName()+ " and category "+ skillDetails.getSkillCategory()+" already exists!");
 				return errorData;				
 			}
 		}catch (Exception e)

@@ -57,6 +57,199 @@
 							$("#resourceFileUploadForm").submit();
 						});
 						
+						var addCapabilityDialog = $("#addCapability-popup").dialog({
+							autoOpen : false,
+							height : 550,
+							width : 650,
+							modal : true,
+							buttons : {
+								"Add Capability" : function() {
+								if(validateCapabilityFields()){	
+									$.ajax({
+										type : "POST",
+										url : "./addCapabilityForm.do",
+										data : 
+											$("#addCapabilityForm").serialize(),
+											beforeSend : function() {
+										},
+										success : function(response) {
+											if(response=="-2"){
+												alert("Capability Name/Specialty Already Exists");
+											}
+											else if(response=="-1"){
+												alert("Error while trying to add Capability");
+											}
+											else{
+												alert("Capability Added Successfully!");
+											}
+										},
+										error : function(data) {
+
+										},
+										complete: function(data){
+										}
+									});
+									addCapabilityDialog.dialog("close");
+								}
+								},
+								Cancel : function() {
+									addCapabilityDialog.dialog("close");
+								},
+							},
+							
+							
+							
+
+						});
+						
+						$("#addCapability").button().unbind("click").on("click", function() {
+							$.ajax({
+								type : "POST",
+								url : "./capabilitylevelskillmanagement.do",
+								data : 
+									$("#addCapabilityForm").serialize(),
+									beforeSend : function() {
+								},
+								success : function(response) {
+									$("#addCapability-popup").html($(response).find("#addCapability-popup").html());
+								},
+								error : function(data) {
+
+								},
+								complete: function(data){
+								}
+							});
+							addCapabilityDialog.dialog("open");
+						});
+						
+						
+						var addLevelDialog = $("#addLevel-popup").dialog({
+							autoOpen : false,
+							height : 550,
+							width : 650,
+							modal : true,
+							buttons : {
+								"Add Level" : function() {									
+									if(validateLevelFields()){	
+										$.ajax({
+											type : "POST",
+											url : "./addLevelForm.do",
+											data : 
+												$("#addLevelForm").serialize(),
+												beforeSend : function() {
+											},
+											success : function(response) {
+												if(response=="-2"){
+													alert("Level Already Exists");
+												}
+												else if(response=="-1"){
+													alert("Error while trying to add Level");
+												}
+												else{
+													alert("Level Added Successfully!");
+												}
+											},
+											error : function(data) {
+
+											},
+											complete: function(data){
+											}
+										});
+										addLevelDialog.dialog("close");
+									}
+							
+								},
+								Cancel : function() {
+									addLevelDialog.dialog("close");
+								},
+							},
+
+						});
+						
+						$("#addLevel").button().unbind("click").on("click", function() {
+							$.ajax({
+								type : "POST",
+								url : "./capabilitylevelskillmanagement.do",
+								data : 
+									$("#addLevelForm").serialize(),
+									beforeSend : function() {
+								},
+								success : function(response) {
+									$("#addLevel-popup").html($(response).find("#addLevel-popup").html());
+								},
+								error : function(data) {
+
+								},
+								complete: function(data){
+								}
+							});
+							addLevelDialog.dialog("open");
+						});
+						
+						
+						var addSkillDialog = $("#addSkill-popup").dialog({
+							autoOpen : false,
+							height : 550,
+							width : 650,
+							modal : true,
+							buttons : {
+								"Add Skill" : function() {
+								if(validateSkillFields()){	
+										$.ajax({
+											type : "POST",
+											url : "./addSkillForm.do",
+											data : 
+												$("#addSkillForm").serialize(),
+												beforeSend : function() {
+											},
+											success : function(response) {
+												if(response=="-2"){
+													alert("Skill Category/Name Already Exists");
+												}
+												else if(response=="-1"){
+													alert("Error while trying to add Skill");
+												}
+												else{
+													alert("Skill Added Successfully!");
+												}
+											},
+											error : function(data) {
+
+											},
+											complete: function(data){
+											}
+										});
+										addSkillDialog.dialog("close");
+								}
+							
+								},
+								Cancel : function() {
+									addSkillDialog.dialog("close");
+								},
+							},
+
+						});
+						
+						$("#addSkill").button().unbind("click").on("click", function() {
+							$.ajax({
+								type : "POST",
+								url : "./capabilitylevelskillmanagement.do",
+								data : 
+									$("#addSkillForm").serialize(),
+									beforeSend : function() {
+								},
+								success : function(response) {
+									$("#addSkill-popup").html($(response).find("#addSkill-popup").html());
+								},
+								error : function(data) {
+
+								},
+								complete: function(data){
+								}
+							});
+							addSkillDialog.dialog("open");
+						});
+						
 	 });
 	
 	
@@ -100,6 +293,44 @@
 			return false;
 		}else if($("#preLocation").val() == ''){
 			alert("Please Enter Previous Location");
+			return false;
+		}else{
+			return true;
+		}
+		
+	}
+	
+	function validateCapabilityFields(){
+		if($("#capabilityName").val() == ''){
+			alert("Please Enter Capability Name");
+			return false;
+		}else if($("#capabilitySpecialty").val() == ''){
+			alert("Please Enter Capability Speciality");
+			return false;
+		}else{
+			return true;
+		}
+		
+	}
+	
+	function validateLevelFields(){
+		if($("#LevelName").val() == ''){
+			alert("Please Enter Level Name");
+			return false;
+		}
+		else{
+			return true;
+		}
+		
+	}
+	
+	function validateSkillFields(){
+		if($("#skillCategory").val() == ''){
+			alert("Please Enter Skill Category Speciality");
+			return false;
+		}
+		else if($("#skillName").val() == ''){
+			alert("Please Enter Skill Name");
 			return false;
 		}else{
 			return true;

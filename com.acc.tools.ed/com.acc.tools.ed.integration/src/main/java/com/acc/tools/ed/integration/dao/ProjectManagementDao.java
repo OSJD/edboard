@@ -5,13 +5,16 @@ import java.util.Map;
 
 import org.joda.time.DateTime;
 
+import com.acc.tools.ed.integration.dto.Capability;
 import com.acc.tools.ed.integration.dto.ComponentForm;
+import com.acc.tools.ed.integration.dto.Level;
 import com.acc.tools.ed.integration.dto.MasterEmployeeDetails;
 import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.ReleaseForm;
 import com.acc.tools.ed.integration.dto.ReleaseWeek;
 import com.acc.tools.ed.integration.dto.ResourceDetails;
+import com.acc.tools.ed.integration.dto.Skill;
 import com.acc.tools.ed.integration.dto.WeekDates;
 
 public interface ProjectManagementDao {
@@ -49,4 +52,10 @@ public interface ProjectManagementDao {
 	public List<String> getLevel();
 	public List<String> getCapability();
 	public ReferenceData addResource(ResourceDetails resourceDetails);
+	public boolean isCapabilityExist(String capabilityName,String capabilitySpecialty);
+	public ReferenceData addCapability(Capability capabilityDetails);
+	public boolean isLevelExist(String levelName);
+	public ReferenceData addLevel(Level levelDetails);
+	public boolean isSkillExist(String skillCategory,String skillName);
+	public ReferenceData addSkill(Skill skillDetails);
 }
