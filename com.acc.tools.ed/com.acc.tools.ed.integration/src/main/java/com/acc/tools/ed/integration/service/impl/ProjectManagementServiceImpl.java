@@ -568,6 +568,20 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 		}
 	}
 	
+	public ReferenceData updateResource(ResourceDetails resourceDetails) {
+		try {
+			
+			return projectManagementDao.updateResource(resourceDetails);
+			 
+		}catch (Exception e)
+		{
+			ReferenceData errorData=new ReferenceData();
+			errorData.setId("-1");
+			errorData.setLabel(e.getMessage());
+			return errorData;
+		}
+	}
+	
 	public ReferenceData addCapability(Capability skillDetails){
 		try {
 			final boolean isCapabilityExist=projectManagementDao.isCapabilityExist(skillDetails.getCapabilityName(),skillDetails.getCapabilitySpecialty());
