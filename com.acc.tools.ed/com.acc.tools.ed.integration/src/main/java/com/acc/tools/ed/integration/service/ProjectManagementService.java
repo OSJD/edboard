@@ -54,6 +54,7 @@ public interface ProjectManagementService {
 	public List<String> getLevel();
 	public List<String> getCapability();
 	public ReferenceData addResource(ResourceDetails resourceData);
+	public ReferenceData updateResource(ResourceDetails resourceData);
 	public ReferenceData addCapability(Capability capabilityDetails);
 	public ReferenceData addLevel(Level levelDetails);
 	public ReferenceData addSkill(Skill skillDetails);
