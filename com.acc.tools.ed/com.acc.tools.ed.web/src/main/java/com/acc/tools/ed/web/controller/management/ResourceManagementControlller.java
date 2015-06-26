@@ -48,6 +48,26 @@ private static final Logger LOG = LoggerFactory.getLogger(ProjectManagementContr
 		
 	}
 	
+	@RequestMapping(value = "/resourceManagementUpdate.do")
+	public String resourceManagementUpdate(Model model){
+		
+		List<String> skillList = projectManagementService.getSkill();
+		List<String> levelList = projectManagementService.getLevel();
+		List<String> capabilityList = projectManagementService.getCapability();		
+		List<String> employeeNumberList = projectManagementService.getEmployeeNumber();
+		
+		model.addAttribute("skillList", skillList);
+		model.addAttribute("levelList", levelList);
+		model.addAttribute("capabilityList", capabilityList);		
+		model.addAttribute("employeeNumberList", employeeNumberList);
+		
+		model.addAttribute("addEmpDetailsForm",new ResourceDetails());
+		//model.addAttribute("updateEmpDetailsForm",new ResourceDetails());
+		
+		return "/resourcemanagement/updateResource";
+		
+	}
+	
 	
 	@RequestMapping(value = "/loadResource.do")
 	public String loadResource(Model model){
@@ -66,6 +86,24 @@ private static final Logger LOG = LoggerFactory.getLogger(ProjectManagementContr
 			@ModelAttribute("addEmpDetailsForm") ResourceDetails addEmpDetailsForm,
 			Model model){
 		final ReferenceData newProject = getProjectManagementService().addResource(addEmpDetailsForm);
+		LOG.debug("Add Project retruned --> Resource Id: {} | Resource Name:{}", newProject.getId(),newProject.getLabel());
+		
+		model.addAttribute("addEmpDetailsForm",addEmpDetailsForm);
+		model.addAttribute("addProjectForm",new ProjectForm());
+		model.addAttribute("editProjectForm", new ProjectForm());
+		model.addAttribute("addTaskForm",new TaskForm());
+		return "/projectmanagement/index";
+	}
+	
+	@RequestMapping(value = "/updateEmpDetailsForm.do")
+	public String updateResource(
+			@ModelAttribute("addEmpDetailsForm") ResourceDetails addEmpDetailsForm,
+			Model model){
+		
+		System.out.println();
+		
+		final ReferenceData newProject = getProjectManagementService().updateResource(addEmpDetailsForm);
+		
 		LOG.debug("Add Project retruned --> Resource Id: {} | Resource Name:{}", newProject.getId(),newProject.getLabel());
 		
 		model.addAttribute("addEmpDetailsForm",addEmpDetailsForm);
