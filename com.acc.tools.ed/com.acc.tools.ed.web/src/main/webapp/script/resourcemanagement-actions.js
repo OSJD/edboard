@@ -8,7 +8,7 @@
 							modal : true,
 							buttons : {
 								"Add Resource" : function() {
-									if(validateField()){
+									if(validateFieldAdd()){
 										var level = $( "#resourceLevel option:selected" ).text();
 										var capability = $( "#technicalCapability option:selected" ).text();
 										var skill = $( "#technicalSkill option:selected" ).text();
@@ -52,234 +52,126 @@
 						});
 						
 						$("#resourceFileUpload").unbind("click").on("click",function(){
-							$("#resourceFileUploadForm").attr("action","./upload.do");
+							/*$("#resourceFileUploadForm").attr("action","./upload.do");
 							document.getElementById("resourceFileUploadForm").enctype = "multipart/form-data";
-							$("#resourceFileUploadForm").submit();
-						});
-						
-						var addCapabilityDialog = $("#addCapability-popup").dialog({
-							autoOpen : false,
-							height : 550,
-							width : 650,
-							modal : true,
-							buttons : {
-								"Add Capability" : function() {
-								if(validateCapabilityFields()){	
-									$.ajax({
-										type : "POST",
-										url : "./addCapabilityForm.do",
-										data : 
-											$("#addCapabilityForm").serialize(),
-											beforeSend : function() {
-										},
-										success : function(response) {
-											if(response=="-2"){
-												alert("Capability Name/Specialty Already Exists");
-											}
-											else if(response=="-1"){
-												alert("Error while trying to add Capability");
-											}
-											else{
-												alert("Capability Added Successfully!");
-											}
-										},
-										error : function(data) {
+							$("#resourceFileUploadForm").submit();*/
+										var fileName = $.trim($("#fileUploadAddress").val());
 
-										},
-										complete: function(data){
+										if (fileName == '') {
+											alert("Please select a file to upload.");
+										} else {
+											$("#resourceFileUploadForm").attr("action", "./upload.do");
+											document.getElementById("resourceFileUploadForm").enctype = "multipart/form-data";
+											$("#resourceFileUploadForm").submit();
 										}
-									});
-									addCapabilityDialog.dialog("close");
-								}
-								},
-								Cancel : function() {
-									addCapabilityDialog.dialog("close");
-								},
-							},
-							
-							
-							
-
-						});
-						
-						$("#addCapability").button().unbind("click").on("click", function() {
-							$.ajax({
-								type : "POST",
-								url : "./capabilitylevelskillmanagement.do",
-								data : 
-									$("#addCapabilityForm").serialize(),
-									beforeSend : function() {
-								},
-								success : function(response) {
-									$("#addCapability-popup").html($(response).find("#addCapability-popup").html());
-								},
-								error : function(data) {
-
-								},
-								complete: function(data){
-								}
-							});
-							addCapabilityDialog.dialog("open");
-						});
-						
-						
-						var addLevelDialog = $("#addLevel-popup").dialog({
-							autoOpen : false,
-							height : 550,
-							width : 650,
-							modal : true,
-							buttons : {
-								"Add Level" : function() {									
-									if(validateLevelFields()){	
-										$.ajax({
-											type : "POST",
-											url : "./addLevelForm.do",
-											data : 
-												$("#addLevelForm").serialize(),
-												beforeSend : function() {
-											},
-											success : function(response) {
-												if(response=="-2"){
-													alert("Level Already Exists");
-												}
-												else if(response=="-1"){
-													alert("Error while trying to add Level");
-												}
-												else{
-													alert("Level Added Successfully!");
-												}
-											},
-											error : function(data) {
-
-											},
-											complete: function(data){
-											}
-										});
-										addLevelDialog.dialog("close");
-									}
-							
-								},
-								Cancel : function() {
-									addLevelDialog.dialog("close");
-								},
-							},
-
-						});
-						
-						$("#addLevel").button().unbind("click").on("click", function() {
-							$.ajax({
-								type : "POST",
-								url : "./capabilitylevelskillmanagement.do",
-								data : 
-									$("#addLevelForm").serialize(),
-									beforeSend : function() {
-								},
-								success : function(response) {
-									$("#addLevel-popup").html($(response).find("#addLevel-popup").html());
-								},
-								error : function(data) {
-
-								},
-								complete: function(data){
-								}
-							});
-							addLevelDialog.dialog("open");
-						});
-						
-						
-						var addSkillDialog = $("#addSkill-popup").dialog({
-							autoOpen : false,
-							height : 550,
-							width : 650,
-							modal : true,
-							buttons : {
-								"Add Skill" : function() {
-								if(validateSkillFields()){	
-										$.ajax({
-											type : "POST",
-											url : "./addSkillForm.do",
-											data : 
-												$("#addSkillForm").serialize(),
-												beforeSend : function() {
-											},
-											success : function(response) {
-												if(response=="-2"){
-													alert("Skill Category/Name Already Exists");
-												}
-												else if(response=="-1"){
-													alert("Error while trying to add Skill");
-												}
-												else{
-													alert("Skill Added Successfully!");
-												}
-											},
-											error : function(data) {
-
-											},
-											complete: function(data){
-											}
-										});
-										addSkillDialog.dialog("close");
-								}
-							
-								},
-								Cancel : function() {
-									addSkillDialog.dialog("close");
-								},
-							},
-
-						});
-						
-						$("#addSkill").button().unbind("click").on("click", function() {
-							$.ajax({
-								type : "POST",
-								url : "./capabilitylevelskillmanagement.do",
-								data : 
-									$("#addSkillForm").serialize(),
-									beforeSend : function() {
-								},
-								success : function(response) {
-									$("#addSkill-popup").html($(response).find("#addSkill-popup").html());
-								},
-								error : function(data) {
-
-								},
-								complete: function(data){
-								}
-							});
-							addSkillDialog.dialog("open");
 						});
 						
 	 });
 	
+		$(document)
+		.ready(
+				function() {
+						var addResourceDialog = $("#updateemp-popup").dialog({
+						autoOpen : false,
+						height : 550,
+						width : 650,
+						modal : true,
+						buttons : {
+							"Update Resource" : function() {
+								
+								if(validateFieldUpdate()){
+									var level = $( "#resourceLevel option:selected" ).text();
+									var capability = $( "#technicalCapability option:selected" ).text();
+									var skill = $( "#technicalSkill option:selected" ).text();
+									var empNumber = $("#empNumber").val();
+									var empName = $("#empName").val();
+									
+									$("#level").val(level);
+									$("#capability").val(capability);
+									$("#skill").val(skill);
+									alert("Employee Details Updated Sucessfully");
+									$("#addEmpDetailsForm").submit();
+									
+							}
+						
+							},
+							Cancel : function() {
+								addResourceDialog.dialog("close");
+							},
+						},
+
+					});
+					
+					$(".updateResource").unbind("click").on("click", function() {
+						var employeeSAPId=$(this).attr("id");
+						
+						$.ajax({
+							
+							type : "POST",
+							url : "./resourceManagementUpdate.do",
+							data : 
+								$("#addEmpDetailsForm").serialize(),
+								beforeSend : function() {
+							},
+							success : function(response) {
+								$("#updateemp-popup").html($(response).find("#updateemp-popup").html());
+								loadDatepicker();
+							},
+							error : function(data) {
+
+							},
+							complete: function(data){
+							}
+						});
+						addResourceDialog.dialog("open");
+					});
+					
+					$("#resourceFileUpload").unbind("click").on("click",function(){
+						/*$("#resourceFileUploadForm").attr("action","./upload.do");
+						document.getElementById("resourceFileUploadForm").enctype = "multipart/form-data";
+						$("#resourceFileUploadForm").submit();*/
+						var fileName = $.trim($("#fileUploadAddress").val());
+
+						if (fileName == '') {
+							alert("Please select a file to upload.");
+						} else {
+							$("#resourceFileUploadForm").attr("action", "./upload.do");
+							document.getElementById("resourceFileUploadForm").enctype = "multipart/form-data";
+							$("#resourceFileUploadForm").submit();
+						}
+					});
+					
+ });
 	
 	
-	function validateField(){
-		var level = $( "#resourceLevel option:selected" ).text();
-		var capability = $( "#technicalCapability option:selected" ).text();
-		var skill = $( "#technicalSkill option:selected" ).text();
-		if($("#empNumber").val() == ''){
+	function validateFieldAdd(){
+
+			var level = $( "#addemp-popup #resourceLevel option:selected" ).text();
+			var capability = $( "#addemp-popup #technicalCapability option:selected" ).text();
+			var skill = $( "#addemp-popup #technicalSkill option:selected" ).text();
+
+		if($("#addemp-popup #empNumber").val() == ''){
 			alert("Please Enter Employee Number");
 			return false;
-		}else if($("#empName").val() == ''){
+		}else if($("#addemp-popup #empName").val() == ''){
 			alert("Please Enter Employee Name");
 			return false;
-		}else if($("#conNumber").val() == ''){
+		}else if($("#addemp-popup #conNumber").val() == ''){
 			alert("Please Enter Contact Number");
 			return false;
-		}else if($("#emailID").val() == ''){
+		}else if($("#addemp-popup #emailID").val() == ''){
 			alert("Please Enter Email ID");
 			return false;
-		}else if($("#enterpriseId").val() == ''){
+		}else if($("#addemp-popup #enterpriseId").val() == ''){
 			alert("Please Enter Enterprise ID");
 			return false;
-		}else if($("#role").val() == ''){
+		}else if($("#addemp-popup #role").val() == ''){
 			alert("Please Enter Role");
 			return false;
-		}else if($("#empStartDate").val() == ''){
+		}else if($("#addemp-popup #empStartDate").val() == ''){
 			alert("Please Enter Project Roll On Date");
 			return false;
-		}else if($("#empEndDate").val() == ''){
+		}else if($("#addemp-popup #empEndDate").val() == ''){
 			alert("Please Enter Project Roll Off Date");
 			return false;
 		}else if(capability == 'Select Capability'){
@@ -291,7 +183,7 @@
 		}else if(level == 'Select Level'){
 			alert("Please Select Level");
 			return false;
-		}else if($("#preLocation").val() == ''){
+		}else if($("#addemp-popup #preLocation").val() == ''){
 			alert("Please Enter Previous Location");
 			return false;
 		}else{
@@ -300,37 +192,47 @@
 		
 	}
 	
-	function validateCapabilityFields(){
-		if($("#capabilityName").val() == ''){
-			alert("Please Enter Capability Name");
-			return false;
-		}else if($("#capabilitySpecialty").val() == ''){
-			alert("Please Enter Capability Speciality");
-			return false;
-		}else{
-			return true;
-		}
+function validateFieldUpdate(){
 		
-	}
-	
-	function validateLevelFields(){
-		if($("#LevelName").val() == ''){
-			alert("Please Enter Level Name");
+	var level = $( "#updateemp-popup #resourceLevel option:selected" ).text();
+	var capability = $( "#updateemp-popup #technicalCapability option:selected" ).text();
+	var skill = $( "#updateemp-popup #technicalSkill option:selected" ).text();
+
+		if($("#updateemp-popup #empNumber").val() == ''){
+			alert("Please Select Employee Number");
 			return false;
-		}
-		else{
-			return true;
-		}
-		
-	}
-	
-	function validateSkillFields(){
-		if($("#skillCategory").val() == ''){
-			alert("Please Enter Skill Category Speciality");
+		}else if($("#updateemp-popup #empName").val() == ''){
+			alert("Please Enter Employee Name");
 			return false;
-		}
-		else if($("#skillName").val() == ''){
-			alert("Please Enter Skill Name");
+		}else if($("#updateemp-popup #conNumber").val() == ''){
+			alert("Please Enter Contact Number");
+			return false;
+		}else if($("#updateemp-popup #emailID").val() == ''){
+			alert("Please Enter Email ID");
+			return false;
+		}else if($("#updateemp-popup #enterpriseId").val() == ''){
+			alert("Please Enter Enterprise ID");
+			return false;
+		}else if($("#updateemp-popup #role").val() == ''){
+			alert("Please Enter Role");
+			return false;
+		}else if($("#updateemp-popup #empStartDate").val() == ''){
+			alert("Please Enter Project Roll On Date");
+			return false;
+		}else if($("#updateemp-popup #empEndDate").val() == ''){
+			alert("Please Enter Project Roll Off Date");
+			return false;
+		}else if(capability == 'Select Capability'){
+			alert("Please Select Capability");
+			return false;
+		}else if( skill == 'Select Skill'){
+			alert("Please Select Skill");
+			return false;
+		}else if(level == 'Select Level'){
+			alert("Please Select Level");
+			return false;
+		}else if($("#updateemp-popup #preLocation").val() == ''){
+			alert("Please Enter Previous Location");
 			return false;
 		}else{
 			return true;
