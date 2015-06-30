@@ -10,6 +10,7 @@
 <%@ include file="/WEB-INF/jsp/includes/document-header.jsp"%>
 <script src="<%=request.getContextPath()%>/script/projectmanagement-actions.js"></script>
 <script src="<%=request.getContextPath()%>/script/projectwork-actions.js"></script>
+<script src="<%=request.getContextPath()%>/script/reports.js"></script>
 <script src="<%=request.getContextPath()%>/script/libs/edb-common.js"></script>
 <script src="<%=request.getContextPath()%>/script/libs/edb-object-model.js"></script>
 </head>
@@ -62,6 +63,13 @@
 										<jsp:include page="/WEB-INF/jsp/resourcemanagement/resourceManagement.jsp" flush="true"></jsp:include>
 									</div>
 								</div>
+								<div id="reportsTab">
+									<!-- SUB MENU-->
+									<%@ include file="/WEB-INF/jsp/reports/submenu.jsp"%>
+									<div id="rptMainContainer" style="margin-top: 20px;">
+										<jsp:include page="/WEB-INF/jsp/reports/reports.jsp" flush="true"></jsp:include>
+									</div> 
+								</div> 
 							</jstl:when>
 							<jstl:otherwise><!-- DEVELOPER -->
 								<div id="projectWorkTab">
