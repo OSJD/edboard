@@ -248,8 +248,7 @@ function validateFieldUpdate(){
 			buttonImage: 'resources/cal.gif',
 			dateFormat: 'mm/dd/yy',
 			constrainInput: true,
-			/*minDate:$("#relStartDate").html(),
-			maxDate:$("#relEndDate").html()*/ 
+			
 		}); 
 		 $( "#empEndDate" ).datepicker({
 					showOn: 'button',
@@ -258,9 +257,41 @@ function validateFieldUpdate(){
 					buttonImage: 'resources/cal.gif',
 					dateFormat: 'mm/dd/yy',
 					constrainInput: true,
-					/* minDate:$("#relStartDate").html(),
-					maxDate:$("#relEndDate").html()*/ 
+					
 		});
+	}
+	
+	function confirmSucess(){
+		$('#sucess_msg_div').dialog("close");
+	}
+	
+	function resourceCheck(){
+		$.ajax({
+			type : "POST",
+			url : "./checkResource.do",
+			data : 
+				$("#addEmpDetailsForm").serialize(),
+				beforeSend : function() {
+			},
+			success : function(response) {
+				var resFlag= $(response).find("#resourceFlag").val();
+				if(resFlag == null || resFlag == ''){
+				}else{
+									
+					$('#sucess_msg_div').dialog("open");
+				}
+				
+			},
+			error : function(data) {
+
+			},
+			complete: function(data){
+				
+			}
+		});
+			
+		
+			
 	}
 
 	
