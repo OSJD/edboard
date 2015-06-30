@@ -59,4 +59,5 @@ public interface ProjectManagementDao {
 	public boolean isSkillExist(String skillCategory,String skillName);
 	public ReferenceData addSkill(Skill skillDetails);
 	public ReferenceData updateResource(ResourceDetails resourceDetails);
+	public String getEmployeeName(String empID);
 }
