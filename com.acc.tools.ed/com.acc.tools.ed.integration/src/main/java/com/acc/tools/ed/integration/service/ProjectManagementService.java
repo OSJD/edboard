@@ -58,4 +58,5 @@ public interface ProjectManagementService {
 	public ReferenceData addCapability(Capability capabilityDetails);
 	public ReferenceData addLevel(Level levelDetails);
 	public ReferenceData addSkill(Skill skillDetails);
+	public String getEmployeeName(String empID);
 }
