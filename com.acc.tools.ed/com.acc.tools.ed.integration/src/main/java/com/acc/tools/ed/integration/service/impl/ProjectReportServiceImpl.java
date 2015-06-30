@@ -32,4 +32,18 @@ public class ProjectReportServiceImpl implements ProjectReportService{
 		}
 	}
 
+	
+
+	public void generateMasterReport(HttpServletResponse response,String startDate,String endDate,String reportFormat,String reportName)
+
+	{
+	try{
+		System.out.println("passing the values from impl");
+		projectReportDao.generateMasterReport(response, startDate, endDate, reportFormat, reportName);
+	}
+	catch(Exception e)
+	{
+		e.printStackTrace();
+	}
+}
 }

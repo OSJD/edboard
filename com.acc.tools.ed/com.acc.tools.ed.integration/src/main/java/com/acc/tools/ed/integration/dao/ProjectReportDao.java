@@ -10,6 +10,7 @@ public interface ProjectReportDao {
 			HttpServletResponse response, String startDate, String endDate,
 			String status,String reportFormat);
 
+	public void generateMasterReport(HttpServletResponse response,String startDate,String endDate,String reportFormat,String reportName);
 
 
 }

@@ -5,12 +5,15 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import com.acc.tools.ed.integration.dao.ProjectReportDao;
 import com.acc.tools.ed.report.MSWordReportTemplate;
+import com.acc.tools.ed.report.dto.ReportMasterData;
 import com.acc.tools.ed.report.dto.WeeklyStatusReportData;
 
 @Service("projectReportDao")
@@ -180,5 +184,166 @@ public class ProjectReportDaoImp extends AbstractEdbDao implements ProjectReport
 
 
 	}
+	
+	public void generateMasterReport(HttpServletResponse response,String startDate,String endDate,String reportFormat,String reportName) {
 
+		System.out.println("reached dao impl::");
+	
+		
+		if(reportName.equals("RelMstr")){
+		List<WeeklyStatusReportData> releaseData = new ArrayList<WeeklyStatusReportData>(); 
+		final StringBuffer projQuery =new StringBuffer();
+		projQuery.append("SELECT P.PROJ_NAME,M.MLSTN_NAME,M.MLSTN_DESC,M.MLSTN_ST_DT,M.MLSTN_END_DT,M.MLSTN_WRK_STATUS FROM ");
+		projQuery.append("EDB_PROJECT AS P LEFT JOIN EDB_MILESTONE AS M ON P.PROJ_ID = M.PROJ_ID ");
+		projQuery.append("WHERE M.MLSTN_ST_DT >= #"+startDate+"# AND M.MLSTN_END_DT <= #"+endDate+"#");
+		
+		System.out.println(projQuery.toString());
+		
+		try {
+			if(getConnection()==null)
+			{
+				System.out.println("connection null");
+			}
+			else
+			{
+		Statement statement = getConnection().createStatement();
+		
+		ResultSet rs = statement.executeQuery(projQuery.toString());
+		
+		releaseData = getReleaseList(rs);
+		
+		generateReleaseMasterReport(releaseData,response);
+		}
+		
+	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		}else if(reportName.equals("EmpMstr")){
+			
+			List<ReportMasterData> resourceDetails = new ArrayList<ReportMasterData>();
+			String projQuery = "SELECT EMP_RESOURCE_NAME,EMP_ENTERPRISE_ID,EMP_EMPLOYEE_ID,EMP_LEVEL,EMP_ROLE FROM EDB_MSTR_EMP_DTLS";
+			System.out.println(projQuery.toString());
+			
+			try {
+				if(getConnection()==null)
+				{
+					System.out.println("connection null");
+				}
+				else
+				{
+			Statement statement = getConnection().createStatement();
+			
+			ResultSet rs = statement.executeQuery(projQuery.toString());
+			
+			resourceDetails = getResourceList(rs);
+			
+			generateEmployeeMasterReport(resourceDetails,response);
+			}
+			
+		
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		}
 }
+		
+		
+		private List<WeeklyStatusReportData> getReleaseList(ResultSet rs){
+			List<WeeklyStatusReportData> releaseResult = new ArrayList<WeeklyStatusReportData>();
+			try {
+				while(rs.next()){
+					WeeklyStatusReportData reportData = new WeeklyStatusReportData();
+					reportData.setReleaseName(rs.getString("MLSTN_NAME"));
+					reportData.setReleaseDesc(rs.getString("MLSTN_DESC"));
+					reportData.setProjectName(rs.getString("PROJ_NAME"));
+					reportData.setStartDate(rs.getString("MLSTN_ST_DT"));
+					reportData.setEndDate(rs.getString("MLSTN_END_DT"));
+					reportData.setStatus(rs.getString("MLSTN_WRK_STATUS"));
+					releaseResult.add(reportData);
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return releaseResult;
+			
+		}
+		
+		private List<ReportMasterData> getResourceList(ResultSet rs){
+			List<ReportMasterData> resourceResult = new ArrayList<ReportMasterData>();
+			try {
+				while(rs.next()){
+					ReportMasterData resourceData = new ReportMasterData();
+					resourceData.setEmployeeName(rs.getString("EMP_RESOURCE_NAME"));
+					resourceData.setEnterpriseId(rs.getString("EMP_ENTERPRISE_ID"));
+					resourceData.setEmployeeNumber(rs.getString("EMP_EMPLOYEE_ID"));
+					resourceData.setLevel(rs.getString("EMP_LEVEL"));
+					resourceData.setRole(rs.getString("EMP_ROLE"));
+					
+					resourceResult.add(resourceData);
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return resourceResult;
+			
+		}
+		
+		public void generateReleaseMasterReport(List<WeeklyStatusReportData> releaseData,HttpServletResponse response) throws Docx4JException, URISyntaxException{
+			ServletOutputStream outStream;
+			try {
+				outStream = response.getOutputStream();
+				ByteArrayOutputStream output = null;
+				byte[] outbytes = null;
+				output=(ByteArrayOutputStream)msWordReportTemplate.generateReleaseMasterReportPDF(releaseData);
+				outbytes=output.toByteArray();
+				response.setContentType("application/pdf");
+				//response.setHeader("Content-Disposition","attachment; filename=\"WeeklyStatusReport.docx\"");
+				//response.setHeader("Content-Disposition", String.format("inline; filename=\"%s\" ; size=\"%d\"", "WeeklyStatusReport.pdf",outbytes.length));
+				response.setHeader("Content-Disposition","attachment;filename=\"ReleaseMaster.pdf\"");
+			
+			outStream.write(outbytes);
+			output.flush();
+			//outStream.flush();
+			//outStream.close();
+			response.flushBuffer();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		
+		}
+		
+		public void generateEmployeeMasterReport(List<ReportMasterData> resourceDetails,HttpServletResponse response) throws Docx4JException, URISyntaxException{
+			ServletOutputStream outStream;
+			try {
+				outStream = response.getOutputStream();
+				ByteArrayOutputStream output = null;
+				byte[] outbytes = null;
+				output=(ByteArrayOutputStream)msWordReportTemplate.generateEmployeeMasterReportPDF(resourceDetails);
+				outbytes=output.toByteArray();
+				response.setContentType("application/pdf");
+				//response.setHeader("Content-Disposition","attachment; filename=\"WeeklyStatusReport.docx\"");
+				//response.setHeader("Content-Disposition", String.format("inline; filename=\"%s\" ; size=\"%d\"", "WeeklyStatusReport.pdf",outbytes.length));
+				response.setHeader("Content-Disposition","attachment;filename=\"EmployeeMaster.pdf\"");
+			
+			outStream.write(outbytes);
+			output.flush();
+			//outStream.flush();
+			//outStream.close();
+			response.flushBuffer();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		
+		}
+
+	}
+
+
