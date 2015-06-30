@@ -77,6 +77,11 @@
 					</tr>
 				</table>
 			
+				<div id = "sucess_msg_div" style="border:1px purple solid;display:none">
+		
+					<h3>Resource Already Exists!!</h3><br><br>
+					<input align="center" type="button" value ="Ok" onClick ="confirmSucess()"/>
+				</div>
 			</div>
 	 </fieldset>
 		</form:form> 
