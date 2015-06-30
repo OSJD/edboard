@@ -199,5 +199,16 @@ private static final Logger LOG = LoggerFactory.getLogger(ProjectManagementContr
 		}
 		return newSkill.getId();
 	}
+	
+	@RequestMapping(value = "/checkResource.do")
+	public String checkResource(@ModelAttribute("addEmpDetailsForm") ResourceDetails addEmpDetailsForm,Model model){
+		String empId = addEmpDetailsForm.getEmployeeNumber();
+		String resourceExits= projectManagementService.getEmployeeName(empId);
+		addEmpDetailsForm.setresourceFlag(resourceExits);
+		System.out.println(resourceExits);
+		model.addAttribute("addEmpDetailsForm",new ResourceDetails());
+		return "/resourcemanagement/resourceManagement";
+		
+	}
 
 }
