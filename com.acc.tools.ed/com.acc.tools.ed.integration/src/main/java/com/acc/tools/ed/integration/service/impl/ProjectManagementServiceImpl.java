@@ -642,4 +642,8 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 		}
 	}
 	
+	public String getEmployeeName(String empID){
+		return projectManagementDao.getEmployeeName(empID);
+	}
+	
 }
