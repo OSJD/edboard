@@ -1265,6 +1265,24 @@ public ReferenceData updateResource(ResourceDetails resourceDetails) {
 			}
 		return refData;
 	}
+	
+	
+	public String getEmployeeName(String empID){
+		try{
+			final String getresourceQuery = "SELECT EMP_RESOURCE_NAME FROM EDB_MSTR_EMP_DTLS WHERE EMP_EMPLOYEE_ID = '"+empID+"' ";
+			PreparedStatement  preparedStatement = getConnection().prepareStatement(getresourceQuery);
+			ResultSet rs = preparedStatement.executeQuery();
+			String empName = null;
+			while(rs.next()){
+				empName =rs.getString("EMP_RESOURCE_NAME");
+			}
+			return empName;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 
 }
