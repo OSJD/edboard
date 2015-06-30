@@ -29,6 +29,7 @@ import com.acc.tools.ed.integration.service.ILoginService;
 import com.acc.tools.ed.integration.service.ProjectManagementService;
 import com.acc.tools.ed.integration.util.EDBConstants;
 import com.acc.tools.ed.integration.util.ExcelFileReadUtil;
+import com.acc.tools.ed.report.dto.WeeklyStatusReportData;
 import com.acc.tools.ed.web.controller.common.AbstractEdbBaseController;
 
 @Controller
@@ -69,6 +70,7 @@ public class FileUploadController extends AbstractEdbBaseController{
 		model.addAttribute("addProjectForm", new ProjectForm());
 		model.addAttribute("addReleaseForm", new ReleaseForm());		
 		model.addAttribute("editProjectForm", new ProjectForm());
+		model.addAttribute("statusForm",new WeeklyStatusReportData());
 		model.addAttribute(EDBConstants.DEFAULT_TAB, EDBConstants.RESOURCE_MNG_TAB);
 		
 		return "/projectmanagement/index";

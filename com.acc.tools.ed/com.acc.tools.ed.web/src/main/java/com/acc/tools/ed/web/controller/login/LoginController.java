@@ -1,6 +1,5 @@
 package com.acc.tools.ed.web.controller.login;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,11 +21,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.acc.tools.ed.integration.dto.EDBUser;
 import com.acc.tools.ed.integration.dto.ProjectForm;
+import com.acc.tools.ed.integration.dto.ResourceDetails;
 import com.acc.tools.ed.integration.dto.TaskForm;
 import com.acc.tools.ed.integration.service.ILoginService;
 import com.acc.tools.ed.integration.service.ProjectWorkService;
+import com.acc.tools.ed.report.dto.WeeklyStatusReportData;
 import com.acc.tools.ed.web.controller.common.AbstractEdbBaseController;
-import com.acc.tools.ed.integration.dto.ResourceDetails;
 
 /**
  * 
@@ -61,6 +61,7 @@ public class LoginController extends AbstractEdbBaseController{
 			model.addAttribute("addTaskForm",new TaskForm());
 			model.addAttribute("editProjectForm", new ProjectForm());
 			model.addAttribute("addEmpDetailsForm",new ResourceDetails());
+			model.addAttribute("statusForm",new WeeklyStatusReportData());
 		return "/login/index";
 		} else {
 			return "redirect:/login.do";
@@ -96,6 +97,7 @@ public class LoginController extends AbstractEdbBaseController{
 					model.addAttribute("addTaskForm",new TaskForm());
 					model.addAttribute("editProjectForm", new ProjectForm());
 					model.addAttribute("addEmpDetailsForm",new ResourceDetails());
+					model.addAttribute("statusForm",new WeeklyStatusReportData());
 					List<ProjectForm> projData=projectWorkService.getMyTasks(user.getEmployeeId());
 					model.addAttribute("projData",projData);
 					iLoginService.updateLogin(lastLoginForm,user.getEmployeeId());

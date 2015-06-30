@@ -22,6 +22,7 @@ import com.acc.tools.ed.integration.dto.ResourceDetails;
 import com.acc.tools.ed.integration.dto.Skill;
 import com.acc.tools.ed.integration.dto.TaskForm;
 import com.acc.tools.ed.integration.service.ProjectManagementService;
+import com.acc.tools.ed.report.dto.WeeklyStatusReportData;
 import com.acc.tools.ed.web.controller.common.AbstractEdbBaseController;
 
 @Controller
@@ -54,12 +55,12 @@ private static final Logger LOG = LoggerFactory.getLogger(ProjectManagementContr
 		List<String> skillList = projectManagementService.getSkill();
 		List<String> levelList = projectManagementService.getLevel();
 		List<String> capabilityList = projectManagementService.getCapability();		
-		List<String> employeeNumberList = projectManagementService.getEmployeeNumber();
+		/*List<String> employeeNumberList = projectManagementService.getEmployeeNumber();*/
 		
 		model.addAttribute("skillList", skillList);
 		model.addAttribute("levelList", levelList);
 		model.addAttribute("capabilityList", capabilityList);		
-		model.addAttribute("employeeNumberList", employeeNumberList);
+		/*model.addAttribute("employeeNumberList", employeeNumberList);*/
 		
 		model.addAttribute("addEmpDetailsForm",new ResourceDetails());
 		//model.addAttribute("updateEmpDetailsForm",new ResourceDetails());
@@ -92,6 +93,7 @@ private static final Logger LOG = LoggerFactory.getLogger(ProjectManagementContr
 		model.addAttribute("addProjectForm",new ProjectForm());
 		model.addAttribute("editProjectForm", new ProjectForm());
 		model.addAttribute("addTaskForm",new TaskForm());
+		model.addAttribute("statusForm",new WeeklyStatusReportData());
 		return "/projectmanagement/index";
 	}
 	
@@ -110,6 +112,7 @@ private static final Logger LOG = LoggerFactory.getLogger(ProjectManagementContr
 		model.addAttribute("addProjectForm",new ProjectForm());
 		model.addAttribute("editProjectForm", new ProjectForm());
 		model.addAttribute("addTaskForm",new TaskForm());
+		model.addAttribute("statusForm",new WeeklyStatusReportData());
 		return "/projectmanagement/index";
 	}
 

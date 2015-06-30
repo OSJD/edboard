@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.acc.tools.ed.integration.dto.EDBUser;
+import com.acc.tools.ed.integration.dto.ResourceDetails;
+import com.acc.tools.ed.integration.dto.SurveyQuestionnaire;
+import com.acc.tools.ed.integration.dto.SurveySystem;
 import com.acc.tools.ed.integration.service.ProjectReportService;
 import com.acc.tools.ed.report.MSWordReportTemplate;
 import com.acc.tools.ed.report.dto.WeeklyStatusReportData;
@@ -72,6 +76,48 @@ public class ProjectStatusReportControlller extends AbstractEdbBaseController {
 		}
 	}
 
+	@RequestMapping(value="/reports.do")
+	  public String getReport(Model model) {
+		  
+		model.addAttribute("statusForm",new WeeklyStatusReportData());
+	    return "/report/reports";
+	  }
+	
+	@RequestMapping(value="/dmsreports.do")
+	  public String getDMSReport(Model model) {
+		  
+		model.addAttribute("statusForm",new WeeklyStatusReportData());
+	    return "/report/dmsReport";
+	  }
+	
+	
+	@RequestMapping(value = "/downloadStatusReport.do")
+	public void downloadMasterReport(
+			@ModelAttribute("statusForm") WeeklyStatusReportData statusForm,
+			HttpServletResponse response,
+			Model model) throws IOException {
 
+		try
+		{
+			
+		if(statusForm!= null)
+		{
+		String reportName = statusForm.getReportName();
+		String startDate =statusForm.getStartDate();
+		String endDate=	statusForm.getEndDate();
+		String reportFormat = statusForm.getReportFormat();
 
+		System.out.println("Report name::"+reportName +"Report Format::"+reportFormat +"start date::"+startDate +"enddate::"+ endDate);
+		projectReportService.generateMasterReport(response,startDate,endDate,reportFormat,reportName);
+		}
+		else
+		{
+			throw new Exception("status form empty");
+		}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+	}
 }

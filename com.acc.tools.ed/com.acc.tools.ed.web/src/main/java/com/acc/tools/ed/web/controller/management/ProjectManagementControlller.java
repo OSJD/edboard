@@ -1,13 +1,11 @@
 package com.acc.tools.ed.web.controller.management;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
@@ -28,9 +26,9 @@ import com.acc.tools.ed.integration.dto.ProjectForm;
 import com.acc.tools.ed.integration.dto.ReferenceData;
 import com.acc.tools.ed.integration.dto.ReleaseForm;
 import com.acc.tools.ed.integration.dto.ReleasePlan;
-import com.acc.tools.ed.integration.dto.ReleaseWeek;
-import com.acc.tools.ed.web.controller.common.AbstractEdbBaseController;
 import com.acc.tools.ed.integration.dto.ResourceDetails;
+import com.acc.tools.ed.report.dto.WeeklyStatusReportData;
+import com.acc.tools.ed.web.controller.common.AbstractEdbBaseController;
 
 @Controller
 @SessionAttributes({ "edbUser" }) 
@@ -64,6 +62,8 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		model.addAttribute("projectList", projectList);
 		model.addAttribute("programList",getProgramList());
 		model.addAttribute("addEmpDetailsForm",new ResourceDetails());
+		model.addAttribute("statusForm",new WeeklyStatusReportData());
+
 		LOG.debug("Add Project retruned --> Project Id: {} | Project Name:{}", newProject.getId(),newProject.getLabel());
 		return "/projectmanagement/index";
 	}
@@ -248,6 +248,8 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		model.addAttribute("editProjectForm", new ProjectForm());
 		model.addAttribute("addEmpDetailsForm",new ResourceDetails());
 		model.addAttribute("projectList", getProjectList());
+		model.addAttribute("statusForm",new WeeklyStatusReportData());
+
 		return "/projectmanagement/index";
 	}
 	
