@@ -2,7 +2,6 @@ package com.acc.tools.ed.report.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -39,7 +38,9 @@ import org.docx4j.wml.Hdr;
 import org.springframework.stereotype.Service;
 
 import com.acc.tools.ed.report.MSWordReportTemplate;
+import com.acc.tools.ed.report.dto.ReportMasterData;
 import com.acc.tools.ed.report.dto.WeeklyStatusReportData;
+import com.acc.tools.ed.report.util.ReportConstants;
 
 @Service("msWordReportTemplate")
 public class MSWordReportTemplateImpl implements MSWordReportTemplate{
@@ -207,16 +208,16 @@ public class MSWordReportTemplateImpl implements MSWordReportTemplate{
 		xmlFormat.append("<status>").append(reportData.getStatus()).append("</status>");
 		xmlFormat.append("</EDB>");
 		xmlFormat.append("</root>");
-		System.out.println(xmlFormat.toString());
+		System.out.println("Output XML:"+xmlFormat.toString());
 		
-		outputPDF = GeneratestatusReportPDF(xmlFormat);
+		outputPDF = GeneratePDFReport(xmlFormat,ReportConstants.RELEASE_MASTER_REPORT);
 		
 		
 		// TODO Auto-generated method stub
 		return outputPDF;
 	}
 
-	private ByteArrayOutputStream GeneratestatusReportPDF(StringBuilder xmlFormat) {
+	private ByteArrayOutputStream GeneratePDFReport(StringBuilder xmlFormat,String reportPath) {
 		ByteArrayOutputStream output = null;
 		try{
 			Map<String, Object> params = new HashMap<String, Object>();
@@ -234,7 +235,7 @@ public class MSWordReportTemplateImpl implements MSWordReportTemplate{
 	        params.put(JRParameter.REPORT_LOCALE, Locale.US);
 	       
 	        
-	        JasperReport report =  JasperCompileManager.compileReport(MSWordReportTemplateImpl.class.getClassLoader().getResourceAsStream("resources/JRXML/PROJ_STTS_RPT.jrxml"));
+	        JasperReport report =  JasperCompileManager.compileReport(MSWordReportTemplateImpl.class.getClassLoader().getResourceAsStream(reportPath));
 	        JasperPrint print = JasperFillManager.fillReport(report,params);
 	        
 	        byte[] bytes= JasperExportManager.exportReportToPdf(print);
@@ -257,6 +258,57 @@ public class MSWordReportTemplateImpl implements MSWordReportTemplate{
 		   return (BaseDocument);
 	}
 
+	public  OutputStream generateReleaseMasterReportPDF(List<WeeklyStatusReportData> releaseData) throws IOException, Docx4JException, URISyntaxException{
+		ByteArrayOutputStream outputPDF = null;
+		
+		StringBuilder xmlFormat = createHeaderXML();
+		
+		for(WeeklyStatusReportData relData:releaseData){
+			xmlFormat.append("<EDB>");
+			xmlFormat.append("<releaseName>").append(checkNull(relData.getReleaseName())).append("</releaseName>");
+			xmlFormat.append("<releaseDesc>").append(checkNull(relData.getReleaseDesc())).append("</releaseDesc>");
+			xmlFormat.append("<projectName>").append(checkNull(relData.getProjectName())).append("</projectName>");
+			xmlFormat.append("<startDate>").append(checkNull(relData.getStartDate())).append("</startDate>");
+			xmlFormat.append("<endDate>").append(checkNull(relData.getEndDate())).append("</endDate>");
+			xmlFormat.append("<status>").append(checkNull(relData.getStatus())).append("</status>");
+			xmlFormat.append("</EDB>");
+				
+		}
+		xmlFormat.append("</root>");
+		System.out.println(xmlFormat.toString());
+		
+		outputPDF = GeneratePDFReport(xmlFormat,ReportConstants.RELEASE_MASTER_REPORT);
+		
+		return outputPDF;
+	}
 	
-
+	public  OutputStream generateEmployeeMasterReportPDF(List<ReportMasterData> resourceDetails) throws IOException, Docx4JException, URISyntaxException{
+		
+	ByteArrayOutputStream outputPDF = null;
+		
+		StringBuilder xmlFormat = createHeaderXML();
+		
+		for(ReportMasterData relData:resourceDetails){
+			xmlFormat.append("<EDB>");
+			xmlFormat.append("<empName>").append(checkNull(relData.getEmployeeName())).append("</empName>");
+			xmlFormat.append("<entID>").append(checkNull(relData.getEnterpriseId())).append("</entID>");
+			xmlFormat.append("<empNumber>").append(checkNull(relData.getEmployeeNumber())).append("</empNumber>");
+			xmlFormat.append("<level>").append(checkNull(relData.getLevel())).append("</level>");
+			xmlFormat.append("<role>").append(checkNull(relData.getRole())).append("</role>");
+			xmlFormat.append("</EDB>");
+				
+		}
+		xmlFormat.append("</root>");
+		System.out.println(xmlFormat.toString());
+		
+		outputPDF = GeneratePDFReport(xmlFormat,ReportConstants.EMPLOYEE_MASTER_REPORT);
+		
+		return outputPDF;
+	}
+	
+	public String checkNull(String value){
+		
+		String result = (null!= value)?value:"-";
+		return result;
+	}
 }

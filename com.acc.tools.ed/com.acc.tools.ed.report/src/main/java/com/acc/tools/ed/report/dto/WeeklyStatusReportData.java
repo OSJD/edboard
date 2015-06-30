@@ -22,6 +22,9 @@ public class WeeklyStatusReportData implements Serializable{
 	private List<String> upcomingTasks;
 	private String reportingPeriod;
 	private String reportFormat;
+	private String reportName;
+	private String releaseDesc;
+
 	public String getProgramName() {
 		return programName;
 	}
@@ -93,5 +96,17 @@ public class WeeklyStatusReportData implements Serializable{
 	}
 	public void setReportFormat(String reportFormat) {
 		this.reportFormat = reportFormat;
+	}
+	public String getReportName() {
+		return reportName;
+	}
+	public void setReportName(String reportName) {
+		this.reportName = reportName;
+	}
+	public String getReleaseDesc() {
+		return releaseDesc;
+	}
+	public void setReleaseDesc(String releaseDesc) {
+		this.releaseDesc = releaseDesc;
 	}
 }

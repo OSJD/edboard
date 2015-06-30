@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created using an evaluation version of JasperAssistant (http://www.jasperassistant.com) -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Unnamed" pageWidth="600" pageHeight="700" columnWidth="580" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10">
+	<property name="com.jasperassistant.designer.DataSource" value="Employee"/>
+	<property name="com.jasperassistant.designer.Grid" value="false"/>
+	<property name="com.jasperassistant.designer.SnapToGrid" value="false"/>
+	<property name="com.jasperassistant.designer.GridWidth" value="12"/>
+	<property name="com.jasperassistant.designer.GridHeight" value="12"/>
+	<queryString language="XPath">
+		<![CDATA[/root/EDB]]>
+	</queryString>
+	<field name="empName" class="java.lang.String">
+		<fieldDescription><![CDATA[empName]]></fieldDescription>
+	</field>
+	<field name="entID" class="java.lang.String">
+		<fieldDescription><![CDATA[entID]]></fieldDescription>
+	</field>
+	<field name="empNumber" class="java.lang.String">
+		<fieldDescription><![CDATA[empNumber]]></fieldDescription>
+	</field>
+	<field name="level" class="java.lang.String">
+		<fieldDescription><![CDATA[level]]></fieldDescription>
+	</field>
+	<field name="role" class="java.lang.String">
+		<fieldDescription><![CDATA[role]]></fieldDescription>
+	</field>
+	<title>
+		<band height="33">
+			<staticText>
+				<reportElement x="-1" y="-1" width="562" height="34"/>
+				<textElement textAlignment="Center">
+					<font size="20"/>
+				</textElement>
+				<text><![CDATA[EMPLOYEE MASTER REPORT]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="43">
+			<staticText>
+				<reportElement x="1" y="2" width="127" height="32"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Employee Name
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="129" y="1" width="185" height="32"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Enterprise ID]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="313" y="2" width="84" height="31"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Employee Number
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="398" y="2" width="80" height="32"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Level]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="479" y="2" width="80" height="34"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Role
+
+]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="2" y="40" width="557" height="1"/>
+			</rectangle>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="23">
+			<textField pattern="M/d/yy" hyperlinkType="None">
+				<reportElement x="401" y="1" width="77" height="20"/>
+				<textElement markup="none">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{level}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement x="2" y="1" width="127" height="20"/>
+				<textElement markup="none"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{empName}]]></textFieldExpression>
+			</textField>
+			<textField hyperlinkType="None">
+				<reportElement x="314" y="3" width="85" height="20"/>
+				<textElement markup="none"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{empNumber}]]></textFieldExpression>
+			</textField>
+			<textField hyperlinkType="None">
+				<reportElement x="479" y="1" width="81" height="20"/>
+				<textElement markup="none"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{role}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="131" y="2" width="183" height="20"/>
+				<textElement markup="none"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{entID}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
