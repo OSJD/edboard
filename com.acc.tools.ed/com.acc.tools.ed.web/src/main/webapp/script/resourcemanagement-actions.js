@@ -1,6 +1,7 @@
 		$(document)
 			.ready(
 					function() {
+							$('#sucess_msg_div').dialog({ autoOpen: false }); // Initialize dialog plugin
 							var addResourceDialog = $("#addemp-popup").dialog({
 							autoOpen : false,
 							height : 550,
