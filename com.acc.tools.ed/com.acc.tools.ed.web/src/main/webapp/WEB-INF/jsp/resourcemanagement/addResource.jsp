@@ -16,11 +16,12 @@
 			<legend>Add Employee Details</legend>
 				
 			<div>
+				<form:hidden id="resourceFlag" path="resourceFlag" name="resourceFlag"/>
 				<table class="ebdtable" id="release">
 					 <tr>
 						<th style="text-align: right;">Employee Number</th>
 						<td>
-							<form:input path="employeeNumber" type="text" id="empNumber" class="textbox" onClick="resourceCheck()/>
+							<form:input path="employeeNumber" type="text" id="empNumber" class="textbox" onBlur="resourceCheck()"/>
 							
 						</td>
 
