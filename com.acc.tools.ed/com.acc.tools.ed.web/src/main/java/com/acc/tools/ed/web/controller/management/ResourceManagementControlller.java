@@ -204,7 +204,7 @@ private static final Logger LOG = LoggerFactory.getLogger(ProjectManagementContr
 	public String checkResource(@ModelAttribute("addEmpDetailsForm") ResourceDetails addEmpDetailsForm,Model model){
 		String empId = addEmpDetailsForm.getEmployeeNumber();
 		String resourceExits= projectManagementService.getEmployeeName(empId);
-		addEmpDetailsForm.setresourceFlag(resourceExits);
+		addEmpDetailsForm.setResourceFlag(resourceExits);
 		System.out.println(resourceExits);
 		model.addAttribute("addEmpDetailsForm",new ResourceDetails());
 		return "/resourcemanagement/resourceManagement";
