@@ -646,4 +646,7 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 		return projectManagementDao.getEmployeeName(empID);
 	}
 	
+	public List<ReferenceData> getProgramProjectIds(String programId){
+		return projectManagementDao.getProgramProjectIds(programId);
+	}
 }

@@ -80,14 +80,17 @@ public class ProjectStatusReportControlller extends AbstractEdbBaseController {
 	  public String getReport(Model model) {
 		  
 		model.addAttribute("statusForm",new WeeklyStatusReportData());
-	    return "/report/reports";
+	    return "/reports/reports";
 	  }
 	
 	@RequestMapping(value="/dmsreports.do")
 	  public String getDMSReport(Model model) {
-		  
+		
+	
+		model.addAttribute("programList", getProgramList());
 		model.addAttribute("statusForm",new WeeklyStatusReportData());
-	    return "/report/dmsReport";
+	   
+		return "/reports/dmsReport";
 	  }
 	
 	

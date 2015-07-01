@@ -24,6 +24,7 @@ public class WeeklyStatusReportData implements Serializable{
 	private String reportFormat;
 	private String reportName;
 	private String releaseDesc;
+	private String weekEndDate;
 
 	public String getProgramName() {
 		return programName;
@@ -108,5 +109,11 @@ public class WeeklyStatusReportData implements Serializable{
 	}
 	public void setReleaseDesc(String releaseDesc) {
 		this.releaseDesc = releaseDesc;
+	}
+	public String getWeekEndDate() {
+		return weekEndDate;
+	}
+	public void setWeekEndDate(String weekEndDate) {
+		this.weekEndDate = weekEndDate;
 	}
 }

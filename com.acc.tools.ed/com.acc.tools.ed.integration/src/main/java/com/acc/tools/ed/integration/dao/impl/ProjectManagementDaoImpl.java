@@ -1283,7 +1283,26 @@ public ReferenceData updateResource(ResourceDetails resourceDetails) {
 		}
 		return null;
 	}
-
+	
+	public List<ReferenceData> getProgramProjectIds(String programId){
+		List<ReferenceData> programProjectList=new ArrayList<ReferenceData>();
+		final String query="select PROJ_ID,PROJ_NAME from EDB_PROJECT where PRGM_ID="+programId+"";
+		log.debug("RELEASE QUERY :[{}]",query);
+		try {
+			Statement stmt=getConnection().createStatement();
+			ResultSet rs=stmt.executeQuery(query);
+			while(rs.next()){
+				ReferenceData refData=new ReferenceData();
+				refData.setId(""+rs.getInt("PROJ_ID"));
+				refData.setLabel(rs.getString("PROJ_NAME"));
+				programProjectList.add(refData);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return programProjectList;
+	}
 
 }
 

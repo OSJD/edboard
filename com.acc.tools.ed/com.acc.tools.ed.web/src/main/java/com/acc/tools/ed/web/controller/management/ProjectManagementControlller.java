@@ -288,6 +288,12 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 	}
 	
 
+	@RequestMapping(value = "/fetchProjects.do" ,method = RequestMethod.POST)
+	public @ResponseBody
+	List<ReferenceData> getProjectList(@RequestParam("programId") String programId,Model model) {
+		return getProjectManagementService().getProgramProjectIds(programId);
+	}
+
 	@RequestMapping(value = "/viewProjectReleaseDetails.do")
 	public String viewProjectReleaseDetails(@RequestBody ReleaseForm addReleaseForm,
 				Model model) {

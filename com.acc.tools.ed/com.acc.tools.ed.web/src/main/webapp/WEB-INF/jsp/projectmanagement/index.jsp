@@ -66,7 +66,7 @@
 								<div id="reportsTab">
 									<!-- SUB MENU-->
 									<%@ include file="/WEB-INF/jsp/reports/submenu.jsp"%>
-									<div id="rptMainContainer" style="margin-top: 20px;">
+									<div id="rpMainContainer" style="margin-top: 20px;">
 										<jsp:include page="/WEB-INF/jsp/reports/reports.jsp" flush="true"></jsp:include>
 									</div> 
 								</div> 

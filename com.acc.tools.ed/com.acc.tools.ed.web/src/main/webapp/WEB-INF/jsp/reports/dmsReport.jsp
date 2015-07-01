@@ -3,35 +3,40 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <script src="<%=request.getContextPath()%>/script/reports.js"></script>
 
-<form:form action="downloadStatusReport.do" commandName="statusForm" id="statusForm">
-	
-	<table class="ebdtableheader">
+<table class="ebdtableheader">
 		<tr>
-			<th>Report Name</th>
+			<th>Program Name</th>
 			<td>
-				<form:select id="reportsName" name="reportName" path ="reportName">
-					<option value="0">---Please Select----</option>
-					<option value="EmpMstr">Employee Master</option>
-					<option value="RelMstr">Release Master</option>
-				</form:select>
+				<select id="rptprogram" class="textbox">
+					<option value="0">Select Program</option>
+				    <c:forEach items="${programList}" var="program">
+				        <option value="${program.id}" <c:if test="${program.selected==true}">selected</c:if>>${program.label}</option>
+				    </c:forEach>
+				</select>
 			</td>
-			 <td style="background-image: none;background-color: white;border-width: 1px;border-style: solid;border-color: #999999;"><div style="width: 5px;"></div></td>
-
-			<th>Report Format</th>
-			<td><form:select id="reportFormat" class="textbox" path="reportFormat">
-					<option value="0">---Please Select----</option>
-					<option value="Pdf">PDF</option>
-				</form:select></td>
-			 
-			<th style="text-align: right;">Start Date</th>
-			<td><form:input type="text" id="reportStartDate" class="textbox" path="startDate" /></td>
-			<th style="text-align: right;">End Date</th>
-			<td><form:input type="text" id="reportEndDate" class="textbox" path="endDate" /></td>
+			<th>Project Name</th>
+			<td>
+				<select id="rptproject" class="textbox">
+					<option value="0">Select Project</option>
+				    <c:forEach items="${projectList}" var="project">
+				        <option value="${project.id}" <c:if test="${project.selected==true}">selected</c:if>>${project.label}</option>
+				    </c:forEach>
+				</select>
+			</td>
+			<td style="background-image: none;background-color: white;border-width: 1px;border-style: solid;border-color: #999999;"><div style="width: 15px;"></div></td>
+			<th>Release Name</th>
+			<td>
+				<select id="rptreleases" class="textbox">
+					<option  value="SR">Select Release</option>
+	 					<c:forEach items="${releaseList}" var="release">
+					        <option value="${release.id}" <c:if test="${release.selected==true}">selected</c:if> >${release.label}</option>
+					    </c:forEach>					
+				</select>
+			</td>
 			
 		</tr>
 	</table>
-<!-- <a href="./downloadWsr.do" class="button" id="downloadWsr" style="width: 100px;">Download Report</a>  -->
-<br/><br/>
-<input type="button" value="Download Report" onclick = "downloadReportMaster()"  /> 
-</form:form>
+	
+ 
+
 

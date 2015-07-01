@@ -60,4 +60,5 @@ public interface ProjectManagementDao {
 	public ReferenceData addSkill(Skill skillDetails);
 	public ReferenceData updateResource(ResourceDetails resourceDetails);
 	public String getEmployeeName(String empID);
+	public List<ReferenceData> getProgramProjectIds(String programId);
 }

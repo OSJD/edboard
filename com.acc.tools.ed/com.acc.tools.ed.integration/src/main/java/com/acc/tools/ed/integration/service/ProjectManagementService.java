@@ -59,4 +59,5 @@ public interface ProjectManagementService {
 	public ReferenceData addLevel(Level levelDetails);
 	public ReferenceData addSkill(Skill skillDetails);
 	public String getEmployeeName(String empID);
+	public List<ReferenceData> getProgramProjectIds(String programId);
 }

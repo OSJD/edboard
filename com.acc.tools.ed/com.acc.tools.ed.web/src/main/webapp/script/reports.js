@@ -41,6 +41,60 @@ $(document).ready(
 			}
 			
 		});
+	 
+		$("#rptproject").unbind("change").on("change", function() {
+			
+			var selectedProject=$("#rptproject").val();
+			$.ajax({
+				type : "POST",
+				url : "./fetchReleases.do",
+				data : {projectId:selectedProject},
+				dataType : 'json',	
+				
+				beforeSend:function(){
+				  },
+				success : function(response) {
+		
+					$('#rptreleases')
+					  	.find('option')
+					  	.remove();
+					$('#rptreleases').append('<option value="SR">Select Release</option>');
+					for(var obj in response){
+						$('#rptreleases').append('<option value='+response[obj].id+'>'+response[obj].label+'</option>');
+					};
+				},
+				error : function(data) {	
+					$("#mainContainer").html("Application error! Please call help desk. Error:"+data.status);
+				}
+			});	
+		});
+		
+	$("#rptprogram").unbind("change").on("change", function() {
+			var selectedProgram=$("#rptprogram").val();
+			$.ajax({
+				type : "POST",
+				url : "./fetchProjects.do",
+				data : {programId:selectedProgram},
+				dataType : 'json',	
+				
+				beforeSend:function(){
+				  },
+				success : function(response) {
+		
+					$('#rptproject')
+					  	.find('option')
+					  	.remove();
+					$('#rptproject').append('<option value="SR">Select Project</option>');
+					for(var obj in response){
+						$('#rptproject').append('<option value='+response[obj].id+'>'+response[obj].label+'</option>');
+					};
+				},
+				error : function(data) {	
+					$("#mainContainer").html("Application error! Please call help desk. Error:"+data.status);
+				}
+			});	
+		});
+		
 });
 
 
