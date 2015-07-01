@@ -22,6 +22,7 @@ public class ResourceDetails implements Serializable{
 	private String role;
 	private String projectStartDate;
 	private String projectEndDate;
+	private String resourceFlag;
 	
 	public String getResourceId() {
 		return ResourceId;
@@ -149,6 +150,18 @@ public class ResourceDetails implements Serializable{
 	 */
 	public void setProjectEndDate(String projectEndDate) {
 		this.projectEndDate = projectEndDate;
+	}
+	/**
+	 * @return the resourceFlag
+	 */
+	public String getResourceFlag() {
+		return resourceFlag;
+	}
+	/**
+	 * @param resourceFlag the resourceFlag to set
+	 */
+	public void setresourceFlag(String resourceFlag) {
+		this.resourceFlag = resourceFlag;
 	}
 
 }
