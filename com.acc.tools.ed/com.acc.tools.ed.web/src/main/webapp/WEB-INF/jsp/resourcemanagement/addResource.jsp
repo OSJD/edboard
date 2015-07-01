@@ -20,7 +20,7 @@
 					 <tr>
 						<th style="text-align: right;">Employee Number</th>
 						<td>
-							<form:input path="employeeNumber" type="text" id="empNumber" class="textbox" />
+							<form:input path="employeeNumber" type="text" id="empNumber" class="textbox" onClick="resourceCheck()/>
 							
 						</td>
 
@@ -79,7 +79,7 @@
 			
 				<div id = "sucess_msg_div" style="border:1px purple solid;display:none">
 		
-					<h3>Resource Already Exists!!</h3><br><br>
+					<h3>Employee ID Already Exists!!</h3><br><br>
 					<input align="center" type="button" value ="Ok" onClick ="confirmSucess()"/>
 				</div>
 			</div>
