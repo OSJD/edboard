@@ -160,7 +160,7 @@ public class ResourceDetails implements Serializable{
 	/**
 	 * @param resourceFlag the resourceFlag to set
 	 */
-	public void setresourceFlag(String resourceFlag) {
+	public void setResourceFlag(String resourceFlag) {
 		this.resourceFlag = resourceFlag;
 	}
 
