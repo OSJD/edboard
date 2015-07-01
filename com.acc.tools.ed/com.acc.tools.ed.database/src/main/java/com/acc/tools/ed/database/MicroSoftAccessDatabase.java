@@ -44,7 +44,7 @@ final public class MicroSoftAccessDatabase {
            	
 			log.debug("\t\tEngagementDashBoard Database location:[{}]",dbpath);
 			
-			String url = "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:\\Users\\sathish.sampath\\Desktop\\EDB\\"+accessDBFile+";";
+			String url = "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=G:\\"+accessDBFile+";";
 	
 			//MS Access datasource 
 			
