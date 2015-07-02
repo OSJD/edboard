@@ -511,7 +511,7 @@
 								return false;
 							}
 							else{
-								$("#deletedCapability").html(existingCapability+" will be permanently deleted and cannot be recovered.<br> Are you sure?");
+								$("#deletedCapability").html(existingCapability+" and related skills will be permanently deleted and cannot be recovered.<br> Are you sure?");
 								deleteCapabilityConfirm.dialog("open");
 							}
 
