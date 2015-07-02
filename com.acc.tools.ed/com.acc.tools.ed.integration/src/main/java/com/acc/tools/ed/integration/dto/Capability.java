@@ -6,8 +6,7 @@ public class Capability implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private String capabilityName;
-	private String capabilitySpecialty;
-
+	private String existingCapability;
 	public String getCapabilityName() {
 		return capabilityName;
 	}
@@ -16,12 +15,13 @@ public class Capability implements Serializable {
 		this.capabilityName = capabilityName;
 	}
 
-	public String getCapabilitySpecialty() {
-		return capabilitySpecialty;
+	public String getExistingCapability() {
+		return existingCapability;
 	}
 
-	public void setCapabilitySpecialty(String capabilitySpecialty) {
-		this.capabilitySpecialty = capabilitySpecialty;
+	public void setExistingCapability(String existingCapability) {
+		this.existingCapability = existingCapability;
 	}
+	
 
 }

@@ -11,20 +11,16 @@
 	<div id="main_container">
 		<div id="addSkill-popup" title="Add Skill">
 			<p class="validateTips">All form fields are required.</p>
-			<form:form commandName="addSkillForm"
-				action="addSkillForm.do">
+			<form:form commandName="addSkillForm" action="addSkillForm.do">
 				<fieldset>
 					<legend>Add Skill</legend>
 					<div>
 						<table class="ebdtable" id="release">
 							<tr>
-								<th style="text-align: right;">Skill Category</th>
-								<td><form:input path="skillCategory" type="text"
-										id="skillCategory" class="textbox" /></td>
-
+								<td><form:input type="text" path="capabilityName" id="capName"/></td>	
 								<th style="text-align: right;">Skill Name</th>
-								<td><form:input path="skillName" type="text"
-										id="skillName" class="textbox" /></td>
+								<td><form:input path="skillName" type="text" id="skillName"
+										class="textbox" /></td>
 							</tr>
 						</table>
 					</div>

@@ -582,60 +582,71 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 		}
 	}
 	
-	public ReferenceData addCapability(Capability skillDetails){
+	public ReferenceData addCapability(Capability capabilityDetails) {
 		try {
-			final boolean isCapabilityExist=projectManagementDao.isCapabilityExist(skillDetails.getCapabilityName(),skillDetails.getCapabilitySpecialty());
-			if(!isCapabilityExist){
-			 return projectManagementDao.addCapability(skillDetails);
+			final boolean isCapabilityExist = projectManagementDao
+					.isCapabilityExist(capabilityDetails.getCapabilityName());
+			if (!isCapabilityExist) {
+				return projectManagementDao.addCapability(capabilityDetails);
 			} else {
-				ReferenceData errorData=new ReferenceData();
+				ReferenceData errorData = new ReferenceData();
 				errorData.setId("-2");
-				errorData.setLabel("Capability with name "+skillDetails.getCapabilityName()+ " and speciality "+ skillDetails.getCapabilitySpecialty()+" already exists!");
-				return errorData;				
+				errorData.setLabel("Capability with name "
+						+ capabilityDetails.getCapabilityName()
+						+ " already exists!");
+				return errorData;
 			}
-		}catch (Exception e)
-		{
-			ReferenceData errorData=new ReferenceData();
+		} catch (Exception e) {
+			ReferenceData errorData = new ReferenceData();
 			errorData.setId("-1");
 			errorData.setLabel(e.getMessage());
 			return errorData;
 		}
 	}
-	
-	public ReferenceData addLevel(Level levelDetails){
+
+	public ReferenceData addLevel(Level levelDetails) {
 		try {
-			final boolean isLevelExist=projectManagementDao.isLevelExist(levelDetails.getLevelName());
-			if(!isLevelExist){
-			 return projectManagementDao.addLevel(levelDetails);
+			final boolean isLevelExist = projectManagementDao
+					.isLevelExist(levelDetails.getLevelName());
+			if (!isLevelExist) {
+				return projectManagementDao.addLevel(levelDetails);
 			} else {
-				ReferenceData errorData=new ReferenceData();
+				ReferenceData errorData = new ReferenceData();
 				errorData.setId("-2");
-				errorData.setLabel("Level with name "+levelDetails.getLevelName()+ " already exists!");
-				return errorData;				
+				errorData.setLabel("Level with name "
+						+ levelDetails.getLevelName() + " already exists!");
+				return errorData;
 			}
-		}catch (Exception e)
-		{
-			ReferenceData errorData=new ReferenceData();
+		} catch (Exception e) {
+			ReferenceData errorData = new ReferenceData();
 			errorData.setId("-1");
 			errorData.setLabel(e.getMessage());
 			return errorData;
 		}
 	}
-	
-	public ReferenceData addSkill(Skill skillDetails){
+
+	public ReferenceData addSkill(Skill skillDetails) {
 		try {
-			final boolean isSkillExist=projectManagementDao.isSkillExist(skillDetails.getSkillCategory(),skillDetails.getSkillName());
-			if(!isSkillExist){
-			 return projectManagementDao.addSkill(skillDetails);
+			int capabilityId = projectManagementDao
+					.getCapabilityId(skillDetails.getCapabilityName());
+			final boolean isSkillExist = projectManagementDao.isSkillExist(
+					capabilityId, skillDetails.getSkillName());
+			if (!isSkillExist) {
+				return projectManagementDao
+						.addSkill(capabilityId, skillDetails);
 			} else {
-				ReferenceData errorData=new ReferenceData();
+				ReferenceData errorData = new ReferenceData();
 				errorData.setId("-2");
-				errorData.setLabel("Skill with name "+skillDetails.getSkillName()+ " and category "+ skillDetails.getSkillCategory()+" already exists!");
-				return errorData;				
+				errorData
+						.setLabel("Skill with name "
+								+ skillDetails.getSkillName()
+								+ " and capability "
+								+ skillDetails.getCapabilityName()
+								+ " already exists!");
+				return errorData;
 			}
-		}catch (Exception e)
-		{
-			ReferenceData errorData=new ReferenceData();
+		} catch (Exception e) {
+			ReferenceData errorData = new ReferenceData();
 			errorData.setId("-1");
 			errorData.setLabel(e.getMessage());
 			return errorData;
@@ -648,5 +659,146 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 	
 	public List<ReferenceData> getProgramProjectIds(String programId){
 		return projectManagementDao.getProgramProjectIds(programId);
+	}
+	
+	public ReferenceData editCapability(Capability capabilityDetails) {
+		try {
+			final boolean isCapabilityExist = projectManagementDao
+					.isCapabilityExist(capabilityDetails.getCapabilityName());
+			if (!isCapabilityExist) {
+				return projectManagementDao.editCapability(capabilityDetails);
+			} else {
+				ReferenceData errorData = new ReferenceData();
+				errorData.setId("-2");
+				errorData.setLabel("Capability with name "
+						+ capabilityDetails.getCapabilityName()
+						+ " already exists!");
+				return errorData;
+			}
+		} catch (Exception e) {
+			ReferenceData errorData = new ReferenceData();
+			errorData.setId("-1");
+			errorData.setLabel(e.getMessage());
+			return errorData;
+		}
+	}
+
+	public ReferenceData deleteCapability(String capabilityName) {
+		try {
+			final boolean isCapabilityExist = projectManagementDao
+					.isCapabilityExist(capabilityName);
+			if (isCapabilityExist) {
+				return projectManagementDao.deleteCapability(capabilityName);
+			} else {
+				ReferenceData errorData = new ReferenceData();
+				errorData.setId("-2");
+				errorData.setLabel("Capability with name " + capabilityName
+						+ " does not exist!");
+				return errorData;
+			}
+		} catch (Exception e) {
+			ReferenceData errorData = new ReferenceData();
+			errorData.setId("-1");
+			errorData.setLabel(e.getMessage());
+			return errorData;
+		}
+	}
+
+	public ReferenceData editLevel(Level levelDetails) {
+		try {
+			final boolean isLevelExist = projectManagementDao
+					.isLevelExist(levelDetails.getLevelName());
+			if (!isLevelExist) {
+				return projectManagementDao.editLevel(levelDetails);
+			} else {
+				ReferenceData errorData = new ReferenceData();
+				errorData.setId("-2");
+				errorData.setLabel("Level with name "
+						+ levelDetails.getLevelName() + " already exists!");
+				return errorData;
+			}
+		} catch (Exception e) {
+			ReferenceData errorData = new ReferenceData();
+			errorData.setId("-1");
+			errorData.setLabel(e.getMessage());
+			return errorData;
+		}
+	}
+
+	public ReferenceData deleteLevel(String levelName) {
+		try {
+			final boolean isLevelExist = projectManagementDao
+					.isLevelExist(levelName);
+			if (isLevelExist) {
+				return projectManagementDao.deleteLevel(levelName);
+			} else {
+				ReferenceData errorData = new ReferenceData();
+				errorData.setId("-2");
+				errorData.setLabel("Level with name " + levelName
+						+ " does not exist!");
+				return errorData;
+			}
+		} catch (Exception e) {
+			ReferenceData errorData = new ReferenceData();
+			errorData.setId("-1");
+			errorData.setLabel(e.getMessage());
+			return errorData;
+		}
+	}
+
+	public List<String> getSkill(String capabilityName) {
+		int capabilityId = projectManagementDao.getCapabilityId(capabilityName);
+		return projectManagementDao.getSkill(capabilityId);
+	}
+	
+	public ReferenceData editSkill(Skill skillDetails) {
+		try {
+			int capabilityId = projectManagementDao
+					.getCapabilityId(skillDetails.getCapabilityName());
+			final boolean isSkillExist = projectManagementDao.isSkillExist(
+					capabilityId, skillDetails.getSkillName());
+			if (!isSkillExist) {
+				return projectManagementDao
+						.editSkill(capabilityId, skillDetails);
+			} else {
+				ReferenceData errorData = new ReferenceData();
+				errorData.setId("-2");
+				errorData
+				.setLabel("Skill with name "
+						+ skillDetails.getSkillName()
+						+ " and capability "
+						+ skillDetails.getCapabilityName()
+						+ " already exists!");
+				return errorData;
+			}
+		} catch (Exception e) {
+			ReferenceData errorData = new ReferenceData();
+			errorData.setId("-1");
+			errorData.setLabel(e.getMessage());
+			return errorData;
+		}
+	}
+	
+	public ReferenceData deleteSkill(String capabilityName, String skillName) {
+		try {
+			int capabilityId = projectManagementDao
+					.getCapabilityId(capabilityName);
+			final boolean isSkillExist = projectManagementDao.isSkillExist(
+					capabilityId, skillName);
+			if (isSkillExist) {
+				return projectManagementDao.deleteSkill(capabilityId,skillName);
+			} else {
+				ReferenceData errorData = new ReferenceData();
+				errorData.setId("-2");
+				errorData.setLabel("Skill with name " + skillName
+						+ " does not exist!");
+				return errorData;
+			}
+		} catch (Exception e) {
+			ReferenceData errorData = new ReferenceData();
+			errorData.setId("-1");
+			errorData.setLabel(e.getMessage());
+			return errorData;
+		}
 	}
 }

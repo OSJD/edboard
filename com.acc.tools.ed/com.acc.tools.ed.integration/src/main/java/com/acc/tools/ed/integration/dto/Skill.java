@@ -5,14 +5,15 @@ import java.io.Serializable;
 public class Skill implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
-	private String skillCategory;
+	private String capabilityName;
 	private String skillName;
-	
-	public String getSkillCategory() {
-		return skillCategory;
+	private String existingSkill;
+
+	public String getCapabilityName() {
+		return capabilityName;
 	}
-	public void setSkillCategory(String skillCategory) {
-		this.skillCategory = skillCategory;
+	public void setCapabilityName(String capabilityName) {
+		this.capabilityName = capabilityName;
 	}
 	public String getSkillName() {
 		return skillName;
@@ -20,6 +21,13 @@ public class Skill implements Serializable{
 	public void setSkillName(String skillName) {
 		this.skillName = skillName;
 	}
+	public String getExistingSkill() {
+		return existingSkill;
+	}
+	public void setExistingSkill(String existingSkill) {
+		this.existingSkill = existingSkill;
+	}
+	
 	
 	
 }

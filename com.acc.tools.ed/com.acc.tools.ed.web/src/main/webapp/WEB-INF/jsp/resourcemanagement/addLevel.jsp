@@ -14,7 +14,7 @@
 			<form:form commandName="addLevelForm"
 				action="addLevelForm.do">
 				<fieldset>
-					<legend>Add Skill</legend>
+					<legend>Add Level</legend>
 					<div>
 						<table class="ebdtable" id="release">
 							<tr>

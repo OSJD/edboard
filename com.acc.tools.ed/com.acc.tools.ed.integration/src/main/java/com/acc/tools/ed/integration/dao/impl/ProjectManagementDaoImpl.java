@@ -1096,10 +1096,10 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 	}
 	
 	
-	public boolean isCapabilityExist(String capabilityName,String capabilitySpecialty){
+	public boolean isCapabilityExist(String capabilityName){
 		boolean isExist=false;
 		try{
-			String capabilityTable="SELECT CAPABILITY_ID FROM EDB_ROT_CAPABILITY WHERE UCase(CAPABILITY_NAME) = '"+capabilityName.toUpperCase()+"' AND UCase(Title) = '"+capabilitySpecialty.toUpperCase()+"'";
+			String capabilityTable="SELECT CAPABILITY_ID FROM EDB_ROT_CAPABILITY WHERE UCase(CAPABILITY_NAME) = '"+capabilityName.toUpperCase()+"'";
 			Statement selectStatement = getConnection().createStatement();
 			ResultSet rs=selectStatement.executeQuery(capabilityTable);
 			
@@ -1121,12 +1121,11 @@ public ReferenceData addCapability(Capability capabilityDetails) {
 
 		try{
 				//Insert Program
-				if(capabilityDetails.getCapabilityName() != null && capabilityDetails.getCapabilitySpecialty()!=null) {
-					log.debug("New Capability Name:{} New Capability Speciality:{}",capabilityDetails.getCapabilityName(),capabilityDetails.getCapabilitySpecialty());
-					String capInsQuery = "insert into EDB_ROT_CAPABILITY(CAPABILITY_NAME, Title) values (?,?)";
+				if(capabilityDetails.getCapabilityName() != null) {
+					log.debug("Capability Name:{}",capabilityDetails.getCapabilityName());
+					String capInsQuery = "insert into EDB_ROT_CAPABILITY(CAPABILITY_NAME) values (?)";
 					PreparedStatement capPrepStmt = getConnection().prepareStatement(capInsQuery);
 					capPrepStmt.setString(1, capabilityDetails.getCapabilityName());
-					capPrepStmt.setString(2, capabilityDetails.getCapabilitySpecialty());
 					capPrepStmt.executeUpdate();
 					capPrepStmt.close();
 				}
@@ -1167,7 +1166,7 @@ public ReferenceData addLevel(Level levelDetails) {
 	try{
 			//Insert Program
 			if(levelDetails.getLevelName() != null) {
-				log.debug("New Level Name:{}",levelDetails.getLevelName());
+				log.debug("Level Name:{}",levelDetails.getLevelName());
 				String levInsQuery = "insert into EDB_ROT_LEVEL(LEVEL_NAME) values (?)";
 				PreparedStatement levPrepStmt = getConnection().prepareStatement(levInsQuery);
 				levPrepStmt.setString(1, levelDetails.getLevelName());
@@ -1184,13 +1183,12 @@ public ReferenceData addLevel(Level levelDetails) {
 	return refData;
 }
 
-public boolean isSkillExist(String skillCategory,String skillName){
+public boolean isSkillExist(int capabilityId,String skillName){
 	boolean isExist=false;
 	try{
-		String skillTable="SELECT SKILL_ID FROM EDB_ROT_SKILL WHERE UCase(SKILL_NAME) = '"+skillName.toUpperCase()+"' AND UCase(Title) = '"+skillCategory.toUpperCase()+"'";
+		String skillTable="SELECT SKILL_ID FROM EDB_ROT_SKILL WHERE UCase(SKILL_NAME) = '"+skillName.toUpperCase()+"' AND CAPABILITY_ID = "+capabilityId;
 		Statement selectStatement = getConnection().createStatement();
 		ResultSet rs=selectStatement.executeQuery(skillTable);
-		
 		while(rs.next()){
 			if(rs.getInt("SKILL_ID")>0){
 				isExist=true;
@@ -1203,18 +1201,17 @@ public boolean isSkillExist(String skillCategory,String skillName){
 	return isExist;
 }
 
-public ReferenceData addSkill(Skill skillDetails) {
+public ReferenceData addSkill(int capabilityId,Skill skillDetails) {
 	
 	final ReferenceData refData=new ReferenceData();
-
 	try{
 			//Insert Program
-			if(skillDetails.getSkillName() != null && skillDetails.getSkillCategory()!=null) {
-				log.debug("New Skill Name:{} New Skill Category:{}",skillDetails.getSkillName(),skillDetails.getSkillCategory());
-				String capInsQuery = "insert into EDB_ROT_SKILL(SKILL_NAME, Title) values (?,?)";
+			if(skillDetails.getSkillName() != null && skillDetails.getCapabilityName()!=null) {
+				log.debug("Skill Name:{} Capability:{}",skillDetails.getSkillName(),skillDetails.getCapabilityName());
+				String capInsQuery = "insert into EDB_ROT_SKILL(SKILL_NAME, CAPABILITY_ID) values (?,?)";
 				PreparedStatement capPrepStmt = getConnection().prepareStatement(capInsQuery);
 				capPrepStmt.setString(1, skillDetails.getSkillName());
-				capPrepStmt.setString(2, skillDetails.getSkillCategory());
+				capPrepStmt.setInt(2, capabilityId);
 				capPrepStmt.executeUpdate();
 				capPrepStmt.close();
 			}
@@ -1302,6 +1299,187 @@ public ReferenceData updateResource(ResourceDetails resourceDetails) {
 			e.printStackTrace();
 		}
 		return programProjectList;
+	}
+
+	public int getCapabilityId(String capabilityName) {
+		int capabilityId = 0;
+		try
+		{
+			String capabilityTable="SELECT CAPABILITY_ID FROM EDB_ROT_CAPABILITY WHERE UCase(CAPABILITY_NAME) = '"+capabilityName.toUpperCase()+"'";
+			Statement selectStatement = getConnection().createStatement();
+			ResultSet rs=selectStatement.executeQuery(capabilityTable);
+			while(rs.next()){
+				capabilityId = rs.getInt("CAPABILITY_ID");
+			}
+		}
+		catch(Exception e){
+			
+		}
+		return capabilityId;
+	}
+
+	public ReferenceData editCapability(Capability capabilityDetails) {
+		
+		final ReferenceData refData=new ReferenceData();
+
+		try{
+				//Insert Program
+				if(capabilityDetails.getCapabilityName() != null) {
+					log.debug("New Capability Name:{}",capabilityDetails.getCapabilityName());
+					String capInsQuery = "update EDB_ROT_CAPABILITY set CAPABILITY_NAME = ? where CAPABILITY_NAME = ?";
+					PreparedStatement capPrepStmt = getConnection().prepareStatement(capInsQuery);
+					capPrepStmt.setString(1, capabilityDetails.getCapabilityName());
+					capPrepStmt.setString(2, capabilityDetails.getExistingCapability());
+					capPrepStmt.executeUpdate();
+					capPrepStmt.close();
+				}
+							
+			}catch(Exception e)	{
+				log.error("Error editing capability table :",e);
+				refData.setId("-1");
+				refData.setLabel(e.getMessage());
+				return refData;
+			}
+		return refData;
+	}
+
+
+	public ReferenceData deleteCapability(String capabilityName) {
+		
+		final ReferenceData refData=new ReferenceData();
+
+		try{
+				//Insert Program
+				if(capabilityName != null) {
+					log.debug("Capability to be deleted:{}",capabilityName);
+					String capInsQuery = "DELETE FROM EDB_ROT_CAPABILITY where CAPABILITY_NAME = ?";
+					PreparedStatement capPrepStmt = getConnection().prepareStatement(capInsQuery);
+					capPrepStmt.setString(1, capabilityName);
+					capPrepStmt.executeUpdate();
+					capPrepStmt.close();
+				}
+							
+			}catch(Exception e)	{
+				log.error("Error deleting from capability table :",e);
+				refData.setId("-1");
+				refData.setLabel(e.getMessage());
+				return refData;
+			}
+		return refData;
+	}
+
+	public ReferenceData editLevel(Level levelDetails) {
+		
+		final ReferenceData refData=new ReferenceData();
+
+		try{
+				//Insert Program
+				if(levelDetails.getLevelName() != null) {
+					log.debug("New Level Name:{}",levelDetails.getLevelName());
+					String levInsQuery = "update EDB_ROT_LEVEL set LEVEL_NAME = ? where LEVEL_NAME = ?";
+					PreparedStatement levPrepStmt = getConnection().prepareStatement(levInsQuery);
+					levPrepStmt.setString(1, levelDetails.getLevelName());
+					levPrepStmt.setString(2, levelDetails.getExistingLevel());
+					levPrepStmt.executeUpdate();
+					levPrepStmt.close();
+				}
+							
+			}catch(Exception e)	{
+				log.error("Error editing level table :",e);
+				refData.setId("-1");
+				refData.setLabel(e.getMessage());
+				return refData;
+			}
+		return refData;
+	}
+
+	public ReferenceData deleteLevel(String levelName) {
+		
+		final ReferenceData refData=new ReferenceData();
+
+		try{
+				//Insert Program
+				if(levelName != null) {
+					log.debug("Level to be deleted:{}",levelName);
+					String capInsQuery = "DELETE FROM EDB_ROT_LEVEL where LEVEL_NAME = ?";
+					PreparedStatement capPrepStmt = getConnection().prepareStatement(capInsQuery);
+					capPrepStmt.setString(1, levelName);
+					capPrepStmt.executeUpdate();
+					capPrepStmt.close();
+				}
+							
+			}catch(Exception e)	{
+				log.error("Error deleting from level table :",e);
+				refData.setId("-1");
+				refData.setLabel(e.getMessage());
+				return refData;
+			}
+		return refData;
+	}
+
+	public List<String> getSkill(int capabilityId){
+		try{
+			final String getskillQuery = "SELECT SKILL_NAME FROM EDB_ROT_SKILL WHERE CAPABILITY_ID = ?";
+			ArrayList<String> skillList = new ArrayList<String>();
+			PreparedStatement  preparedStatement = getConnection().prepareStatement(getskillQuery);
+			preparedStatement.setInt(1, capabilityId);
+			ResultSet rs = preparedStatement.executeQuery();
+			while(rs.next()){
+				skillList.add(rs.getString("SKILL_NAME"));
+			}
+			return skillList;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public ReferenceData editSkill(int capabilityId,Skill skillDetails) {
+		
+		final ReferenceData refData=new ReferenceData();
+		try{
+				//Insert Program
+				if(skillDetails.getSkillName() != null && skillDetails.getCapabilityName()!=null) {
+					log.debug("Skill Name:{} Capability:{}",skillDetails.getSkillName(),skillDetails.getCapabilityName());
+					String capInsQuery = "UPDATE EDB_ROT_SKILL SET SKILL_NAME = ? WHERE CAPABILITY_ID = ? AND SKILL_NAME = ?";
+					PreparedStatement capPrepStmt = getConnection().prepareStatement(capInsQuery);
+					capPrepStmt.setString(1, skillDetails.getSkillName());
+					capPrepStmt.setInt(2, capabilityId);
+					capPrepStmt.setString(3, skillDetails.getExistingSkill());
+					capPrepStmt.executeUpdate();
+					capPrepStmt.close();
+				}
+							
+			}catch(Exception e)	{
+				log.error("Error updating skill table :",e);
+				refData.setId("-1");
+				refData.setLabel(e.getMessage());
+				return refData;
+			}
+		return refData;
+	}
+
+	public ReferenceData deleteSkill(int capabilityId, String skillName){
+		final ReferenceData refData=new ReferenceData();
+		try{
+			if(skillName!=null) {
+				log.debug("Skill Name:{} CapabilityId:{}",skillName,capabilityId);
+				String capInsQuery = "DELETE FROM EDB_ROT_SKILL where CAPABILITY_ID = ? AND SKILL_NAME = ?";
+				PreparedStatement capPrepStmt = getConnection().prepareStatement(capInsQuery);
+				capPrepStmt.setInt(1, capabilityId);
+				capPrepStmt.setString(2, skillName);
+				capPrepStmt.executeUpdate();
+				capPrepStmt.close();
+			}
+		}
+		catch(Exception e)	{
+			log.error("Error deleting skill table :",e);
+			refData.setId("-1");
+			refData.setLabel(e.getMessage());
+			return refData;
+		}
+	return refData;
 	}
 
 }

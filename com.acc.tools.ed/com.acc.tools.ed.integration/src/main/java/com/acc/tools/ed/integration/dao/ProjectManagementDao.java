@@ -52,13 +52,22 @@ public interface ProjectManagementDao {
 	public List<String> getLevel();
 	public List<String> getCapability();
 	public ReferenceData addResource(ResourceDetails resourceDetails);
-	public boolean isCapabilityExist(String capabilityName,String capabilitySpecialty);
+	public boolean isCapabilityExist(String capabilityName);
 	public ReferenceData addCapability(Capability capabilityDetails);
 	public boolean isLevelExist(String levelName);
 	public ReferenceData addLevel(Level levelDetails);
-	public boolean isSkillExist(String skillCategory,String skillName);
-	public ReferenceData addSkill(Skill skillDetails);
+	public boolean isSkillExist(int capabilityId,String skillName);
+	public ReferenceData addSkill(int capabilityId,Skill skillDetails);
 	public ReferenceData updateResource(ResourceDetails resourceDetails);
 	public String getEmployeeName(String empID);
 	public List<ReferenceData> getProgramProjectIds(String programId);
+	public int getCapabilityId(String capabilityName);
+	public ReferenceData editCapability(Capability capabilityDetails);
+	public ReferenceData deleteCapability(String capabilityName);
+	public ReferenceData editLevel(Level levelDetails);
+	public ReferenceData deleteLevel(String levelName);
+	public List<String> getSkill(int capabilityId);
+	public ReferenceData editSkill(int capabilityId,Skill skillDetails);
+	public ReferenceData deleteSkill(int capabilityId, String skillName);
+	
 }

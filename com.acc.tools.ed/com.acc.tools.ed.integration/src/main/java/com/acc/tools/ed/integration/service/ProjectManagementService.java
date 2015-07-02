@@ -60,4 +60,11 @@ public interface ProjectManagementService {
 	public ReferenceData addSkill(Skill skillDetails);
 	public String getEmployeeName(String empID);
 	public List<ReferenceData> getProgramProjectIds(String programId);
+	public ReferenceData editCapability(Capability capabilityDetails);
+	public ReferenceData deleteCapability(String capabilityName);
+	public ReferenceData editLevel(Level levelDetails);
+	public ReferenceData deleteLevel(String levelName);
+	public List<String> getSkill(String capabilityName);
+	public ReferenceData editSkill(Skill skillDetails);
+	public ReferenceData deleteSkill(String capabilityName, String skillName);
 }

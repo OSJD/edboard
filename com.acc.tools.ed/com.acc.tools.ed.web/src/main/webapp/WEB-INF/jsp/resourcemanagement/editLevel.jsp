@@ -9,18 +9,19 @@
 </head>
 <body>
 	<div id="main_container">
-		<div id="addCapability-popup" title="Add Capability">
+		<div id="editLevel-popup" title="Edit Level">
 			<p class="validateTips">All form fields are required.</p>
-			<form:form commandName="addCapabilityForm"
-				action="addCapabilityForm.do">
+			<form:form commandName="editLevelForm"
+				action="editLevelForm.do">
 				<fieldset>
-					<legend>Add Capability</legend>
+					<legend>Edit Level</legend>
 					<div>
 						<table class="ebdtable" id="release">
 							<tr>
-								<th style="text-align: right;">Capability Name</th>
-								<td><form:input path="capabilityName" type="text"
-										id="capabilityName" class="textbox" /></td>
+								<td><form:hidden path="existingLevel" id="existingLev"/></td>	
+								<th style="text-align: right;">New Level Name</th>
+								<td><form:input type="text" path="levelName"
+										id="newLevelName" class="textbox"/></td>
 							</tr>
 						</table>
 					</div>

@@ -9,18 +9,20 @@
 </head>
 <body>
 	<div id="main_container">
-		<div id="addCapability-popup" title="Add Capability">
+		<div id="editSkill-popup" title="Edit Skill">
 			<p class="validateTips">All form fields are required.</p>
-			<form:form commandName="addCapabilityForm"
-				action="addCapabilityForm.do">
+			<form:form commandName="editSkillForm"
+				action="editSkillForm.do">
 				<fieldset>
-					<legend>Add Capability</legend>
+					<legend>Edit Skill</legend>
 					<div>
 						<table class="ebdtable" id="release">
 							<tr>
-								<th style="text-align: right;">Capability Name</th>
-								<td><form:input path="capabilityName" type="text"
-										id="capabilityName" class="textbox" /></td>
+								<td><form:hidden path="capabilityName" id="exisCapability"/></td>	
+								<td><form:hidden path="existingSkill" id="exisSkill"/></td>	
+								<th style="text-align: right;">New Skill Name</th>
+								<td><form:input type="text" path="skillName"
+										id="newSkillName" class="textbox"/></td>
 							</tr>
 						</table>
 					</div>
