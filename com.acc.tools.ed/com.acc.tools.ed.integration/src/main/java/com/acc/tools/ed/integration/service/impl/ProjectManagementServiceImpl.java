@@ -688,7 +688,15 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 			final boolean isCapabilityExist = projectManagementDao
 					.isCapabilityExist(capabilityName);
 			if (isCapabilityExist) {
+				int capabilityId = projectManagementDao
+						.getCapabilityId(capabilityName);
+				if(projectManagementDao.deleteSkill(capabilityId).getId()==null){
 				return projectManagementDao.deleteCapability(capabilityName);
+				}
+				else
+				{
+					return projectManagementDao.deleteSkill(capabilityId);
+				}
 			} else {
 				ReferenceData errorData = new ReferenceData();
 				errorData.setId("-2");
