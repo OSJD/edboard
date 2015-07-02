@@ -1481,6 +1481,25 @@ public ReferenceData updateResource(ResourceDetails resourceDetails) {
 		}
 	return refData;
 	}
+	
+	public ReferenceData deleteSkill(int capabilityId){
+		final ReferenceData refData=new ReferenceData();
+		try{
+				log.debug("Skills of CapabilityId:{}",capabilityId);
+				String capInsQuery = "DELETE FROM EDB_ROT_SKILL where CAPABILITY_ID = ?";
+				PreparedStatement capPrepStmt = getConnection().prepareStatement(capInsQuery);
+				capPrepStmt.setInt(1, capabilityId);
+				capPrepStmt.executeUpdate();
+				capPrepStmt.close();
+		}
+		catch(Exception e)	{
+			log.error("Error deleting skill table :",e);
+			refData.setId("-1");
+			refData.setLabel(e.getMessage());
+			return refData;
+		}
+	return refData;
+	}
 
 }
 
