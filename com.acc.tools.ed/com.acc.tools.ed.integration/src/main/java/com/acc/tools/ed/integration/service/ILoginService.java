@@ -12,4 +12,6 @@ public interface ILoginService {
 	public void updateLogin(long lastLoginTime, Integer employeeId) throws SQLException, IOException;
 	
 	public void updateLogout(Integer employeeId) throws SQLException, IOException;
+
+	public String updatePassword(String password, Integer integer) ;
 }
