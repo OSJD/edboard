@@ -20,7 +20,11 @@ public class LoginServiceImpl implements ILoginService {
 		return loginDao.searchuser(name);
 
 	}
+	public EDBUser searchCredentails(String name,String password) throws IOException, SQLException {
+		return loginDao.searchCredentails(name,password);
 
+	}
+	
 	public void updateLogin(long lastLoginTime, Integer employeeId)
 			throws SQLException, IOException {
 
@@ -31,6 +35,12 @@ public class LoginServiceImpl implements ILoginService {
 			IOException {
 
 		loginDao.updateLogout(employeeId);
+	}
+	
+	public String updatePassword(String password, Integer empId) {
+		
+		return loginDao.updatePassword(password,empId);
+		
 	}
 
 }
