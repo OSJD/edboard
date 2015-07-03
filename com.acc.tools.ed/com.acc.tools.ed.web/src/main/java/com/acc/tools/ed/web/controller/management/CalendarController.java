@@ -99,21 +99,17 @@ public class CalendarController {
 	  
 	  @RequestMapping(value = "/updateVacation.do")
 			public @ResponseBody String updateVacation(
-					@RequestParam("vacationId") int vacationId,
-					@RequestParam("startDate") String startDate,
-					@RequestParam("endDate") String endDate,
-					@RequestParam("comments") String comments,
+					@ModelAttribute("vacationForm") VacationForm vacationForm,
 					@ModelAttribute("edbUser") EDBUser edbUser,
 					Model model){
-				LOG.debug("Vacation Type:{}",vacationId);
-				LOG.debug("Vacation Status:{}",comments);
-				LOG.debug("Vacation start date:{}",startDate);
-				LOG.debug("Vacation end date:{}",endDate);
-				final VacationForm vacationForm=new VacationForm();
-				vacationForm.setVacationId(vacationId);
-				vacationForm.setStartDate(startDate);
-				vacationForm.setEndDate(endDate);
-				vacationForm.setComments(comments);
+				LOG.debug("Vacation Id:{}",vacationForm.getVacationId());
+				LOG.debug("Vacation Status:{}",vacationForm.getComments());
+				LOG.debug("Vacation start date:{}",vacationForm.getStartDate());
+				LOG.debug("Vacation end date:{}",vacationForm.getEndDate());
+				LOG.debug("Vacation backup :{}",vacationForm.getBackUpResource());
+				//final VacationForm vacationForm=new VacationForm();
+				
+			
 				projectWorkService.editVacation(vacationForm);			
 
 				return "success";
