@@ -19,7 +19,7 @@ public class VacationForm implements Serializable{
 	private String startDate;
 	private String endDate;
 	private String comments;//Vacation Comments;
-	private int backUpResource;
+	private String backUpResource;
 	private String status;
 	private int supervisorId;
 	private String approverComments;
@@ -112,10 +112,10 @@ public class VacationForm implements Serializable{
 	public void setCreateDate(String createDate) {
 		this.createDate = createDate;
 	}
-	public int getBackUpResource() {
+	public String getBackUpResource() {
 		return backUpResource;
 	}
-	public void setBackUpResource(int backUpResource) {
+	public void setBackUpResource(String backUpResource) {
 		this.backUpResource = backUpResource;
 	}
 	public long getCreateTimestamp() {
