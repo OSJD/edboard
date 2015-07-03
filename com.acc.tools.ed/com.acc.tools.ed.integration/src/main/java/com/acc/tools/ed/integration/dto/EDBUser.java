@@ -27,6 +27,9 @@ public class EDBUser implements Serializable {
 	private String projectName;
 	private Boolean logout;
 	private Long lastLoginTime;
+	private String password;
+	private String passwordFlag;
+	
 
 	public Integer getEmployeeId() {
 		return employeeId;
@@ -108,4 +111,21 @@ public class EDBUser implements Serializable {
 		this.lastLoginTime = lastLoginTime;
 	}
 
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getPasswordFlag() {
+		return passwordFlag;
+	}
+
+	public void setPasswordFlag(String passwordFlag) {
+		this.passwordFlag = passwordFlag;
+	}
+
+	
 }
