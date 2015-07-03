@@ -11,5 +11,8 @@ public interface LoginDao {
 	public EDBUser getEmployeeById(Integer employeeId) throws IOException, SQLException;
 	public void updateLogin(long lastLoginTime, Integer employeeId) throws SQLException, IOException;
 	public void updateLogout(Integer employeeId) throws SQLException, IOException;
+	public EDBUser searchCredentails(String name,String password) throws IOException, SQLException;
+	public String updatePassword(String password, Integer empId) ;
 
 }
+
