@@ -125,7 +125,8 @@
 							
 							if($("#existingCapability option:selected").val() != ""){
 								alert('If you choose capability go for Edit Capability !!! ');
-								$("#existingCapability").val(0);
+								$("#existingCapability").val("");
+								$('#existingSkill').empty();
 								return false;
 							}
 							
@@ -199,7 +200,7 @@
 						$("#addLevel").button().unbind("click").on("click", function() {
 							if($("#existingLevel option:selected").val() != ""){
 								alert('If you choose level go for Edit Level !!! ');
-								$("#existingLevel").val(0);
+								$("#existingLevel").val("");
 								return false;
 							}
 							
@@ -276,14 +277,15 @@
 							var existingCapability = $("#existingCapability option:selected").val();
 							if($("#existingCapability option:selected").val() == ""){
 								alert('Please select Capability under which Skill needs to be added!');
-								$("#existingCapability").focus();
+								$("#existingCapability").val("");
+								$('#existingSkill').empty();
 								return false;
 							}
 							
 							var existingSkill = $("#existingSkill option:selected").val();
 							if($("#existingSkill option:selected").val() != ""){
 								alert('If you choose Skill go for Edit Skill !!! ');
-								$("#existingSkill").focus();
+								$("#existingSkill").val("");
 								return false;
 							}
 							
@@ -359,7 +361,8 @@
 							var existingCapability = $("#existingCapability option:selected").val();
 							if($("#existingCapability option:selected").val() == 0){
 								alert('Please select Capability to Edit');
-								$("#existingCapability").focus();
+								$("#existingCapability").val("");
+								$('#existingSkill').empty();
 								return false;
 							}
 
@@ -439,7 +442,7 @@
 							var existingLevel = $("#existingLevel option:selected").val();
 							if($("#existingLevel option:selected").val() == 0){
 								alert('Please select Level to Edit');
-								$("#existingLevel").focus();
+								$("#existingLevel").val("");
 								return false;
 							}
 
@@ -507,7 +510,8 @@
 							var existingCapability = $("#existingCapability option:selected").val();
 							if($("#existingCapability option:selected").val() == ""){
 								alert('Please select Capability to Delete');
-								$("#existingCapability").focus();
+								$("#existingCapability").val("");
+								$('#existingSkill').empty();
 								return false;
 							}
 							else{
@@ -562,7 +566,7 @@
 								var existingLevel = $("#existingLevel option:selected").val();
 								if($("#existingLevel option:selected").val() == ""){
 									alert('Please select Level to Delete');
-									$("#existingLevel").focus();
+									$("#existingLevel").val("");
 									return false;
 								}
 								else{
@@ -626,14 +630,15 @@
 								var existingCapability = $("#existingCapability option:selected").val();
 								if($("#existingCapability option:selected").val() == 0){
 									alert('Please select Capability under which Skill needs to be edited!');
-									$("#existingCapability").focus();
+									$("#existingCapability").val("");
+									$('#existingSkill').empty();
 									return false;
 								}
 								
 								var existingSkill = $("#existingSkill option:selected").val();
 								if($("#existingSkill option:selected").val() == 0){
 									alert('Please select Skill to be edit!');
-									$("#existingSkill").focus();
+									$("#existingSkill").val("");
 									return false;
 								}
 								
@@ -708,14 +713,15 @@
 								var existingCapability = $("#existingCapability option:selected").val();
 								if($("#existingCapability option:selected").val() == 0){
 									alert('Please select Capability under which Skill needs to be deleted!');
-									$("#existingCapability").focus();
+									$("#existingCapability").val("");
+									$('#existingSkill').empty();
 									return false;
 								}
 								
 								var existingSkill = $("#existingSkill option:selected").val();
 								if($("#existingSkill option:selected").val() == 0){
 									alert('Please select Skill to be delete!');
-									$("#existingSkill").focus();
+									$("#existingSkill").val("");
 									return false;
 								}
 								else{
