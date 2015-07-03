@@ -1,5 +1,7 @@
 package com.acc.tools.ed.web.controller.login;
 
+import java.security.Principal;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -27,6 +30,7 @@ import com.acc.tools.ed.integration.service.ILoginService;
 import com.acc.tools.ed.integration.service.ProjectWorkService;
 import com.acc.tools.ed.report.dto.WeeklyStatusReportData;
 import com.acc.tools.ed.web.controller.common.AbstractEdbBaseController;
+import com.acc.tools.ed.integration.dto.ResourceDetails;
 
 /**
  * 
@@ -70,11 +74,12 @@ public class LoginController extends AbstractEdbBaseController{
 	}
 	
 	@RequestMapping(value="/login.do")
-	public String handleLogins(
+	public String handleLogins(Principal principal,
 			Model model,
-			@RequestParam(required = false) String enterpriseId,
+			
+			@RequestParam(required = false) String password,
 			@RequestParam(required = false) Long lastLoginForm,
-			final RedirectAttributes redirectAttributes
+			final RedirectAttributes redirectAttributes,HttpSession session
 			) throws Exception{
 		//@RequestParam(required = false) Date lastLoginForm,
 		//long lastLoginForm = System.currentTimeMillis();
@@ -82,15 +87,18 @@ public class LoginController extends AbstractEdbBaseController{
 		String userName=System.getProperty("user.name");
 		
 		boolean isAdmin=isAdmin();
+		String enterpriseId=principal.getName();
 		if(environment.equalsIgnoreCase("DEV") && enterpriseId!=null){
 			userName=enterpriseId;
 			isAdmin=true;
 		}
 		
-		if(isAdmin){
 			user=iLoginService.searchUser(userName);
 			if(user!=null && user.getEmployeeId()!=null){
-				if(lastLoginForm != null && (user.getLastLoginTime()<lastLoginForm || !user.getLogout())){
+				session.setAttribute("edbUser", user);
+				model.addAttribute("edbUser", user);
+				if(user.getPasswordFlag().equalsIgnoreCase("YES")){
+				
 					//session attributes
 					model.addAttribute("edbUser", user);
 					model.addAttribute("addProjectForm",new ProjectForm());
@@ -100,31 +108,34 @@ public class LoginController extends AbstractEdbBaseController{
 					model.addAttribute("statusForm",new WeeklyStatusReportData());
 					List<ProjectForm> projData=projectWorkService.getMyTasks(user.getEmployeeId());
 					model.addAttribute("projData",projData);
-					iLoginService.updateLogin(lastLoginForm,user.getEmployeeId());
+//					iLoginService.updateLogin(lastLoginForm,user.getEmployeeId());
 					LOG.debug("Login - Adding user to session - User Id:[{}] Role:[{}]",user.getEmployeeId(),user.getRole());
 					return "/projectmanagement/index";
-				}else {
-					redirectAttributes.addFlashAttribute("status", "Session has ended!");
-					//model.addAttribute("status", "User Not Registered!Please reach out to your supervisor!");
-					return "redirect:/loginError.do";
 				}
+				else
+				{
+					redirectAttributes.addFlashAttribute("status", "Please change your default password to new one!");
+					redirectAttributes.addFlashAttribute("edbUser", user);
+					System.out.println("user id ::"+ user.getEmployeeId());
+					return "redirect:/loadUpdatePwd.do";
+				}
+					
+				
 			}else {
 				redirectAttributes.addFlashAttribute("status", "User Not Registered!Please reach out to your supervisor!");
 				//model.addAttribute("status", "User Not Registered!Please reach out to your supervisor!");
 				return "redirect:/loginError.do";
 			}
-		} else {
-			redirectAttributes.addFlashAttribute("status", "Please use EDB application with Windows Admin access!");
-			//model.addAttribute("status", "Please use EDB application with Windows Admin access!");
-			return "redirect:/loginError.do";
 		}
-	}
+	
 	
 	@RequestMapping(value="/loginError.do")
 	public String loginError(@ModelAttribute("status") final String status,Model model){
 		model.addAttribute("status", status);
 		return "/login/index";
 	}
+	
+	
 	
 	@SuppressWarnings("restriction")
 	public static boolean isAdmin() {
@@ -148,4 +159,36 @@ public class LoginController extends AbstractEdbBaseController{
 		} 		
 		return "/login/index";
 	}
+	
+	@RequestMapping(value = "/loadUpdatePwd.do")
+	public String loadUpdatePassword(
+			
+			Model model){
+		return "/login/changePassword";
+	}
+	
+	 @RequestMapping(value = "/updatePwd.do",method=RequestMethod.POST)
+		public  String updatePassword(
+				@RequestParam("newPassword") String newPassword,
+				@RequestParam("oldPassword") String oldPassword,
+				
+				@ModelAttribute("edbUser") EDBUser edbUser,HttpSession session,
+				Model model){
+		 edbUser= (EDBUser)session.getAttribute("edbUser");
+			LOG.debug("User :{}",edbUser.getEmployeeId());
+			
+			LOG.debug("newPassword :{}",newPassword);
+			iLoginService.updatePassword(newPassword,edbUser.getEmployeeId());
+			
+			model.addAttribute("edbUser", edbUser);
+			model.addAttribute("addProjectForm",new ProjectForm());
+			model.addAttribute("addTaskForm",new TaskForm());
+			model.addAttribute("editProjectForm", new ProjectForm());
+			model.addAttribute("addEmpDetailsForm",new ResourceDetails());
+			model.addAttribute("statusForm",new WeeklyStatusReportData());
+			List<ProjectForm> projData=projectWorkService.getMyTasks(edbUser.getEmployeeId());
+			model.addAttribute("projData",projData);
+//			iLoginService.updateLogin(lastLoginForm,user.getEmployeeId());
+			return "/projectmanagement/index";
+		}
 }
