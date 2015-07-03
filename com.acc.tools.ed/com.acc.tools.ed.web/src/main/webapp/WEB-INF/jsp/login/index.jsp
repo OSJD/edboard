@@ -16,17 +16,24 @@
 		</c:if>
 		<div id="login" class="login"> 
 			<div class="loginheader">Engagement Dashboard Login</div>
-			<form action="login.do" method="post" name="frm2">
+			<form action="<c:url value='j_spring_security_check'/>" method="post" name="frm2">
 					<table align="center" class="logindetail">
 						<tr>
 							<td>Enterprise Id:</td>
-							<td><input name="enterpriseId" class="textbox" /></td>
+							<td><input name="username" class="textbox" /></td>
+							</tr>
+							<tr>
+							<td>Password :</td>
+							<td><input name="password" class="textbox"  type = "password"/></td>
+							
 							
 						</tr>
 						<tr>
-							<td colspan="2">
-								<div style="margin-left: 70px;width: 50px;float: left;"><input type="submit" value="Login" id="btn2" name="btn2" form="frm2" class="button"/></div>
+							<td align="center">
+								<div style="margin-left:70px;width: 50px;float: left;"><input type="submit" value="Login" id="btn2" name="btn2" form="frm2" class="button"/></div>
 							</td>
+					
+					
 					</table>
 					<input type="hidden" name="lastLoginForm" id="lastLoginForm" value=<%= System.currentTimeMillis() %> />
 			</form>
