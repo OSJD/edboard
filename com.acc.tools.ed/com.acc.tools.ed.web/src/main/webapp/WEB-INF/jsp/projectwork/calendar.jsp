@@ -33,7 +33,7 @@
 							<input type="hidden" name="loginUserId" value="${vacationDetails.loginUserId}">
 						</td>
 						<td>
-							<a href="#" id="${vacationDetails.vacationId}" class="deleteVacationDetail" style="width: 25px;">Delete </a>
+							<a href="#" id="${vacationDetails.vacationId}" class="deleteVacationDetail" style="width: 55px;">Delete </a>
 						</td>
 						<td><div id="resourceName${vacationDetails.vacationId}">${vacationDetails.resourceName}</div></td>
 						<td><div id="requestDate${vacationDetails.vacationId}">${vacationDetails.createDate}</div></td>
