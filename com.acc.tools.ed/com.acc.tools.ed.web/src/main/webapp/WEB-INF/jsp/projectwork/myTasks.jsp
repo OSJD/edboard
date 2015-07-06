@@ -27,8 +27,15 @@
 					<td style="width: 130px;">${project.projectName}</td>
 					<td style="width: 130px;">${release.releaseStartDate}</td>
 					<td style="width: 130px;">${release.releaseEndDate}</td>
-					<td style="width: 130px;">In Progress</td>
-					<td style="width: 130px;">50</td>
+					<c:choose>
+									<c:when test="${release.percentage eq 100 }">
+										<td style="width: 130px;">COMPLETED</td>
+									</c:when>
+									<c:otherwise>
+									<td style="width: 130px;">IN PROGRESS</td>
+									</c:otherwise>
+									</c:choose>
+					<td style="width: 130px;">${release.percentage}%</td>
 				</tr>
 				<tr id="release${release.releaseId}" class="componentData">
 					<td style="background-image: none; background-color: white;"
@@ -45,7 +52,7 @@
 								<th style="width: 80px;">%Completed</th>
 								<th colspan="2" style="width: 10px;">Actions</th>
 							</tr>
-							<c:forEach items="${release.components}" var="component">
+							<c:forEach items="${release.components}" var="component" varStatus="status">
 								<tr>
 									<input type="hidden" id="projName${component.componentId}" value="${project.projectName}" />
 									<input type="hidden" id="releaseName${component.componentId}" value="${release.releaseName}" />
@@ -63,8 +70,16 @@
 									<td>${component.workDesc}</td>
 									<td>${component.startDate}</td>
 									<td>${component.endDate}</td>
-									<td>In Progress</td>
-									<td>60</td>
+									<c:choose>
+									<c:when test="${component.percentage eq 100 }">
+									<td>COMPLETED</td>
+									</c:when>
+									<c:otherwise>
+									<td>IN PROGRESS</td>
+									</c:otherwise>
+									</c:choose>
+									
+									<td id="perComp${status.index}">${component.percentage}%</td>
 									<td>
 										<a href="#" class="addTaskPopup" projectId="${project.projectId}" id="${component.componentId}">
 											<img class="imgLink" alt="add Task" src="./resources/addnews.gif">
@@ -129,12 +144,16 @@
 																		width="20px;"></a></td>
 															</tr>
 														</c:forEach>
+														
 													</c:otherwise>
 												</c:choose>
 											</tbody>
 										</table>
 									</td>
 								</tr>
+								
+								
+														
 							</c:forEach>
 						</table>
 					</td>
