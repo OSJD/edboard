@@ -361,5 +361,11 @@ private static final Logger LOG = LoggerFactory.getLogger(ProjectManagementContr
 		return "/resourcemanagement/addResource";
 		
 	}
+	
+	@RequestMapping(value = "/getAllSkills.do")
+	public @ResponseBody List<String> getAllSkills(Model model) {
+		List<String> skillList = projectManagementService.getSkill();
+		return skillList;
+	}
 
 }
