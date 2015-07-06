@@ -34,6 +34,9 @@
                 expired-url="/start.do" />
         </session-management>
        <!--  <intercept-url pattern="/**" access="ROLE_USER"/> -->
+       <headers>
+       <cache-control/>
+       </headers>
     </http>
  
    <!--  <authentication-manager>
