@@ -318,7 +318,7 @@ public class ProjectReportDaoImp extends AbstractEdbDao implements ProjectReport
 		
 		}
 		
-		/*public void generateEmployeeMasterReport(List<ReportMasterData> resourceDetails,HttpServletResponse response) throws Docx4JException, URISyntaxException{
+		public void generateEmployeeMasterReport(List<ReportMasterData> resourceDetails,HttpServletResponse response) throws Docx4JException, URISyntaxException{
 			ServletOutputStream outStream;
 			try {
 				outStream = response.getOutputStream();
@@ -342,7 +342,7 @@ public class ProjectReportDaoImp extends AbstractEdbDao implements ProjectReport
 			}
 			
 		
-		}*/
+		}
 
 	}
 
