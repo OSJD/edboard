@@ -5,6 +5,7 @@
 
 	<td colspan="6"
 		style="background-image: none; border-bottom-color: white;">
+		LEGEND: V- Vacation, I - Illness, P - Public holiday<br>
 		<div style="width: 1000px; overflow: auto;">
 			<table style="width: 100%; border-color: black;">
 				<tr>
@@ -36,15 +37,22 @@
 									<tr>
 										<c:forEach var="dayPlan" items="${weekPlan.value}">
 											<td>
-												<c:choose>
-													<c:when test="${(dayPlan.hours eq -1) || (dayPlan.hours eq -2) }">
-														<div style="text-align:center; width: 20px;font-weight: bold;color: red;">V</div>
-														<input type="hidden" size="1" value="${dayPlan.hours}" id="resDayHour${wrkStatus.index}_${weekPlan.key}${dayPlan.day}"></input>
-													</c:when>
-													<c:otherwise>
-														<div style="width: 20px;text-align:center; "><input type="text" size="1" value="${dayPlan.hours}" id="resDayHour${wrkStatus.index}_${weekPlan.key}${dayPlan.day}" onkeyup="calculateTtlHrs('${weekPlan.key}')"></input></div>
-													</c:otherwise>
-												</c:choose>
+												<div style="width: 20px;text-align:center; ">
+													<c:choose>
+														<c:when test="${dayPlan.hours eq -1}">
+															<input type="text" size="1" value="V" id="resDayHour${wrkStatus.index}_${weekPlan.key}${dayPlan.day}" onkeyup="calculateTtlHrs('${weekPlan.key}')"></input>
+														</c:when>
+														<c:when test="${dayPlan.hours eq -2}">
+															<input type="text" size="1" value="I" id="resDayHour${wrkStatus.index}_${weekPlan.key}${dayPlan.day}" onkeyup="calculateTtlHrs('${weekPlan.key}')"></input>
+														</c:when>
+														<c:when test="${dayPlan.hours eq -3}">
+															<input type="text" size="1" value="P" id="resDayHour${wrkStatus.index}_${weekPlan.key}${dayPlan.day}" onkeyup="calculateTtlHrs('${weekPlan.key}')"></input>
+														</c:when>
+														<c:otherwise>
+															<input type="text" size="1" value="${dayPlan.hours}" id="resDayHour${wrkStatus.index}_${weekPlan.key}${dayPlan.day}" onkeyup="calculateTtlHrs('${weekPlan.key}')"></input>
+														</c:otherwise>
+													</c:choose>
+												</div>
 												
 											</td>
 										</c:forEach>
