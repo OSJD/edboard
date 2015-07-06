@@ -56,7 +56,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 			pstm.setString(9, vacationForm.getApproverComments());
 			final String createTimestamp=Long.toString(vacationForm.getCreateTimestamp());
 			pstm.setString(10, createTimestamp);
-			pstm.setInt(11, vacationForm.getBackUpResource());			
+			pstm.setString(11, vacationForm.getBackUpResource());			
 			vacationId=pstm.executeUpdate();
 			pstm.close();
 
@@ -858,7 +858,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 				details.setVacationType("-4");
 				details.setResourceName("All Chennai Resources");
 				details.setEmployeeId(rs.getInt("ADD_BY"));
-				details.setBackUpResource(0);
+				details.setBackUpResource("0");
 				vactionDetails.add(details);
 			}
 			
@@ -896,7 +896,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 					details.setVacationType(rs.getString("VACTN_TYP"));
 					details.setResourceName(rs.getString("EMP_NM"));
 					details.setEmployeeId(rs.getInt("EMP_ID"));
-					details.setBackUpResource(rs.getInt("BACKUP_ID"));
+					details.setBackUpResource(rs.getString("BACKUP_ID"));
 					vactionDetails.add(details);
 				}
 				
@@ -935,7 +935,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 					details.setVacationType(rs.getString("VACTN_TYP"));
 					details.setResourceName(rs.getString("EMP_NM"));
 					details.setEmployeeId(rs.getInt("EMP_ID"));
-					details.setBackUpResource(rs.getInt("BACKUP_ID"));					
+					details.setBackUpResource(rs.getString("BACKUP_ID"));					
 					vactionDetails.add(details);
 				}
 				
