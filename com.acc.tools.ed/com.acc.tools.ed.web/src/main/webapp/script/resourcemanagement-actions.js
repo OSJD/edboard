@@ -50,6 +50,7 @@
 								}
 							});
 							addResourceDialog.dialog("open");
+							
 						});
 						
 						$("#resourceFileUpload").unbind("click").on("click",function(){
@@ -66,8 +67,6 @@
 											$("#resourceFileUploadForm").submit();
 										}
 						});
-						
-						
 						
 						
 						//RM - Capability / Skill / Level Master Screen Changes - Start
@@ -880,6 +879,7 @@
 		});
 	});
 	
+	
 function validateFieldUpdate(){
 		
 	var level = $( "#updateemp-popup #resourceLevel option:selected" ).text();
@@ -1046,5 +1046,53 @@ function validateFieldUpdate(){
 		
 	}
 
+	function updatePrimarySkills(){
+		var technicalCapability = $("#technicalCapability option:selected").val();
+		$.ajax({
+			type : "POST",
+			url : "./getSkill.do",
+			data :{existingCapability:technicalCapability} ,														
+			beforeSend:function(){
+			  },
+			success : function(response) {
+		        $('#technicalSkill').empty();
+		        $('#technicalSkill').append('<option value="">Select Skill</option>');
+		        for (i in response ) {
+		            $('#technicalSkill').append('<option value="' + response[i] + '">' + response[i] + '</option>');
+		        }
+
+
+			},
+			error : function(data) {	
+				alert("Application error! Please call help desk. Error:"+data.status);
+			}
+		});	
+	}
 	
-	
+	function updateSecSkills(){
+		var technicalSkill = $("#technicalSkill option:selected").val();
+		$.ajax({
+			type : "POST",
+			url : "./getAllSkills.do",	
+			data : 
+				$("#addEmpDetailsForm").serialize(),
+				beforeSend : function() {
+			},
+			beforeSend:function(){
+			  },
+			success : function(response) {
+		        $('#secondarySkills').empty();
+		        for (i in response ) {
+		        	if(response[i]!=technicalSkill){
+		            $('#secondarySkills').append('<option value="' + response[i] + '">' + response[i] + '</option>');
+		        	}
+		        }
+
+
+			},
+			error : function(data) {	
+				alert("Application error! Please call help desk. Error:"+data.status);
+			}
+		});	
+	}
+
