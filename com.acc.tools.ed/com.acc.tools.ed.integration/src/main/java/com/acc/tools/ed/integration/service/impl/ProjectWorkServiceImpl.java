@@ -16,10 +16,28 @@ import com.acc.tools.ed.integration.service.ProjectWorkService;
 
 @Service("projectWorkService")
 public class ProjectWorkServiceImpl implements ProjectWorkService {
-	
+	public ProjectWorkServiceImpl(){
+		setTaskStatus();
+	}
+private Map<String,String> taskStatus=new LinkedHashMap<String, String>();
 	@Autowired
 	private ProjectWorkDao projectWorkDao;
-	
+	public void  setTaskStatus(){
+		taskStatus.put("1", "Build Completed");
+		taskStatus.put("2", "Build In Progress");
+		taskStatus.put("3", "Build On Hold");
+		taskStatus.put("4", "Review Completed");
+		taskStatus.put("5", "Review In Progress");
+		taskStatus.put("6", "Review On Hold");
+		taskStatus.put("7", "Rework Completed");
+		taskStatus.put("8", "Rework In Progress");
+		taskStatus.put("9", "Rework On Hold");
+		taskStatus.put("10", "Task Closed");
+	}
+	public Map<String,String>   getTaskStatus(){
+		
+		return taskStatus;
+	}
 	public int addVacation(VacationForm vacationForm){
 		return projectWorkDao.addVacation(vacationForm);
 	}
@@ -32,8 +50,11 @@ public class ProjectWorkServiceImpl implements ProjectWorkService {
 		return projectWorkDao.approveVacation(vacationForm);
 	}
 	
-	public List<ProjectForm> getMyTasks(Integer userId){
-		return projectWorkDao.getMyTasks(userId);
+public List<ProjectForm> getMyTasks(Integer userId){
+		
+		List<ProjectForm> projects=projectWorkDao.getMyTasks(userId);
+		setPercentage(projects);
+		return projects;
 	}
 
 	public int  addTasks(TaskForm taskForm) {
@@ -41,7 +62,9 @@ public class ProjectWorkServiceImpl implements ProjectWorkService {
 	}
 	
 	public List<ProjectForm> getMyTeamTasks(Integer supervisorId){
-		return projectWorkDao.getMyTeamTasks(supervisorId);
+		 List<ProjectForm> projects=projectWorkDao.getMyTeamTasks(supervisorId);
+		setPercentage(projects);
+		return projects;
 	}
 	
 	public void deleteTasks(int taskId) {
@@ -112,5 +135,36 @@ public class ProjectWorkServiceImpl implements ProjectWorkService {
 	
 	public void deleteIssue(Integer issueId) {
 		projectWorkDao.deleteIssue(issueId);
+	}
+		public void setPercentage(List<ProjectForm> projects){
+		for(ProjectForm project:projects){
+			List<ReleaseForm> releases=	project.getReleases();
+			float totalPercentage=0;
+			for(ReleaseForm releaseForm:releases){
+				
+			List<ComponentForm> components=	releaseForm.getComponents();
+			if(components!=null){
+				int noOfComponents=components.size();
+			for(ComponentForm componentForm:components){
+				List<TaskForm> tasks=componentForm.getTaskFormList();
+				float noOfTasksCompleted=0;
+				float percentage=0;
+				if(tasks!=null){
+				for(TaskForm taskForm:tasks){
+					taskForm.setTaskStatus(taskStatus.get(taskForm.getTaskStatus()));
+					if("Task Closed".equals(taskForm.getTaskStatus())){
+						noOfTasksCompleted++;
+					}
+				}
+				int total=tasks.size();
+				percentage=(noOfTasksCompleted/total)*100;
+				totalPercentage=totalPercentage+percentage;
+				}
+				componentForm.setPercentage((new Float(percentage)).intValue());
+			}
+			releaseForm.setPercentage((new Float(totalPercentage/noOfComponents)).intValue());
+			}
+			}
+			}
 	}
 }
