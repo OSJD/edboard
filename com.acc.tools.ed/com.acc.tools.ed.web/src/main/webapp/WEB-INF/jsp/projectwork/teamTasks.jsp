@@ -25,8 +25,15 @@
 					<td style="width: 130px;">${project.projectName}</td>
 					<td style="width: 130px;">${release.releaseStartDate}</td>
 					<td style="width: 130px;">${release.releaseEndDate}</td>
-					<td style="width: 130px;">In Progress</td>
-					<td style="width: 130px;">50</td>
+					<c:choose>
+									<c:when test="${release.percentage eq 100 }">
+										<td style="width: 130px;">COMPLETED</td>
+									</c:when>
+									<c:otherwise>
+									<td style="width: 130px;">IN PROGRESS</td>
+									</c:otherwise>
+									</c:choose>
+					<td style="width: 130px;">${release.percentage}%</td>
 				</tr>
 				<tr id="release${release.releaseId}" class="componentData">
 					<td style="background-image: none; background-color: white;" colspan="7">
@@ -60,8 +67,16 @@
 													<td>${component.workDesc}</td>
 													<td>${component.startDate}</td>
 													<td>${component.endDate}</td>
-													<td>In Progress</td>
-													<td>60</td>
+													<c:choose>
+									<c:when test="${component.percentage eq 100 }">
+									<td>COMPLETED</td>
+									</c:when>
+									<c:otherwise>
+									<td>IN PROGRESS</td>
+									</c:otherwise>
+									</c:choose>
+									
+									<td >${component.percentage}%</td>
 													<td>
 														<a href="#" taskType="teamTasks" class="addTaskPopup" id="${component.componentId}"><img
 															class="imgLink" alt="add comnponent" src="./resources/addnews.gif"></a>
@@ -100,9 +115,9 @@
 																			<td>${tasks.taskName}<input type="hidden" id="taskIdValue" value="${tasks.taskId}"/></td>
 																			<td>${tasks.taskDesc}</td>
 																			<td>${tasks.taskHrs}</td>
-																			<td>01/01/2015</td>
+																			<td>${tasks.taskCreateDate}</td>
 																			<td>Submitted</td>
-																			<td>${tasks.taskReviewUser}</td>
+																			<td>${tasks.taskReviewUserName}</td>
 																			<td>${tasks.rejComment}</td>
 																			<td>${tasks.taskComments}</td>
 																			<td><a href="#" taskType="teamTasks"  id="editTask" onclick="edit('${tasks.taskId}');"><img alt="edit project" src="./resources/edit.gif"
