@@ -3,12 +3,14 @@
 	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
             http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-
+<http pattern="/start.do" security="none">
+</http>
 	<http auto-config="true" use-expressions="true">
-		<intercept-url pattern="/login.do" access="isAuthenticated()" />
+		<!-- <intercept-url pattern="/login.do" access="isAuthenticated()" /> -->
 		<form-login login-page="/start.do"
 			authentication-failure-url="/denied" username-parameter="username"
 			password-parameter="password" default-target-url="/login.do" />
+			
 		<logout invalidate-session="true" logout-success-url="/start.do"
 			logout-url="/j_spring_security_logout" />
 		<access-denied-handler error-page="/denied" />
@@ -19,6 +21,7 @@
 		<headers>
 			<cache-control />
 		</headers>
+		<intercept-url pattern="/*.do" access="isAuthenticated()" />
 	</http>
 	<authentication-manager>
 		<authentication-provider user-service-ref="userDetailsService"></authentication-provider>
