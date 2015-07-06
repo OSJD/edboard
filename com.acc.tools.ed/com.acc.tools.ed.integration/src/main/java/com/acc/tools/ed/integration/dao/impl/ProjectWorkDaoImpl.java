@@ -993,7 +993,7 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 		try {
 
 			System.out.println("record to be deleted::"+ vacationId);
-			final String delIdQuery = "DELETE FROM EDB_VACTN_CALNDR WHERE ID="+vacationId;
+			final String delIdQuery = "DELETE FROM EDB_VACTN_CALNDR WHERE VACTN_ID="+vacationId;
 			log.debug("delIdQuery Query :{}",delIdQuery);
 			Statement selectStatement = getConnection().createStatement();
 			int rowcount =0;
