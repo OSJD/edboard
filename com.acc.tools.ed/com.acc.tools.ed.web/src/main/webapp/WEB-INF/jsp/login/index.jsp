@@ -14,7 +14,15 @@
 				${status}
 			</div>
 		</c:if>
+		<c:if test="${not empty SPRING_SECURITY_LAST_EXCEPTION}">
+			<font color="red" style="font-size:large ; ">
+        Your login attempt was not successful due to <br/><br/>
+        <c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}"/>.
+      </font>
+		</c:if>
+		
 		<div id="login" class="login"> 
+		
 			<div class="loginheader">Engagement Dashboard Login</div>
 			<form action="<c:url value='j_spring_security_check'/>" method="post" name="frm2">
 					<table align="center" class="logindetail">
