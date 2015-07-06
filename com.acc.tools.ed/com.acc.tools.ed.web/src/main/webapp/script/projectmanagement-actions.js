@@ -408,28 +408,128 @@ $(document).ready(function(){
 							modal : true,
 							buttons : {
 								"Add Release" : function() { 
+									var flag = true;
+									$('input[type=text][id*=resDayHour]').each(function(){
+										var val = $(this).val().toUpperCase();
+										if(!/^\d+$/.test($(this).val()) && (val != 'V' && val != 'P' && val != 'I')){
+											flag = false;
+											alert("Please provide valid entry of hours");
+											$(this).focus();
+											return false;
+										}
+									});
 									
-									
-									var releaseName=$("#releaseName").val();
-									var relStartDate=$("#releaseStartDate").val();
-									var relEndDate=$("#releaseEndDate").val();
-									var relArti=$("#releaseArtifacts").val();
-									var relPlan = $('#addReleasePlan').html();
-									if(releaseName=='' || relStartDate=='' || relEndDate=='' || relArti==''){
-										alert("Missing Required Values!")
-										return false;
+									if(flag){
+										var releaseName=$("#releaseName").val();
+										var relStartDate=$("#releaseStartDate").val();
+										var relEndDate=$("#releaseEndDate").val();
+										var relArti=$("#releaseArtifacts").val();
+										var relPlan = $('#addReleasePlan').html();
+										if(releaseName=='' || relStartDate=='' || relEndDate=='' || relArti==''){
+											alert("Missing Required Values!")
+											return false;
+											
+										} else if (relPlan=='') {
+											alert("Missing Release Plan!")
+											return false;
+										}
 										
-									} else if (relPlan=='') {
-										alert("Missing Release Plan!")
-										return false;
+										var releaseIdCount=generateId("releases")+1;
+										var projectId=$("#projectId").val();
+										var releaseForm = $('#addReleaseForm').serializeArray();
+										var resources = $("input[id^='resource']").length;
+										var jsonString = "{";
+										$.each(releaseForm,
+											    function(i, v) {
+													 if(v.name=="releaseStartDate" || v.name=="releaseEndDate"){																															
+														jsonString=jsonString+" \""+v.name+"\":\""+v.value+"\",";
+													 } else {
+														jsonString=jsonString+" \""+v.name+"\":\""+v.value+"\",";
+													 }
+											 });
+											jsonString=jsonString+"\"resourcesAndWorkHours\" : {";
+											
+											for(var i=0; i<resources;i++){		
+												var resourceId=$("#resource"+i).val();
+												if (typeof resourceId != 'undefined') {
+													jsonString=jsonString+"\""+resourceId+"\": {";
+													$("input[id^='resDayHour']").each(function(index, obj){
+														var day=obj.id.split("_")[1];
+														if(obj.id.indexOf("resDayHour"+i)==0){
+															var val = obj.value;
+															if(val == 'V'){
+																val = -1;
+															}else if(val == 'I'){
+																val = -2;
+															}else if(val == 'P'){
+																val = -3;
+															}
+															jsonString=jsonString+"\""+day+"\":"+val+",";
+														}
+													});
+													jsonString=jsonString.substring(0,jsonString.lastIndexOf(","));
+													jsonString=jsonString+"},";
+												};
+											}
+											jsonString=jsonString.substring(0,jsonString.lastIndexOf(","))+"},";
+
+											jsonString=jsonString+"\"releaseId\":\""+releaseIdCount+"\",";
+											jsonString=jsonString+"\"projectId\":\""+projectId+"\"";
+											jsonString=jsonString+"}";
+										
+										
+										$.ajax({
+											type : "POST",
+											url : "./addRelease.do",
+											data :jsonString ,												
+											contentType : 'application/json; charset=utf-8',
+											dataType : 'json',		
+											beforeSend:function(){
+												
+												
+											  },
+											success : function(response) {
+												$('#releases').append('<option selected value="'+response.id+'">'+response.label+'</option>').change();
+												
+												addReleaseDialog.dialog("close");		
+											},
+											error : function(data) {	
+												$("#mainContainer").html("Application error! Please call help desk. Error:"+data.status);
+											}
+										});
 									}
-									
-									var releaseIdCount=generateId("releases")+1;
-									var projectId=$("#projectId").val();
-									var releaseForm = $('#addReleaseForm').serializeArray();
-									var resources = $("input[id^='resource']").length;
-									var jsonString = "{";
-									$.each(releaseForm,
+								},
+								Cancel : function() {
+									addReleaseDialog.dialog("close");
+								}
+							},
+
+						});
+						
+						var editReleaseDialog = $("#editrelease-popup").dialog({
+							autoOpen : false,
+							height : 700,
+							width : 1100,
+							modal : true,
+							buttons : {
+								"Edit Release" : function() {
+									var flag = true;
+									$('input[type=text][id*=resDayHour]').each(function(){
+										var val = $(this).val().toUpperCase();
+										if(!/^\d+$/.test($(this).val()) && (val != 'V' && val != 'P' && val != 'I')){
+											flag = false;
+											alert("Please provide valid entry of hours");
+											$(this).focus();
+											return false;
+										}
+									});
+									if(flag){
+										var projectId=$("#projects").val();
+										var releaseId = $("#releases option:selected").val();
+										var releaseForm = $('#editReleaseForm').serializeArray();
+										var resources = $("input[id^='resource']").length;
+										var jsonString = "{";
+										$.each(releaseForm,
 										    function(i, v) {
 												 if(v.name=="releaseStartDate" || v.name=="releaseEndDate"){																															
 													jsonString=jsonString+" \""+v.name+"\":\""+v.value+"\",";
@@ -446,7 +546,15 @@ $(document).ready(function(){
 												$("input[id^='resDayHour']").each(function(index, obj){
 													var day=obj.id.split("_")[1];
 													if(obj.id.indexOf("resDayHour"+i)==0){
-														jsonString=jsonString+"\""+day+"\":"+obj.value+",";
+														var val = obj.value;
+														if(val == 'V'){
+															val = -1;
+														}else if(val == 'I'){
+															val = -2;
+														}else if(val == 'P'){
+															val = -3;
+														}
+														jsonString=jsonString+"\""+day+"\":"+val+",";
 													}
 												});
 												jsonString=jsonString.substring(0,jsonString.lastIndexOf(","));
@@ -455,97 +563,25 @@ $(document).ready(function(){
 										}
 										jsonString=jsonString.substring(0,jsonString.lastIndexOf(","))+"},";
 
-										jsonString=jsonString+"\"releaseId\":\""+releaseIdCount+"\",";
+										jsonString=jsonString+"\"releaseId\":\""+releaseId+"\",";
 										jsonString=jsonString+"\"projectId\":\""+projectId+"\"";
 										jsonString=jsonString+"}";
-									
-									
-									$.ajax({
-										type : "POST",
-										url : "./addRelease.do",
-										data :jsonString ,												
-										contentType : 'application/json; charset=utf-8',
-										dataType : 'json',		
-										beforeSend:function(){
-											
-											
-										  },
-										success : function(response) {
-											$('#releases').append('<option selected value="'+response.id+'">'+response.label+'</option>').change();
-											
-											addReleaseDialog.dialog("close");		
-										},
-										error : function(data) {	
-											$("#mainContainer").html("Application error! Please call help desk. Error:"+data.status);
-										}
-									});	
-								},
-								Cancel : function() {
-									addReleaseDialog.dialog("close");
-								}
-							},
-
-						});
-						
-						var editReleaseDialog = $("#editrelease-popup").dialog({
-							autoOpen : false,
-							height : 700,
-							width : 1100,
-							modal : true,
-							buttons : {
-								"Edit Release" : function() {
-									var projectId=$("#projects").val();
-									var releaseId = $("#releases option:selected").val();
-									var releaseForm = $('#editReleaseForm').serializeArray();
-									var resources = $("input[id^='resource']").length;
-									var jsonString = "{";
-									$.each(releaseForm,
-									    function(i, v) {
-											 if(v.name=="releaseStartDate" || v.name=="releaseEndDate"){																															
-												jsonString=jsonString+" \""+v.name+"\":\""+v.value+"\",";
-											 } else {
-												jsonString=jsonString+" \""+v.name+"\":\""+v.value+"\",";
-											 }
-									 });
-									jsonString=jsonString+"\"resourcesAndWorkHours\" : {";
-									
-									for(var i=0; i<resources;i++){		
-										var resourceId=$("#resource"+i).val();
-										if (typeof resourceId != 'undefined') {
-											jsonString=jsonString+"\""+resourceId+"\": {";
-											$("input[id^='resDayHour']").each(function(index, obj){
-												var day=obj.id.split("_")[1];
-												if(obj.id.indexOf("resDayHour"+i)==0){
-													jsonString=jsonString+"\""+day+"\":"+obj.value+",";
-												}
-											});
-											jsonString=jsonString.substring(0,jsonString.lastIndexOf(","));
-											jsonString=jsonString+"},";
-										};
+										$.ajax({
+											type : "POST",
+											url : "./editRelease.do",
+											data :jsonString ,												
+											contentType : 'application/json; charset=utf-8',
+											dataType : 'json',		
+											beforeSend:function(){
+											  },
+											success : function(response) {
+												editReleaseDialog.dialog("close");		
+											},
+											error : function(data) {	
+												alert("Application error! Please call help desk. Error:"+data.status);
+											}
+										});
 									}
-									jsonString=jsonString.substring(0,jsonString.lastIndexOf(","))+"},";
-
-									jsonString=jsonString+"\"releaseId\":\""+releaseId+"\",";
-									jsonString=jsonString+"\"projectId\":\""+projectId+"\"";
-									jsonString=jsonString+"}";
-									alert(jsonString);
-									$.ajax({
-										type : "POST",
-										url : "./editRelease.do",
-										data :jsonString ,												
-										contentType : 'application/json; charset=utf-8',
-										dataType : 'json',		
-										beforeSend:function(){
-										  },
-										success : function(response) {
-											//alert(response);
-											editReleaseDialog.dialog("close");		
-										},
-										error : function(data) {	
-											alert("Application error! Please call help desk. Error:"+data.status);
-										}
-									});	
-								
 								},
 								Cancel : function() {
 									editReleaseDialog.dialog("close");
@@ -619,7 +655,8 @@ $(document).ready(function(){
 											minDate:projStartDate,
 											maxDate:projEndDate
 										});
-										
+										$("#viewReleasePlan").html("");
+										$('#addReleasePlan').html("");
 										editReleaseDialog.dialog("open");		
 									},
 									error : function(data) {	
@@ -683,7 +720,8 @@ $(document).ready(function(){
 										$("#releaseArtifacts").val('');
 										$("#releaseStartDate").val('');
 										$("#releaseEndDate").val('');
-										$('#addReleasePlan').html('');
+										$("#viewReleasePlan").html("");
+										$('#addReleasePlan').html("");
 										
 									},
 									error : function(data) {	
@@ -937,12 +975,27 @@ $(document).ready(function(){
 
 	function calculateTtlHrs(week) {
 		var ttlHrs = 0;
+		var flag = true;
 		$('input[type=text][id*='+week+']').each(function(){
 			if(this.id != week){
-				ttlHrs = ttlHrs+Number($(this).val());
+				if(/^\d+$/.test($(this).val())){
+					ttlHrs = ttlHrs+Number($(this).val());
+				}else{
+					var val = $(this).val().toUpperCase();
+					if(val != 'V' && val != 'P' && val != 'I' && val != ''){
+						alert("Please provide valid entry of hours");
+						flag = false;
+						$(this).focus();
+						return false;
+					}else{
+						$(this).val(val);
+					}
+				}
 			}
 		});
-		$('#'+week).html(ttlHrs);
+		if(flag){
+			$('#'+week).html(ttlHrs);
+		}
 	}
 	
 	function downloadReport(){
