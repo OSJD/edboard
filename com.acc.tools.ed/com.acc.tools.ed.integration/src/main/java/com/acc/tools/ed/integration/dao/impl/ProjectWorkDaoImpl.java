@@ -896,7 +896,18 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 					details.setVacationType(rs.getString("VACTN_TYP"));
 					details.setResourceName(rs.getString("EMP_NM"));
 					details.setEmployeeId(rs.getInt("EMP_ID"));
-					details.setBackUpResource(rs.getString("BACKUP_ID"));
+					final String backupQuery = "SELECT EMP_RESOURCE_NAME FROM EDB_MSTR_EMP_DTLS WHERE EMP_ID="+rs.getInt("BACKUP_ID");
+					log.debug("Vacation Query by employee Id :{}",backupQuery);
+					Statement selectEMP = getConnection().createStatement();
+					ResultSet rss = selectEMP.executeQuery(backupQuery);
+					{
+						while(rss.next())
+						{
+							details.setBackUpResource(rss.getString("EMP_RESOURCE_NAME"));
+						}
+					}
+					//details.setBackUpResource(rs.getInt("BACKUP_ID"));
+					details.setViewFlag("TRUE");
 					vactionDetails.add(details);
 				}
 				
@@ -935,7 +946,17 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 					details.setVacationType(rs.getString("VACTN_TYP"));
 					details.setResourceName(rs.getString("EMP_NM"));
 					details.setEmployeeId(rs.getInt("EMP_ID"));
-					details.setBackUpResource(rs.getString("BACKUP_ID"));					
+					final String backupQuery = "SELECT EMP_RESOURCE_NAME FROM EDB_MSTR_EMP_DTLS WHERE EMP_ID="+rs.getInt("BACKUP_ID");
+					log.debug("Vacation Query by employee Id :{}",backupQuery);
+					Statement selectEMP = getConnection().createStatement();
+					ResultSet rss = selectEMP.executeQuery(backupQuery);
+					{
+						while(rss.next())
+						{
+							details.setBackUpResource(rss.getString("EMP_RESOURCE_NAME"));
+						}
+					}
+					//details.setBackUpResource(rs.getInt("BACKUP_ID"));					
 					vactionDetails.add(details);
 				}
 				
