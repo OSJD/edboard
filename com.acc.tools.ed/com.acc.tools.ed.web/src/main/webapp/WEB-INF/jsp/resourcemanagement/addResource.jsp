@@ -50,29 +50,35 @@
 					</tr>
 					<tr>
 						<th>Capability</th>
-						<th><form:hidden path="capability"/>
-						<select id="technicalCapability" class="textbox">
+						<th>
+						<form:select path="capability" id="technicalCapability" onChange="updatePrimarySkills()">
+						<option value="" label="Select Capability" />
 								<c:forEach items="${capabilityList}" var="capabilityvar">
 									<option value="${capabilityvar}">${capabilityvar}</option>
 								</c:forEach>
-						</select></th>
-						<th>Skill</th>
-						<th><form:hidden path="skill" />
-							<select id="technicalSkill" class="textbox">
-								<c:forEach items="${skillList}" var="skill">
-									<option value="${skill}">${skill}</option>
-								</c:forEach>
-						</select>
+						</form:select></th>
+					</tr>
+					<tr>
+						<th>Primary Skill</th>
+						<th>
+							<form:select path="skill" id="technicalSkill" onChange="updateSecSkills()">
+						</form:select>
+						</th>
+						<th>Secondary Skill</th>
+						<th>
+							<form:select path="secSkills" id="secondarySkills" multiple="true">
+						</form:select>
 						</th>
 					</tr>
 					<tr>
 						<th>Level</th>
-						<th> <form:hidden path="level" /> 
-						<select id="resourceLevel" class="textbox">
+						<th>
+						<form:select path="level" id="resourceLevel">
+						<option value="" label="Select Level" />
 								<c:forEach items="${levelList}" var="level">
 									<option value="${level}">${level}</option>
 								</c:forEach>
-						</select></th>
+						</form:select></th>
 						<th style="text-align: right;">Previous Location</th>
 						<td><form:input path="previousLocation" id="preLocation" type="text" name="preLocation" class="textbox" /></td>
 					</tr>
