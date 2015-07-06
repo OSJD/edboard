@@ -11,7 +11,7 @@ public class ResourceDetails implements Serializable{
 	private String employeeName;
 	private String contactNumber;
 	private String emailId;
-	private String  capability;
+	private String capability;
 	private String skill;
 	private String level;
 	private String previousLocation;
@@ -23,6 +23,7 @@ public class ResourceDetails implements Serializable{
 	private String projectStartDate;
 	private String projectEndDate;
 	private String resourceFlag;
+	private List<String> secSkills;
 	
 	public String getResourceId() {
 		return ResourceId;
@@ -163,5 +164,13 @@ public class ResourceDetails implements Serializable{
 	public void setResourceFlag(String resourceFlag) {
 		this.resourceFlag = resourceFlag;
 	}
+	public List<String> getSecSkills() {
+		return secSkills;
+	}
+	public void setSecSkills(List<String> secSkills) {
+		this.secSkills = secSkills;
+	}
+	
+	
 
 }
