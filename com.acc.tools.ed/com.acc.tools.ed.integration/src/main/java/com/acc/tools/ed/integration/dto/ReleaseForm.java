@@ -18,6 +18,7 @@ public class ReleaseForm implements Serializable{
 	private String releaseStartDate;
 	private String releaseEndDate;
 	private String releaseDesc;
+	private int percentage;
 	private List<ComponentForm> components;
 	@Deprecated
 	private Map<String,List<Long>> resourcesAndHours;
@@ -105,5 +106,10 @@ public class ReleaseForm implements Serializable{
 			Map<String, Map<String, Long>> resourcesAndWorkHours) {
 		this.resourcesAndWorkHours = resourcesAndWorkHours;
 	}
-
+public int getPercentage() {
+		return percentage;
+	}
+	public void setPercentage(int percentage) {
+		this.percentage = percentage;
+	}
 }
