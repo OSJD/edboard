@@ -1057,17 +1057,20 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 		return null;
 	}
 	
-	public ReferenceData addResource(ResourceDetails resourceDetails) {
+	public ReferenceData addResource(ResourceDetails resourceDetails){
 		
 		final ReferenceData refData=new ReferenceData();
+		PreparedStatement prgmPrepStmt = null;
+		PreparedStatement skillPrepStmt = null;
 
 		try{
 				//Insert Program
-				log.debug("New Program Name:{} Existing Program id:{}",resourceDetails.getEmployeeName(),resourceDetails.getEmployeeNumber());
+				log.debug("Employee Name:{} Employee id:{}",resourceDetails.getEmployeeName(),resourceDetails.getEmployeeNumber());
 				if(resourceDetails.getEmployeeNumber() != null) {
-					log.debug("New Program Name:[{}] | New Program Id:[{}]",resourceDetails.getEmployeeName(),resourceDetails.getEmployeeNumber());
+					log.debug("Employee Name:{} Employee id:{}",resourceDetails.getEmployeeName(),resourceDetails.getEmployeeNumber());
+					log.debug("Inserting data into EDB_MSTR_EMP_DTLS table");
 					String prgInsQuery = "insert into EDB_MSTR_EMP_DTLS(EMP_RESOURCE_NAME, EMP_ENTERPRISE_ID, EMP_EMPLOYEE_ID, EMP_EMAIL, EMP_MOBILE_NO, EMP_SKILL, EMP_CAPABILITY, EMP_LEVEL, EMP_ROLE, EMP_PROJECT_START_DATE, EMP_ROLLOFF_DATE, EMP_PREVIOUS_LOCATION) values (?,?,?,?,?,?,?,?,?,?,?,?)";
-					PreparedStatement prgmPrepStmt = getConnection().prepareStatement(prgInsQuery);
+					prgmPrepStmt = getConnection().prepareStatement(prgInsQuery);
 					prgmPrepStmt.setString(1, resourceDetails.getEmployeeName());
 					prgmPrepStmt.setString(2, resourceDetails.getEnterpriseId());
 					prgmPrepStmt.setString(3, resourceDetails.getEmployeeNumber());
@@ -1081,8 +1084,15 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 					prgmPrepStmt.setString(11, resourceDetails.getProjectEndDate());
 					prgmPrepStmt.setString(12, resourceDetails.getPreviousLocation());
 					prgmPrepStmt.executeUpdate();
-					prgmPrepStmt.close();
 					
+					log.debug("Inserting data into EDB_EMP_SEC_SKILLS table");
+					String skillInsQuery = "INSERT INTO EDB_EMP_SEC_SKILLS(EMP_ID,SEC_SKILL) VALUES(?,?)";
+					skillPrepStmt = getConnection().prepareStatement(skillInsQuery);
+					for(String skill : resourceDetails.getSecSkills()){
+						skillPrepStmt.setString(1, resourceDetails.getEmployeeNumber());
+						skillPrepStmt.setString(2, skill);
+						skillPrepStmt.executeUpdate();
+					}
 					
 				}
 							
@@ -1092,6 +1102,26 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 				refData.setLabel(e.getMessage());
 				return refData;
 			}
+		finally
+		{
+			if(prgmPrepStmt!=null){
+				try{
+					prgmPrepStmt.close();
+				}
+				catch(Exception e){
+					log.error("Error inserting employee table :",e);
+				}
+			}
+			if(skillPrepStmt!=null){
+				try{
+					skillPrepStmt.close();
+				}
+				catch(Exception e){
+					log.error("Error inserting sec skill table :",e);
+				}
+			}
+		}
+		
 		return refData;
 	}
 	
