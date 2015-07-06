@@ -280,6 +280,7 @@ $(document).ready(
 						"taskDesc":{dataType:"string"},
 						"taskReviewUser":{dataType:"int"},
 						"componentId":{dataType:"int"},
+						"taskStatus":{dataType:"string"},
 						"taskLedger":{
 							dataType:"object",
 							itemElement:{
@@ -677,7 +678,7 @@ $(document).ready(
 		});
 		
 		$("#editTaskActivitySelect").on("change",function(){
-			$(this).unbind("change");
+		/*	$(this).unbind("change"); */
 			var activity=$("#editTaskActivitySelect").val();
 			if(activity!=-1){
 				var context=edb.getEDBContextInstance();
@@ -724,7 +725,16 @@ $(document).ready(
 			
 			
 		}); 
-		
+		$("#editTaskStatus").unbind("change").on("change",function(){
+			var taskStatus=$(this).val();
+			if(taskStatus!=1){
+				$("#editTaskReviewUser").val(-1).attr("disabled", "disabled");
+			} else {
+				$("#editTaskReviewUser").val(-1).removeAttr('disabled');
+			}
+			
+			
+		}); 
 		
 		$("#newVacationType").on("change",function(){
 			$(this).unbind("change");
