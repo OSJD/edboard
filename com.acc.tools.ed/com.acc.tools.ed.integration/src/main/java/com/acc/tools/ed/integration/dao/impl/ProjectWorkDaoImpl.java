@@ -955,13 +955,16 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 
 			System.out.println("record to be updated::"+ vacationForm.getVacationId());
 			
-			final String updIdQuery = "UPDATE EDB_VACTN_CALNDR SET VACTN_STRT_DT= ?, VACTN_END_DT= ? ,COMNTS=? WHERE ID=?";
+			final String updIdQuery = "UPDATE EDB_VACTN_CALNDR SET VACTN_STRT_DT= ? ,VACTN_END_DT= ?,VACTN_TYP=? , COMNTS=? , CREATE_TS = ?,BACKUP_ID =? WHERE VACTN_ID=?";
 			PreparedStatement prpStatement = getConnection().prepareStatement(updIdQuery);
 			prpStatement.setString(1, vacationForm.getStartDate());
 			prpStatement.setString(2, vacationForm.getEndDate());
-			prpStatement.setString(3, vacationForm.getComments());
-			prpStatement.setInt(4, vacationForm.getVacationId());
-			log.debug("delIdQuery Query :{}",updIdQuery);
+			prpStatement.setString(3, vacationForm.getVacationType());
+			prpStatement.setString(4, vacationForm.getComments());
+			prpStatement.setString(5, (new Date()).toString());
+			prpStatement.setString(6, vacationForm.getBackUpResource() );
+			prpStatement.setInt(7, vacationForm.getVacationId());
+			log.debug("UpdateQuery Query :{}",updIdQuery);
 			int rowcount =0;
 			rowcount= prpStatement.executeUpdate();
 			prpStatement.close();
@@ -986,7 +989,6 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 
 		return "success";
 	}
-
 	public void deleteVacation(int vacationId)
 	{
 
