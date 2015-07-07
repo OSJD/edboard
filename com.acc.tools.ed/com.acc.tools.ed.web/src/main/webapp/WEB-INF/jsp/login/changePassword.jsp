@@ -14,16 +14,14 @@
 <body>
 
 
-	<div id="updatePassword" title="Password Update">
+	<div id="updatePassword" title="Password Update" class="login">
 		<div class="loginheader">Password Update</div>
 		<form id="passwordUpdateForm" action="<c:url value='updatePwd.do'/>"
 			method="post">
-			<table class="ebdtable" style="width: 50%; margin: 0px;">
+			<table class="ebdtable" >
+				
 				<tr>
-					<th colspan="2" style="text-align: center;">Update Password</th>
-				</tr>
-				<tr>
-					<th style="width: 75px;">Old Password</th>
+					<th style="width: 150px;">Old Password</th>
 					<td><input type="password" name="oldPassword" id="oldPassword"
 						class="textbox" /> <%-- <input type="hidden" id="updateEmpId" name="empId" value ="${employeeId} "> --%>
 
@@ -31,17 +29,17 @@
 				</tr>
 
 				<tr>
-					<th style="width: 75px;">New Password</th>
+					<th style="width: 150px;">New Password</th>
 					<td><input type="password" name="newPassword" id="newPassword"
 						class="textbox" /></td>
 				</tr>
 				<tr>
-					<th style="width: 75px;">Confirm New Password</th>
+					<th style="width: 150px;">Confirm New Password</th>
 					<td><input type="password" name="confirmPassword"
 						id="confirmPassword" class="textbox" /></td>
 				</tr>
 				<tr>
-					<td><input type="submit" value="Update Password" id="btn2"
+					<td colspan="2" align="center"><input type="submit" value="Update Password" id="btn2"
 						name="btn2" class="button" onclick="return validate();" /></td>
 
 				</tr>

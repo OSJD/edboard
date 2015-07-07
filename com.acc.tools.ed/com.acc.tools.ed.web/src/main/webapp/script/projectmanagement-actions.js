@@ -216,6 +216,10 @@ $(document).ready(function(){
 									
 									if($("#selectedResourcesEdit option").length == 0){
 										alert("Please choose atleast one resource ");$("#selectedResourcesEdit").focus();return false;
+									}else {
+										$("#selectedResourcesEdit option").each(function(i){
+									        $(this).prop("selected",true);
+									    });										
 									}
 									
 									if($("#newProgramName:empty").length > 0 && $("#existingProgram").val()=='-1'){

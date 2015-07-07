@@ -7,12 +7,18 @@
 <!DOCTYPE html >
 <html>
 <head>
+
+
 <%@ include file="/WEB-INF/jsp/includes/document-header.jsp"%>
 <script src="<%=request.getContextPath()%>/script/projectmanagement-actions.js"></script>
 <script src="<%=request.getContextPath()%>/script/projectwork-actions.js"></script>
 <script src="<%=request.getContextPath()%>/script/reports.js"></script>
 <script src="<%=request.getContextPath()%>/script/libs/edb-common.js"></script>
 <script src="<%=request.getContextPath()%>/script/libs/edb-object-model.js"></script>
+
+
+
+
 </head>
 <body id="mainBody">
 	<%@ include file="/WEB-INF/jsp/projectmanagement/projects.jsp" %>
@@ -91,6 +97,8 @@
 	</table>
 </body>
 </html>
+
+
 <script>	
 	
 	var selectedTab="${selectedTab}";
