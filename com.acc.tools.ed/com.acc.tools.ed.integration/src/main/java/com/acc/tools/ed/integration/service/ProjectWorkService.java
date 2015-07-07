@@ -35,5 +35,6 @@ public interface ProjectWorkService {
 	public void addIssue(Issue issue,Integer projectId,Integer releaseId);
 	public void editIssue(Issue issue);
 	public void deleteIssue(Integer issueId);
+	public void deleteComponent(int componentId);
 }
 

@@ -170,4 +170,8 @@ public List<ProjectForm> getMyTasks(Integer userId){
 			}
 			}
 	}
+		public void deleteComponent(int componentId) {
+			projectWorkDao.deleteComponent(componentId);
+			
+		}
 }

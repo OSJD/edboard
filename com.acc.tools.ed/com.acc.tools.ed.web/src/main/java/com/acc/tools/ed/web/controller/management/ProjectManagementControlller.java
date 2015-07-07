@@ -337,5 +337,13 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		
 	}
 	
+	@RequestMapping(value = "/deleteComponent.do")
+	public String deleteComponent(@RequestParam("componentId") int componentId,Model model) {
+		
+		LOG.debug("Project Name:[{--}] deleteComponent:[{}]");
+		getProjectWorkService().deleteComponent(componentId);
+		return "/projectwork/newTask";
+	}
+	
 
 }

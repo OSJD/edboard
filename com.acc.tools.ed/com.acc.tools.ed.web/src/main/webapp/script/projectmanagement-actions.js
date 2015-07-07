@@ -1023,5 +1023,29 @@ $(document).ready(function(){
 		       return $(x).text() < $(y).text() ? -1 : 1;
 		}))
 		$("#"+id).get(0).selectedIndex = 0;
-	}
+		}
 	
+	function deleteComponent(componentId) {
+		var cmpntIdRow = "cmpntDatta_" + componentId;
+		alert("Delete component " + componentId)
+		$.ajax({
+			type : "POST",
+			url : "./deleteComponent.do",
+			data : {
+				componentId : componentId
+			},
+			beforeSend : function() {
+			},
+			success : function(response) {
+				$("#viewProjectAndReleaseDetails #componentTable").find(
+						'tr[id="' + cmpntIdRow + '"]').remove();
+			},
+			error : function(data) {
+				$("#projectWorkMenu").click();
+	
+			}
+	
+		});
+	
+	}
+		

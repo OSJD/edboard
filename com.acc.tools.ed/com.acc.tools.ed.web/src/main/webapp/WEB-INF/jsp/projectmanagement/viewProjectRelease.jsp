@@ -449,7 +449,7 @@
 <table class="ebdtable" id = "componentTable" style="width:100%;margin-top: 25px;">
 		<thead>
 			<tr>
-				<th width="50px;"><a href="#" id="addNewCompnt"><img class="imgLink" alt="add comnponent" src="./resources/addnews.gif" width="20px;"></a></th>
+				<th width="50px;"colspan="2"><a href="#" id="addNewCompnt"><img class="imgLink" alt="add comnponent" src="./resources/addnews.gif" width="20px;"></a></th>
 				<th style="width: 160px;">Component Name</th>
 				<th style="width: 80px;">Component Phase</th>
 				<th style="width: 450px;">Functional Desc</th>
@@ -479,9 +479,12 @@
 		        </c:when>
 		        <c:otherwise>
 		        	<c:forEach var="component" items="${viewProjRelDetails.releases[0].components}">
-						<tr>
-							<td><img alt="edit project" src="./resources/edit.gif" width="20px;">
-							<img alt="delete project" src="./resources/delete.gif"  width="20px;"></td>
+						<tr id="cmpntDatta_${component.componentId}" >
+							<td><img alt="edit component" src="./resources/edit.gif" width="20px;"></td>
+							
+							<td><a href="#" id="deleteComponent" onclick="deleteComponent('${component.componentId}');">
+							<img alt="delete component" src="./resources/delete.gif"  width="20px;"></td>
+							
 							<td width="215px;" id="compName">${component.componentName}</td>
 							<td width="115px">
 								<c:choose>
