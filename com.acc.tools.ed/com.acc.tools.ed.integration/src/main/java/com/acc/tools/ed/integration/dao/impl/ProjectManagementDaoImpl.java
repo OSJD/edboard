@@ -939,7 +939,7 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
         final Map<Integer,Map<DateTime,Integer>> resourceHoursMap=new HashMap<Integer, Map<DateTime,Integer>>();
 
 
-		final String query = "SELECT * FROM EDB_RELEASE_PLAN WHERE MLSTN_ID="+releaseId;
+		final String query = "SELECT * FROM EDB_RELEASE_PLAN WHERE MLSTN_ID="+releaseId+" ORDER BY EMP_ID,WEEK_ST_DT";
 		log.debug(" RELEASE PLAN HOURS  :{}", query);
 		try {
 			Statement stmt = getConnection().createStatement();
