@@ -341,6 +341,7 @@ $(document).ready(
 					click:function(){
 						var jsonString=edb.jsonString({
 							"taskId":{dataType:"int"},
+							"taskStatus":{dataType:"string"},
 							"taskLedger":{
 											dataType:"object",
 											itemElement:{
@@ -461,17 +462,104 @@ $(document).ready(
 				data : {taskId:taskId,
 					projectId:projectId},
 				success : function(response) {
-					
-					// Reviewer List
-					var reviewers=response["reviewerList"];
+				
 					$("#editTaskReviewUser option").remove();
-					$("#editTaskReviewUser").append("<option value='-1'>--- Select ---</option>")
-					for(var index in reviewers){
-						$("#editTaskReviewUser").append("<option value='"+reviewers[index].id+"'>"+reviewers[index].label+"</option>")
-					}
-					
 					//Task object
 					var task=response["task"];
+					
+					if(('4'==task.taskStatus||'10'==task.taskStatus  )&&task.userId==task.reviewerId){
+						
+						$("#editTaskButton").hide();
+					}
+					else 
+					{
+						if(('4'==task.taskStatus||'10'==task.taskStatus || '1'==task.taskStatus||'5'==task.taskStatus||'6'==task.taskStatus  )&&task.userId!=task.reviewerId)
+							$("#editTaskButton").hide();
+					}
+					if(('1'==task.taskStatus||'7'==task.taskStatus)&&task.userId==task.reviewerId){
+						$("#editTaskStatus option").remove();
+						$("#editTaskStatus").append("<option value='-1'>--- Select ---</option>");
+						$("#editTaskStatus").append("<option value='4'>Review Completed</option>");
+						$("#editTaskStatus").append("<option value='5'>Review In Progress</option>");
+						$("#editTaskStatus").append("<option value='6'>Review On Hold</option>");
+						$("#editTaskReviewUser").hide();
+						
+					}
+					else if('4'==task.taskStatus&&task.userId!=task.reviewerId){
+						$('#editReviewRow').hide();
+						$("#editTaskStatus option").remove();
+						$("#editTaskStatus").append("<option value='-1'>--- Select ---</option>");
+						$("#editTaskStatus").append("<option value='7'>Rework Completed</option>");
+						$("#editTaskStatus").append("<option value='8'>Rework In Progress</option>");
+						$("#editTaskStatus").append("<option value='9'>Rework On Hold</option>");
+						$("#editTaskStatus").append("<option value='10'>Task Closed</option>");
+						$("#editTaskReviewUser").show();
+						var reviewers=response["reviewerList"];
+						$("#editTaskReviewUser option").remove();
+						$("#editTaskReviewUser").append("<option value='-1'>--- Select ---</option>");
+						for(var index in reviewers){
+							if(task.reviewerId==reviewers[index].id){
+							$("#editTaskReviewUser").append("<option value='"+reviewers[index].id+"'>"+reviewers[index].label+"</option>")
+							}
+							}
+						var reviewHistory=task.taskReviewHistory;
+						$("#rcTable > tbody > tr").remove();
+						for(var index in reviewHistory){
+							//alert(reviewHistory[index].reviewComment+" | "+reviewHistory[index].devResponse+" | "+reviewHistory[index].isReviewValid);
+							var reviewCommentRowNumber=$('#rcTable tr:last').index()+1;
+							if(task.userId==task.reviewerId){
+								var rowForReviewer="<tr><td><input type=\"hidden\" name=\"reviewHistoryId"+reviewCommentRowNumber+"\" id=\"reviewHistoryId"+reviewCommentRowNumber+"\" value=\""+reviewHistory[index].reviewHistoryId+"\"><textarea cols=\"60\" rows=\"5\" name=\"reviewComment"+reviewCommentRowNumber+"\" id=\"reviewComment"+reviewCommentRowNumber+"\">"+reviewHistory[index].reviewComment+"</textarea></td>"+
+									"<td><div style=\"width:365px;height: 75px;overflow: auto;\">"+reviewHistory[index].devResponse+"</div></td>"+
+									"<td><input type=\"checkbox\" name=\"isReviewValid"+reviewCommentRowNumber+"\" id=\"isReviewValid"+reviewCommentRowNumber+"\" checked=\"checked\"></td></tr>";
+								$("#rcTable tbody").append(rowForReviewer);
+							}else {
+								var rowForDeveloper="<tr><td><input type=\"hidden\" name=\"reviewHistoryId"+reviewCommentRowNumber+"\" id=\"reviewHistoryId"+reviewCommentRowNumber+"\" value=\""+reviewHistory[index].reviewHistoryId+"\"><div style=\"width:365px;height: 75px;overflow: auto;\">"+reviewHistory[index].reviewComment+"</div></td>"+
+									"<td><textarea cols=\"60\" rows=\"5\" name=\"devResponse"+reviewCommentRowNumber+"\" id=\"devResponse"+reviewCommentRowNumber+"\">"+reviewHistory[index].devResponse+"</textarea></td>"+
+									"<td><input type=\"checkbox\" name=\"isReviewValid"+reviewCommentRowNumber+"\" id=\"isReviewValid"+reviewCommentRowNumber+"\" checked=\"checked\"></td></tr>";
+								$("#rcTable tbody").append(rowForDeveloper);
+							}
+						}
+					}
+					else if('7'==task.taskStatus&&task.userId!=task.reviewerId){
+						$('#editReviewRow').hide();
+						$("#editTaskStatus option").remove();
+						$("#editTaskStatus").append("<option value='-1'>--- Select ---</option>");
+						
+						$("#editTaskStatus").append("<option value='10'>Task Closed</option>");
+						var reviewHistory=task.taskReviewHistory;
+						$("#rcTable > tbody > tr").remove();
+						for(var index in reviewHistory){
+							alert(index);
+							//alert(reviewHistory[index].reviewComment+" | "+reviewHistory[index].devResponse+" | "+reviewHistory[index].isReviewValid);
+							var reviewCommentRowNumber=$('#rcTable tr:last').index()+1;
+							if(task.userId==task.reviewerId){
+								var rowForReviewer="<tr><td><input type=\"hidden\" name=\"reviewHistoryId"+reviewCommentRowNumber+"\" id=\"reviewHistoryId"+reviewCommentRowNumber+"\" value=\""+reviewHistory[index].reviewHistoryId+"\"><textarea cols=\"60\" rows=\"5\" name=\"reviewComment"+reviewCommentRowNumber+"\" id=\"reviewComment"+reviewCommentRowNumber+"\">"+reviewHistory[index].reviewComment+"</textarea></td>"+
+									"<td><div style=\"width:365px;height: 75px;overflow: auto;\">"+reviewHistory[index].devResponse+"</div></td>"+
+									"<td><input type=\"checkbox\" name=\"isReviewValid"+reviewCommentRowNumber+"\" id=\"isReviewValid"+reviewCommentRowNumber+"\" checked=\"checked\"></td></tr>";
+								$("#rcTable tbody").append(rowForReviewer);
+							}else {
+								var rowForDeveloper="<tr><td><input type=\"hidden\" name=\"reviewHistoryId"+reviewCommentRowNumber+"\" id=\"reviewHistoryId"+reviewCommentRowNumber+"\" value=\""+reviewHistory[index].reviewHistoryId+"\"><div style=\"width:365px;height: 75px;overflow: auto;\">"+reviewHistory[index].reviewComment+"</div></td>"+
+									"<td><textarea cols=\"60\" rows=\"5\" name=\"devResponse"+reviewCommentRowNumber+"\" id=\"devResponse"+reviewCommentRowNumber+"\">"+reviewHistory[index].devResponse+"</textarea></td>"+
+									"<td><input type=\"checkbox\" name=\"isReviewValid"+reviewCommentRowNumber+"\" id=\"isReviewValid"+reviewCommentRowNumber+"\" checked=\"checked\"></td></tr>";
+								$("#rcTable tbody").append(rowForDeveloper);
+							}
+						}
+					}
+					else{
+						$("#editTaskStatus").hide();
+						$("#editTaskReviewUser").hide();
+						$("#editTaskButton").hide();
+					}
+					/*else if('Build'==workType){
+						// Reviewer List
+						var reviewers=response["reviewerList"];
+						$("#editTaskReviewUser option").remove();
+						$("#editTaskReviewUser").append("<option value='-1'>--- Select ---</option>")
+						for(var index in reviewers){
+							$("#editTaskReviewUser").append("<option value='"+reviewers[index].id+"'>"+reviewers[index].label+"</option>")
+						}
+							
+					}*/
 					$("#editTaskName").html(task.taskName);
 					$("#editTaskType").html(task.taskType); 
 					$("#editTaskDesc").html(task.taskDesc); 
@@ -482,27 +570,14 @@ $(document).ready(
 					var activity=task.taskLedger;
 					var context=edb.getEDBContextInstance();
 					context.clean();
-					for(var index in activity){
-						$("#editTaskActivitySelect").append("<option value='"+activity[index].taskLedgerId+"'>"+activity[index].taskActivityDate+"</option>");
-						context.addAttribute(activity[index].taskLedgerId,activity[index]);
-					}
-					var reviewHistory=task.taskReviewHistory;
-					$("#rcTable > tbody > tr").remove();
-					for(var index in reviewHistory){
-						//alert(reviewHistory[index].reviewComment+" | "+reviewHistory[index].devResponse+" | "+reviewHistory[index].isReviewValid);
-						var reviewCommentRowNumber=$('#rcTable tr:last').index()+2;
-						if(workType=="Review"){
-							var rowForReviewer="<tr><td><input type=\"hidden\" name=\"reviewHistoryId"+reviewCommentRowNumber+"\" id=\"reviewHistoryId"+reviewCommentRowNumber+"\" value=\""+reviewHistory[index].reviewHistoryId+"\"><textarea cols=\"60\" rows=\"5\" name=\"reviewComment"+reviewCommentRowNumber+"\" id=\"reviewComment"+reviewCommentRowNumber+"\">"+reviewHistory[index].reviewComment+"</textarea></td>"+
-								"<td><div style=\"width:365px;height: 75px;overflow: auto;\">"+reviewHistory[index].devResponse+"</div></td>"+
-								"<td><input type=\"checkbox\" name=\"isReviewValid"+reviewCommentRowNumber+"\" id=\"isReviewValid"+reviewCommentRowNumber+"\" checked=\"checked\"></td></tr>";
-							$("#rcTable tbody").append(rowForReviewer);
-						}else {
-							var rowForDeveloper="<tr><td><input type=\"hidden\" name=\"reviewHistoryId"+reviewCommentRowNumber+"\" id=\"reviewHistoryId"+reviewCommentRowNumber+"\" value=\""+reviewHistory[index].reviewHistoryId+"\"><div style=\"width:365px;height: 75px;overflow: auto;\">"+reviewHistory[index].reviewComment+"</div></td>"+
-								"<td><textarea cols=\"60\" rows=\"5\" name=\"devResponse"+reviewCommentRowNumber+"\" id=\"devResponse"+reviewCommentRowNumber+"\">"+reviewHistory[index].devResponse+"</textarea></td>"+
-								"<td><input type=\"checkbox\" name=\"isReviewValid"+reviewCommentRowNumber+"\" id=\"isReviewValid"+reviewCommentRowNumber+"\" checked=\"checked\"></td></tr>";
-							$("#rcTable tbody").append(rowForDeveloper);
+					/*if('4'==task.taskStatus){
+						for(var index in activity){
+							$("#editTaskActivitySelect").append("<option value='"+activity[index].taskLedgerId+"'>"+activity[index].taskActivityDate+"</option>");
+							context.addAttribute(activity[index].taskLedgerId,activity[index]);
 						}
-					}
+					}*/
+					
+					
 					$("#rcMainDiv").animate({ scrollTop: $("#rcMainDiv")[0].scrollHeight}, 1000);
 				},
 				error : function(data) {
@@ -516,7 +591,8 @@ $(document).ready(
 		
 		$("#editReviewRow").button().on("click",function(){
 			$(this).unbind("click");
-			var reviewCommentRowNumber=$('#rcTable tr:last').index()+2;
+			var reviewCommentRowNumber=$('#rcTable tr:last').index();
+			alert("Add row"+reviewCommentRowNumber);
 			var row="<tr><td><input type=\"hidden\" name=\"reviewHistoryId"+reviewCommentRowNumber+"\"=\"reviewHistoryId"+reviewCommentRowNumber+"\" id=\"reviewHistoryId"+reviewCommentRowNumber+"\" value=\"0\"><textarea cols=\"60\" rows=\"5\" name=\"reviewComment"+reviewCommentRowNumber+"\" id=\"reviewComment"+reviewCommentRowNumber+"\"></textarea></td>"+
 				"<td><div style=\"width:365px;height: 75px;overflow: auto;\"></div></td>"+
 				"<td><input type=\"checkbox\" name=\"isReviewValid"+reviewCommentRowNumber+"\" id=\"isReviewValid"+reviewCommentRowNumber+"\" value=\"Y\"></td></tr>";
@@ -727,10 +803,11 @@ $(document).ready(
 		}); 
 		$("#editTaskStatus").unbind("change").on("change",function(){
 			var taskStatus=$(this).val();
-			if(taskStatus!=1){
-				$("#editTaskReviewUser").val(-1).attr("disabled", "disabled");
-			} else {
+			if(taskStatus==1 || taskStatus==7){
 				$("#editTaskReviewUser").val(-1).removeAttr('disabled');
+				
+			} else {
+				$("#editTaskReviewUser").val(-1).attr("disabled", "disabled");
 			}
 			
 			
