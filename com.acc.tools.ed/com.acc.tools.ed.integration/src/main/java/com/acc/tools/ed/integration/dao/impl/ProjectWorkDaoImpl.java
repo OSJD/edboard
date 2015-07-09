@@ -1218,4 +1218,58 @@ public class ProjectWorkDaoImpl extends AbstractEdbDao implements ProjectWorkDao
 			log.error("Error while deleting the issue.");
 		}
 	}
+
+	public void deleteComponent(int componentId) {
+		
+		try {
+
+			final String taskMasterTbl="SELECT TASK_ID FROM EDB_TASK_MASTER WHERE COMPNT_ID = "+componentId;
+
+			final String tskRvwTableHistory="DELETE FROM EDB_TASK_REVW_HISTORY WHERE TASK_ID = ?";
+			final String tskRvwTable="DELETE FROM EDB_TASK_REVW WHERE TASK_ID = ?";
+			
+			PreparedStatement  tskRvwTableHistoryStatement = getConnection().prepareStatement(tskRvwTableHistory);
+			PreparedStatement  tskRvwTableStatement = getConnection().prepareStatement(tskRvwTable);
+
+			Statement stmt=getConnection().createStatement();
+			ResultSet rs=stmt.executeQuery(taskMasterTbl.toString());
+			
+			while(rs.next()){
+				int taskId = rs.getInt("TASK_ID");
+				
+				tskRvwTableHistoryStatement.setInt(1, taskId);
+				tskRvwTableHistoryStatement.executeUpdate();
+					
+				tskRvwTableStatement.setInt(1, taskId);
+				tskRvwTableStatement.executeUpdate();
+				
+			}
+
+			tskRvwTableHistoryStatement.close();
+			tskRvwTableStatement.close();
+
+
+			final String taskMaster="DELETE FROM EDB_TASK_MASTER WHERE COMPNT_ID = ?";
+			
+			PreparedStatement  taskMasterStatement = getConnection().prepareStatement(taskMaster);
+			taskMasterStatement.setInt(1, componentId);
+			taskMasterStatement.executeUpdate();
+			
+			taskMasterStatement.close();
+			
+
+
+
+			final String projComponent="DELETE FROM EDB_PROJ_COMPNT WHERE COMPNT_ID = ?";
+			
+			PreparedStatement  projComponentStatement = getConnection().prepareStatement(projComponent);
+			projComponentStatement.setInt(1, componentId);
+			projComponentStatement.executeUpdate();
+			
+			projComponentStatement.close();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

@@ -749,8 +749,16 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 				componentDet = new ComponentForm();
 				componentDet.setComponentId(r1.getInt("COMPNT_ID"));
 				componentDet.setComponentName(componentName);
-				componentDet.setStartDate(r1.getString("COMPNT_ST_DT"));
-				componentDet.setEndDate(r1.getString("COMPNT_END_DT"));
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                Date stDate =  sdf.parse(r1.getString("COMPNT_ST_DT"));
+                sdf.applyPattern("MM/dd/yyyy");
+                SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                Date endDate = sdf1.parse(r1.getString("COMPNT_END_DT"));
+                sdf1.applyPattern("MM/dd/yyyy");
+                
+                componentDet.setStartDate(sdf.format(stDate));
+                componentDet.setEndDate(sdf1.format(endDate));
 				componentDet.setFunctionalDesc(r1.getString("COMPNT_FUNC_DESC"));
 				componentDet.setPhaseId(phaseId);
 			}

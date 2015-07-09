@@ -83,8 +83,8 @@
 										}
 										
 									}
-									var newComponentRow='<tr><td><img alt="edit project" src="./resources/edit.gif" width="20px;">'+
-														'<img alt="delete project" src="./resources/delete.gif"  width="20px;"></td>'+
+									var newComponentRow='<tr><td><img alt="edit component" src="./resources/edit.gif" width="20px;"></td><td>'+
+														'<img alt="delete component" src="./resources/delete.gif"  width="20px;"></td>'+
 														'<td id="compName">'+compName+'</td><td>'+phaseId+'</td>'+
 														'<td id="compFuncDesc"><div style="height:20px;display:table-cell;vertical-align:middle;">'+functionalDesc+'</div></td>'+
 														'<td id="comStDate">'+startDate+'</td><td id="compEtDate">'+endDate+'</td><td>Not Started</td>'+
