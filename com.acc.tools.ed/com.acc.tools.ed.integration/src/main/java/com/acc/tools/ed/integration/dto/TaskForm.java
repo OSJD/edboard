@@ -25,13 +25,14 @@ public class TaskForm implements Serializable {
 	private String newTaskId;
 	private String taskComments;
 	private int employeeId;
+	private int reviewerId;
 	private String employeeName;
 	private List<TaskLedgerForm> taskLedger;
 	private List<TaskReviewHistory> taskReviewHistory;
 	private List<String> reviewerList;
 	private String workType;
 	private String taskReviewUserName;
-
+private int userId;
 	public int getTaskId() {
 		return taskId;
 	}
@@ -222,6 +223,22 @@ public class TaskForm implements Serializable {
 
 	public void setTaskReviewUserName(String taskReviewUserName) {
 		this.taskReviewUserName = taskReviewUserName;
+	}
+
+	public int getReviewerId() {
+		return reviewerId;
+	}
+
+	public void setReviewerId(int reviewerId) {
+		this.reviewerId = reviewerId;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 
 }
