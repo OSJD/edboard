@@ -6,6 +6,7 @@
 					<tr>
 						<td colspan="8">
 							<table class="innertable2" style="width: 100%;">
+							
 								<tr>
 									<th style="width: 100px; height: 25px;">Project Name</th>
 									<th style="width: 100px;">Release Name</th>
@@ -105,17 +106,17 @@
 												<th style="width:365px;">
 													<div style="width: 70%;float: left;">Review Comment</div>
 													<div style="width: 30%;float: left;">
-														<a href="#" id="editReviewRow">Add Row</a>
+														<a href="#" id="editReviewRow">Add New Comments</a>
 													</div>
 												</th>
 												<th style="width:365px;">Developer Update</th>
 												<th style="25px;">Valid(Y/N)</th>
 											</tr>
 											<tr>	
-	 											<td style="width: 50px;text-align: left;">
+	 											<td style="width: 50px;text-align: left;" >
 		 											File Name 									
-		 											<a href="#">Edit</a> 
-		 											<a href="#">Delete</a>
+		 											<!-- <a href="#">Edit</a> 
+		 											<a href="#">Delete</a> -->
 	 											</td>
 	 											
 												<td colspan="3">
