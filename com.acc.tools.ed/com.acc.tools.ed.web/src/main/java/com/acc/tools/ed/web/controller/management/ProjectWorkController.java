@@ -86,6 +86,7 @@ public class ProjectWorkController extends AbstractEdbBaseController {
 			@ModelAttribute("edbUser")EDBUser edbUser,			
 			Model model){
 		final TaskForm taskForm=projectWorkService.getTaskByTaskId(taskId);
+		taskForm.setUserId(edbUser.getEmployeeId());
 		Map<String,Object> taskPopupData=new HashMap<String, Object>();
 		taskPopupData.put("task",taskForm);
 		if(projectId!=0){
