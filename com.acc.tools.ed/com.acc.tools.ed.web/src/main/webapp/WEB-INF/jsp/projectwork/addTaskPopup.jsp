@@ -90,13 +90,13 @@
 											<option value="1">Build Completed</option>
 											<option value="2">Build In Progress</option>
 											<option value="3">Build On Hold</option>
-											<option value="4">Review Completed</option>
+											<!-- <option value="4">Review Completed</option>
 											<option value="5">Review In Progress</option>
 											<option value="6">Review On Hold</option>
 											<option value="7">Rework Completed</option>
 											<option value="8">Rework In Progress</option>
 											<option value="9">Rework On Hold</option>
-											<option value="10">Task Closed</option>
+											<option value="10">Task Closed</option> -->
 										</select>
 									</td>
 									<td>
