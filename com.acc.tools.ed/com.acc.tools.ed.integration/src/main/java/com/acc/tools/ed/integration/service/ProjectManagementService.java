@@ -67,4 +67,6 @@ public interface ProjectManagementService {
 	public List<String> getSkill(String capabilityName);
 	public ReferenceData editSkill(Skill skillDetails);
 	public ReferenceData deleteSkill(String capabilityName, String skillName);
+	public ResourceDetails getEmployeeDetails(String existingEmpId);
+	public ReferenceData deleteResource(String existingEmpId);
 }
