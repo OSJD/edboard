@@ -809,4 +809,13 @@ public class ProjectManagementServiceImpl implements ProjectManagementService{
 			return errorData;
 		}
 	}
+	
+	public ResourceDetails getEmployeeDetails(String existingEmpId){
+		return projectManagementDao.getEmployeeDetails(existingEmpId);
+	}
+	
+	public ReferenceData deleteResource(String existingEmpId) {
+		return projectManagementDao.deleteResource(existingEmpId);
+	}
+	
 }
