@@ -70,5 +70,6 @@ public interface ProjectManagementDao {
 	public ReferenceData editSkill(int capabilityId,Skill skillDetails);
 	public ReferenceData deleteSkill(int capabilityId, String skillName);
 	public ReferenceData deleteSkill(int capabilityId);
-	
+	public ResourceDetails getEmployeeDetails(String existingEmpId);
+	public ReferenceData deleteResource(String existingEmpId);
 }
