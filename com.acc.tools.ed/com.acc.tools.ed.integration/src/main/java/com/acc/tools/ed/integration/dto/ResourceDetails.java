@@ -24,6 +24,11 @@ public class ResourceDetails implements Serializable{
 	private String projectEndDate;
 	private String resourceFlag;
 	private List<String> secSkills;
+	private String exisCapability;
+	private String exisLevel;
+	private String exisSkill;
+	private List<String> exisSecSkills;
+	
 	
 	public String getResourceId() {
 		return ResourceId;
@@ -169,6 +174,30 @@ public class ResourceDetails implements Serializable{
 	}
 	public void setSecSkills(List<String> secSkills) {
 		this.secSkills = secSkills;
+	}
+	public String getExisCapability() {
+		return exisCapability;
+	}
+	public void setExisCapability(String exisCapability) {
+		this.exisCapability = exisCapability;
+	}
+	public String getExisLevel() {
+		return exisLevel;
+	}
+	public void setExisLevel(String exisLevel) {
+		this.exisLevel = exisLevel;
+	}
+	public String getExisSkill() {
+		return exisSkill;
+	}
+	public void setExisSkill(String exisSkill) {
+		this.exisSkill = exisSkill;
+	}
+	public List<String> getExisSecSkills() {
+		return exisSecSkills;
+	}
+	public void setExisSecSkills(List<String> exisSecSkills) {
+		this.exisSecSkills = exisSecSkills;
 	}
 	
 	
