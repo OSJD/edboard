@@ -9,20 +9,35 @@
 							modal : true,
 							buttons : {
 								"Add Resource" : function() {
-									if(validateFieldAdd()){
-										var level = $( "#resourceLevel option:selected" ).text();
-										var capability = $( "#technicalCapability option:selected" ).text();
-										var skill = $( "#technicalSkill option:selected" ).text();
-										var empNumber = $("#empNumber").val();
-										var empName = $("#empName").val();
-										$("#level").val(level);
-										$("#capability").val(capability);
-										$("#skill").val(skill);
-										alert("Employee Details Updated Sucessfully");
-										$("#addEmpDetailsForm").submit();
-										
+									if(validateFieldAdd()){	
+									$.ajax({
+										type : "POST",
+										url : "./addEmpDetailsForm.do",
+										data : 
+											$("#addEmpDetailsForm").serialize(),
+											beforeSend : function() {
+										},
+										success : function(response) {
+											if(response=="-1"){
+												alert("Error occurred while trying to add Resource");
+											}
+											else{
+												alert("Resource Added Successfully!");
+											}
+											
+											$("#mainBody .subtabs").attr("id","rmSubtab1");
+											$("#mainBody .subtabs").attr("action","./loadResource.do");
+											$("#mainBody .subtabs").get(0).click();
+										},
+										error : function(data) {
+											alert("Application error! Please call help desk. Error:"+data.error);
+										},
+										complete: function(data){
+										}
+									});
+									addResourceDialog.dialog("close");
 								}
-							
+									
 								},
 								Cancel : function() {
 									addResourceDialog.dialog("close");
@@ -32,6 +47,11 @@
 						});
 						
 						$("#addResource").button().unbind("click").on("click", function() {
+							if($("#existingEmpId option:selected").val() != ""){
+								alert('If you choose resource go for Edit Resource !!! ');
+								$("#existingEmpId").val("");
+								return false;
+							}
 							$.ajax({
 								type : "POST",
 								url : "./resourceManagement.do",
@@ -44,13 +64,229 @@
 									loadDatepicker();
 								},
 								error : function(data) {
-
+									alert("Application error! Please call help desk. Error:"+data.error);
 								},
 								complete: function(data){
 								}
 							});
 							addResourceDialog.dialog("open");
 							
+						});
+					
+						
+						var updateResourceDialog = $("#updateemp-popup").dialog({
+							autoOpen : false,
+							height : 550,
+							width : 650,
+							modal : true,
+							
+							buttons : {
+								"Update Resource" : function() {
+									if(validateFieldUpdate()){	
+									$.ajax({
+										type : "POST",
+										url : "./updateEmpDetailsForm.do",
+										data : 
+											$("#updateEmpDetailsForm").serialize(),
+											beforeSend : function() {
+										},
+										success : function(response) {
+											if(response=="-1"){
+												alert("Error occurred while trying to update Resource");
+											}
+											else{
+												alert("Resource Updated Successfully!");
+											}
+											
+											$("#mainBody .subtabs").attr("id","rmSubtab1");
+											$("#mainBody .subtabs").attr("action","./loadResource.do");
+											$("#mainBody .subtabs").get(0).click();
+										},
+										error : function(data) {
+											alert("Application error! Please call help desk. Error:"+data.error);
+										},
+										complete: function(data){
+										}
+									});
+									updateResourceDialog.dialog("close");
+								}
+									
+								},
+								Cancel : function() {
+									updateResourceDialog.dialog("close");
+								},
+							},
+
+						});
+						
+						$("#updateResource").button().unbind("click").on("click", function() {
+							var existingEmpId = $("#existingEmpId option:selected").val();
+							if($("#existingEmpId option:selected").val() == ""){
+								alert('Please select Resource to Edit');
+								$("#existingEmpId").val("");
+								return false;
+							}
+							
+							$.ajax({
+								type : "POST",
+								url : "./resourceManagement.do",
+								data : 
+									$("#updateEmpDetailsForm").serialize(),
+									beforeSend : function() {
+								},
+								success : function(response) {
+									$("#updateemp-popup").html($(response).find("#updateemp-popup").html());
+									$.ajax({
+										type : "POST",
+										url : "./viewResourceDetails.do",
+										data : 
+											{existingEmpId:existingEmpId},
+											beforeSend : function() {
+										},						
+										success : function(response) {
+											$("#editEmpNumber").val(response.employeeNumber);
+											$("#editEmpName").val(response.employeeName);
+											$("#editConNumber").val(response.contactNumber);
+											$("#editEmailID").val(response.emailId);
+											$("#editEnterpriseId").val(response.enterpriseId);
+											$("#editRole").val(response.role);
+											$("#editEmpStartDate").val(response.projectStartDate);
+											$("#editEmpEndDate").val(response.projectEndDate);
+											$("#editPreLocation").val(response.previousLocation);
+											$("#exisCapability").val(response.exisCapability);
+											$("#exisSkill").val(response.exisSkill);
+											$("#exisSecSkills").val(response.exisSecSkills);
+											$("#exisLevel").val(response.exisLevel);
+											$("#editTechnicalCapability").val(response.exisCapability).attr('selected', 'selected');
+											$("#editResourceLevel").val(response.exisLevel).attr('selected', 'selected');
+											
+											var technicalCapability = $("#editTechnicalCapability option:selected").val();
+											var technicalSkill = $("#exisSkill").val();
+											var secSkills = $("#exisSecSkills").val();
+											var secSkillsSplit = secSkills.split(",");										
+											$.ajax({
+												type : "POST",
+												url : "./getSkill.do",
+												data :{existingCapability:technicalCapability} ,														
+												beforeSend:function(){
+												  },
+												success : function(response) {
+											        $('#editTechnicalSkill').empty();
+											        $('#editTechnicalSkill').append('<option value="">Select Skill</option>');
+											        for (i in response ) {
+											        	if(response[i]==technicalSkill){
+											            $('#editTechnicalSkill').append('<option selected="selected" value="' + response[i] + '">' + response[i] + '</option>');
+											        	}
+											        	else{
+											        		$('#editTechnicalSkill').append('<option value="' + response[i] + '">' + response[i] + '</option>');	
+											        	}
+											        }
+
+
+												},
+												error : function(data) {	
+													alert("Application error! Please call help desk. Error:"+data.status);
+												}
+											});
+											
+											$.ajax({
+												type : "POST",
+												url : "./getAllSkills.do",	
+												data : 
+													$("#updateEmpDetailsForm").serialize(),
+													beforeSend : function() {
+												},
+												beforeSend:function(){
+												  },
+												success : function(response) {
+											        $('#editSecondarySkills').empty();
+											        for (i in response ) {
+											        	if(response[i]!=technicalSkill){
+												        		if(secSkillsSplit.indexOf(response[i]) > -1 ){
+												        			$('#editSecondarySkills').append('<option selected="selected" value="' + response[i] + '">' + response[i] + '</option>');
+												        		}
+												        		else{
+												        			$('#editSecondarySkills').append('<option value="' + response[i] + '">' + response[i] + '</option>');	
+												        		}
+											        		}
+											        	}
+											        
+
+
+												},
+												error : function(data) {	
+													alert("Application error! Please call help desk. Error:"+data.status);
+												}
+											});	
+											loadEditDatepicker();
+										},
+										error : function(data) {
+											alert("Application error! Please call help desk. Error:"+data.error);
+										},
+										complete: function(data){
+										}
+									});
+								},
+								error : function(data) {
+									alert("Application error! Please call help desk. Error:"+data.error);
+								},
+								complete: function(data){
+								}
+							});
+							updateResourceDialog.dialog("open");
+							
+						});	
+						
+						var deleteResourceConfirm=$( "#deleteResource-confirm" ).dialog({
+					    	autoOpen : false,
+					        height:150,
+					        width:600,
+					        modal: true,
+					        buttons: {
+					          "Delete Resource": function() {
+					        	  var existingEmpId = $("#existingEmpId option:selected").val();
+									$.ajax({
+										type : "POST",
+										url : "./deleteResource.do",
+										data :{existingEmpId:existingEmpId},	
+										beforeSend:function(){
+										  },
+										success : function(response) {
+											deleteResourceConfirm.dialog("close");
+											if(response=="-1"){
+												alert("Error while trying to delete Resource");
+											}
+											else{
+												alert("Resource deleted Successfully!");
+											}
+											$("#mainBody .subtabs").attr("id","rmSubtab4");
+											$("#mainBody .subtabs").attr("action","./loadResource.do");
+											$("#mainBody .subtabs").get(0).click();	
+										},
+										error : function(data) {	
+											alert("Application error! Please call help desk. Error:"+data.status);
+										}
+									});
+					          },
+					          Cancel: function() {
+					        	  deleteResourceConfirm.dialog("close");
+					          }
+					        }
+					      });
+						
+						
+						$("#deleteResource").button().unbind("click").on("click", function() {
+							var existingEmpId = $("#existingEmpId option:selected").val();
+							var existingEmpName = $("#existingEmpId option:selected").text();
+							if($("#existingEmpId option:selected").val() == ""){
+								alert('Please select Resource to Delete');
+								$("#existingEmpId").val("");
+								return false;
+							}
+							else{
+								$("#deletedResource").html(existingEmpName+" and related skills will be permanently deleted and cannot be recovered.<br> Are you sure?");
+								deleteResourceConfirm.dialog("open");
+							}
 						});
 						
 						$("#resourceFileUpload").unbind("click").on("click",function(){
@@ -358,7 +594,7 @@
 						$("#editCapability").button().unbind("click").on("click", function() {
 							
 							var existingCapability = $("#existingCapability option:selected").val();
-							if($("#existingCapability option:selected").val() == 0){
+							if($("#existingCapability option:selected").val() == ""){
 								alert('Please select Capability to Edit');
 								$("#existingCapability").val("");
 								$('#existingSkill').empty();
@@ -439,7 +675,7 @@
 						$("#editLevel").button().unbind("click").on("click", function() {
 							
 							var existingLevel = $("#existingLevel option:selected").val();
-							if($("#existingLevel option:selected").val() == 0){
+							if($("#existingLevel option:selected").val() == ""){
 								alert('Please select Level to Edit');
 								$("#existingLevel").val("");
 								return false;
@@ -583,7 +819,7 @@
 								modal : true,
 								buttons : {
 									"Edit Skill" : function() {
-									if(validateNewSkillFields()){	
+									if(validateNewSkillFields()){
 											$.ajax({
 												type : "POST",
 												url : "./editSkillForm.do",
@@ -627,17 +863,14 @@
 							
 							$("#editSkill").button().unbind("click").on("click", function() {	
 								var existingCapability = $("#existingCapability option:selected").val();
-								if($("#existingCapability option:selected").val() == 0){
+								if($("#existingCapability option:selected").val() == ""){
 									alert('Please select Capability under which Skill needs to be edited!');
-									$("#existingCapability").val("");
-									$('#existingSkill').empty();
 									return false;
 								}
 								
 								var existingSkill = $("#existingSkill option:selected").val();
-								if($("#existingSkill option:selected").val() == 0){
+								if($("#existingSkill option:selected").val() == ""){
 									alert('Please select Skill to be edit!');
-									$("#existingSkill").val("");
 									return false;
 								}
 								
@@ -651,8 +884,8 @@
 										beforeSend : function() {
 									},
 									success : function(response) {
-										 $("#exisCapability").val(response.capabilityName);
-										 $("#exisSkill").val(response.existingSkill);
+										 $("#exisCapName").val(response.capabilityName);
+										 $("#exisSkillName").val(response.existingSkill);
 										 $("#newSkillName").val(response.skillName);
 										 editSkillDialog.dialog("open");
 									},
@@ -661,9 +894,8 @@
 									}
 								});
 
-
+								
 							});
-							
 							
 							var deleteSkillConfirm=$( "#deleteSkill-confirm" ).dialog({
 						    	autoOpen : false,
@@ -731,81 +963,6 @@
 							});
 						
 	 });
-	
-		$(document)
-		.ready(
-				function() {
-						var addResourceDialog = $("#updateemp-popup").dialog({
-						autoOpen : false,
-						height : 550,
-						width : 650,
-						modal : true,
-						buttons : {
-							"Update Resource" : function() {
-								
-								if(validateFieldUpdate()){
-									var level = $( "#resourceLevel option:selected" ).text();
-									var capability = $( "#technicalCapability option:selected" ).text();
-									var skill = $( "#technicalSkill option:selected" ).text();
-									var empNumber = $("#empNumber").val();
-									var empName = $("#empName").val();
-									
-									$("#level").val(level);
-									$("#capability").val(capability);
-									$("#skill").val(skill);
-									alert("Employee Details Updated Sucessfully");
-									$("#addEmpDetailsForm").submit();
-									
-							}
-						
-							},
-							Cancel : function() {
-								addResourceDialog.dialog("close");
-							},
-						},
-
-					});
-					
-					$(".updateResource").unbind("click").on("click", function() {
-						var employeeSAPId=$(this).attr("id");
-						
-						$.ajax({
-							
-							type : "POST",
-							url : "./resourceManagementUpdate.do",
-							data : 
-								$("#addEmpDetailsForm").serialize(),
-								beforeSend : function() {
-							},
-							success : function(response) {
-								$("#updateemp-popup").html($(response).find("#updateemp-popup").html());
-								loadDatepicker();
-							},
-							error : function(data) {
-
-							},
-							complete: function(data){
-							}
-						});
-						addResourceDialog.dialog("open");
-					});
-					
-					$("#resourceFileUpload").unbind("click").on("click",function(){
-						/*$("#resourceFileUploadForm").attr("action","./upload.do");
-						document.getElementById("resourceFileUploadForm").enctype = "multipart/form-data";
-						$("#resourceFileUploadForm").submit();*/
-						var fileName = $.trim($("#fileUploadAddress").val());
-
-						if (fileName == '') {
-							alert("Please select a file to upload.");
-						} else {
-							$("#resourceFileUploadForm").attr("action", "./upload.do");
-							document.getElementById("resourceFileUploadForm").enctype = "multipart/form-data";
-							$("#resourceFileUploadForm").submit();
-						}
-					});
-					
- });
 	
 	
 	function validateFieldAdd(){
@@ -882,44 +1039,44 @@
 	
 function validateFieldUpdate(){
 		
-	var level = $( "#updateemp-popup #resourceLevel option:selected" ).text();
-	var capability = $( "#updateemp-popup #technicalCapability option:selected" ).text();
-	var skill = $( "#updateemp-popup #technicalSkill option:selected" ).text();
+	var level = $( "#updateemp-popup #editResourceLevel option:selected" ).val();
+	var capability = $( "#updateemp-popup #editTechnicalCapability option:selected" ).val();
+	var skill = $( "#updateemp-popup #editTechnicalSkill option:selected" ).val();
 
-		if($("#updateemp-popup #empNumber").val() == ''){
+		if($("#updateemp-popup #editEmpNumber").val() == ''){
 			alert("Please Select Employee Number");
 			return false;
-		}else if($("#updateemp-popup #empName").val() == ''){
+		}else if($("#updateemp-popup #editEmpName").val() == ''){
 			alert("Please Enter Employee Name");
 			return false;
-		}else if($("#updateemp-popup #conNumber").val() == ''){
+		}else if($("#updateemp-popup #editConNumber").val() == ''){
 			alert("Please Enter Contact Number");
 			return false;
-		}else if($("#updateemp-popup #emailID").val() == ''){
+		}else if($("#updateemp-popup #editEmailID").val() == ''){
 			alert("Please Enter Email ID");
 			return false;
-		}else if($("#updateemp-popup #enterpriseId").val() == ''){
+		}else if($("#updateemp-popup #editEnterpriseId").val() == ''){
 			alert("Please Enter Enterprise ID");
 			return false;
-		}else if($("#updateemp-popup #role").val() == ''){
+		}else if($("#updateemp-popup #editRole").val() == ''){
 			alert("Please Enter Role");
 			return false;
-		}else if($("#updateemp-popup #empStartDate").val() == ''){
+		}else if($("#updateemp-popup #editEmpStartDate").val() == ''){
 			alert("Please Enter Project Roll On Date");
 			return false;
-		}else if($("#updateemp-popup #empEndDate").val() == ''){
+		}else if($("#updateemp-popup #editEmpEndDate").val() == ''){
 			alert("Please Enter Project Roll Off Date");
 			return false;
-		}else if(capability == 'Select Capability'){
+		}else if(capability == ''){
 			alert("Please Select Capability");
 			return false;
-		}else if( skill == 'Select Skill'){
+		}else if( skill == ''){
 			alert("Please Select Skill");
 			return false;
-		}else if(level == 'Select Level'){
+		}else if(level == ''){
 			alert("Please Select Level");
 			return false;
-		}else if($("#updateemp-popup #preLocation").val() == ''){
+		}else if($("#updateemp-popup #editPreLocation").val() == ''){
 			alert("Please Enter Previous Location");
 			return false;
 		}else{
@@ -1094,5 +1251,89 @@ function validateFieldUpdate(){
 				alert("Application error! Please call help desk. Error:"+data.status);
 			}
 		});	
+	}
+	
+	function confirmEditSucess(){
+		$('#edit_sucess_msg_div').dialog("close");
+	}
+	
+	function updateEditPrimarySkills(){
+		var technicalCapability = $("#editTechnicalCapability option:selected").val();
+		$.ajax({
+			type : "POST",
+			url : "./getSkill.do",
+			data :{existingCapability:technicalCapability} ,														
+			beforeSend:function(){
+			  },
+			success : function(response) {
+		        $('#editTechnicalSkill').empty();
+		        $('#editTechnicalSkill').append('<option value="">Select Skill</option>');
+		        for (i in response ) {
+		            $('#editTechnicalSkill').append('<option value="' + response[i] + '">' + response[i] + '</option>');
+		        }
+
+
+			},
+			error : function(data) {	
+				alert("Application error! Please call help desk. Error:"+data.status);
+			}
+		});	
+	}
+	
+	function updateEditSecSkills(){
+		var technicalSkill = $("#editTechnicalSkill option:selected").val();
+		$.ajax({
+			type : "POST",
+			url : "./getAllSkills.do",	
+			data : 
+				$("#updateEmpDetailsForm").serialize(),
+				beforeSend : function() {
+			},
+			beforeSend:function(){
+			  },
+			success : function(response) {
+		        $('#editSecondarySkills').empty();
+		        for (i in response ) {
+		        	if(response[i]!=technicalSkill){
+		            $('#editSecondarySkills').append('<option value="' + response[i] + '">' + response[i] + '</option>');
+		        	}
+		        }
+
+
+			},
+			error : function(data) {	
+				alert("Application error! Please call help desk. Error:"+data.status);
+			}
+		});	
+	}
+	
+	function loadEditDatepicker(){
+		$( "#editEmpStartDate" ).datepicker({
+			showOn: 'button',
+			buttonText: 'Show Date',
+			buttonImageOnly: true,
+			buttonImage: 'resources/cal.gif',
+			dateFormat: 'mm/dd/yy',
+			constrainInput: true,
+			
+		}); 
+		 $( "#editEmpEndDate" ).datepicker({
+					showOn: 'button',
+					buttonText: 'Show Date',
+					buttonImageOnly: true,
+					buttonImage: 'resources/cal.gif',
+					dateFormat: 'mm/dd/yy',
+					constrainInput: true,
+					
+		});
+	}
+	
+	function contains(arr, str) {
+	    for (var i = 0; i < arr.length; i++) {
+	        if (arr[i] === str) {
+	            return true;
+	        }
+	    }
+	    return false;
 	}
 
