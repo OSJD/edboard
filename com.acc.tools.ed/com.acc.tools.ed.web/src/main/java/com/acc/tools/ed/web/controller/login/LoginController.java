@@ -65,6 +65,7 @@ public class LoginController extends AbstractEdbBaseController{
 			model.addAttribute("addTaskForm",new TaskForm());
 			model.addAttribute("editProjectForm", new ProjectForm());
 			model.addAttribute("addEmpDetailsForm",new ResourceDetails());
+			model.addAttribute("updateEmpDetailsForm",new ResourceDetails());
 			model.addAttribute("statusForm",new WeeklyStatusReportData());
 		return "/login/index";
 		} else {
@@ -105,6 +106,7 @@ public class LoginController extends AbstractEdbBaseController{
 					model.addAttribute("addTaskForm",new TaskForm());
 					model.addAttribute("editProjectForm", new ProjectForm());
 					model.addAttribute("addEmpDetailsForm",new ResourceDetails());
+					model.addAttribute("updateEmpDetailsForm",new ResourceDetails());
 					model.addAttribute("statusForm",new WeeklyStatusReportData());
 					List<ProjectForm> projData=projectWorkService.getMyTasks(user.getEmployeeId());
 					model.addAttribute("projData",projData);
@@ -185,6 +187,7 @@ public class LoginController extends AbstractEdbBaseController{
 			model.addAttribute("addTaskForm",new TaskForm());
 			model.addAttribute("editProjectForm", new ProjectForm());
 			model.addAttribute("addEmpDetailsForm",new ResourceDetails());
+			model.addAttribute("updateEmpDetailsForm",new ResourceDetails());
 			model.addAttribute("statusForm",new WeeklyStatusReportData());
 			List<ProjectForm> projData=projectWorkService.getMyTasks(edbUser.getEmployeeId());
 			model.addAttribute("projData",projData);
