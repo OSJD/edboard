@@ -2,6 +2,7 @@ package com.acc.tools.ed.web.controller.management;
 
 import java.util.List;
 
+import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ private static final Logger LOG = LoggerFactory.getLogger(ProjectManagementContr
 
 	@RequestMapping(value = "/resourceManagement.do")
 	public String resourceManagement(Model model){
-		
+		LOG.debug("Inside resourceManagement.do");
 		List<String> skillList = projectManagementService.getSkill();
 		List<String> levelList = projectManagementService.getLevel();
 		List<String> capabilityList = projectManagementService.getCapability();
@@ -45,38 +46,24 @@ private static final Logger LOG = LoggerFactory.getLogger(ProjectManagementContr
 		model.addAttribute("levelList", levelList);
 		model.addAttribute("capabilityList", capabilityList);
 		model.addAttribute("addEmpDetailsForm",new ResourceDetails());
-		
-		return "/resourcemanagement/addResource";
-		
-	}
-	
-	@RequestMapping(value = "/resourceManagementUpdate.do")
-	public String resourceManagementUpdate(Model model){
-		
-		List<String> skillList = projectManagementService.getSkill();
-		List<String> levelList = projectManagementService.getLevel();
-		List<String> capabilityList = projectManagementService.getCapability();		
-		/*List<String> employeeNumberList = projectManagementService.getEmployeeNumber();*/
-		
-		model.addAttribute("skillList", skillList);
-		model.addAttribute("levelList", levelList);
-		model.addAttribute("capabilityList", capabilityList);		
-		/*model.addAttribute("employeeNumberList", employeeNumberList);*/
-		
-		model.addAttribute("addEmpDetailsForm",new ResourceDetails());
-		//model.addAttribute("updateEmpDetailsForm",new ResourceDetails());
-		
-		return "/resourcemanagement/updateResource";
+		model.addAttribute("updateEmpDetailsForm",new ResourceDetails());
+		return "/resourcemanagement/resourceManagement";
 		
 	}
-	
 	
 	@RequestMapping(value = "/loadResource.do")
 	public String loadResource(Model model){
-		
+		LOG.debug("Inside loadResource.do");
 		List<MasterEmployeeDetails> empList= projectManagementService.getAllEmployees();
+		List<String> skillList = projectManagementService.getSkill();
+		List<String> levelList = projectManagementService.getLevel();
+		List<String> capabilityList = projectManagementService.getCapability();
+		model.addAttribute("skillList", skillList);
+		model.addAttribute("levelList", levelList);
+		model.addAttribute("capabilityList", capabilityList);
 		model.addAttribute("empList", empList);
 		model.addAttribute("addEmpDetailsForm",new ResourceDetails());
+		model.addAttribute("updateEmpDetailsForm",new ResourceDetails());
 		return "/resourcemanagement/resourceManagement";
 		
 	}
@@ -84,37 +71,47 @@ private static final Logger LOG = LoggerFactory.getLogger(ProjectManagementContr
 	
 	
 	@RequestMapping(value = "/addEmpDetailsForm.do")
-	public String addResource(
+	public  @ResponseBody String addResource(
 			@ModelAttribute("addEmpDetailsForm") ResourceDetails addEmpDetailsForm,
 			Model model){
+		LOG.debug("Inside addEmpDetailsForm.do");
 		final ReferenceData newProject = getProjectManagementService().addResource(addEmpDetailsForm);
-		LOG.debug("Add Project retruned --> Resource Id: {} | Resource Name:{}", newProject.getId(),newProject.getLabel());
 		
 		model.addAttribute("addEmpDetailsForm",addEmpDetailsForm);
+		model.addAttribute("updateEmpDetailsForm",new ResourceDetails());
 		model.addAttribute("addProjectForm",new ProjectForm());
 		model.addAttribute("editProjectForm", new ProjectForm());
 		model.addAttribute("addTaskForm",new TaskForm());
 		model.addAttribute("statusForm",new WeeklyStatusReportData());
-		return "/projectmanagement/index";
+		if (newProject.getId() == null) {
+			LOG.debug("Update Resource returned --> Resource added successfully");
+		} else {
+			LOG.debug("Update Resource returned --> " + newProject.getLabel());
+		}
+		return newProject.getId();
 	}
 	
 	@RequestMapping(value = "/updateEmpDetailsForm.do")
-	public String updateResource(
-			@ModelAttribute("addEmpDetailsForm") ResourceDetails addEmpDetailsForm,
+	public  @ResponseBody String updateResource(
+			
+			@ModelAttribute("updateEmpDetailsForm") ResourceDetails updateEmpDetailsForm,
 			Model model){
 		
-		System.out.println();
-		
-		final ReferenceData newProject = getProjectManagementService().updateResource(addEmpDetailsForm);
-		
-		LOG.debug("Add Project retruned --> Resource Id: {} | Resource Name:{}", newProject.getId(),newProject.getLabel());
-		
-		model.addAttribute("addEmpDetailsForm",addEmpDetailsForm);
+		LOG.debug("Inside updateEmpDetailsForm.do");
+		final ReferenceData newProject = getProjectManagementService().updateResource(updateEmpDetailsForm);
+		model.addAttribute("addEmpDetailsForm",new ResourceDetails());
+		model.addAttribute("updateEmpDetailsForm",updateEmpDetailsForm);
 		model.addAttribute("addProjectForm",new ProjectForm());
 		model.addAttribute("editProjectForm", new ProjectForm());
 		model.addAttribute("addTaskForm",new TaskForm());
 		model.addAttribute("statusForm",new WeeklyStatusReportData());
-		return "/projectmanagement/index";
+		
+		if (newProject.getId() == null) {
+			LOG.debug("Update Resource returned --> Resource updated successfully");
+		} else {
+			LOG.debug("Update Resource returned --> " + newProject.getLabel());
+		}
+		return newProject.getId();
 	}
 
 	@RequestMapping(value = "/capabilitylevelskillmanagement.do")
@@ -326,6 +323,7 @@ private static final Logger LOG = LoggerFactory.getLogger(ProjectManagementContr
 			@ModelAttribute("editSkillForm") Skill editSkillForm, Model model) {
 		final ReferenceData newSkill = getProjectManagementService().editSkill(
 				editSkillForm);
+		LOG.debug("capability Name --> "+ editSkillForm.getCapabilityName() + "new skill name-->" + editSkillForm.getSkillName()+ "Existing skill name -->"+editSkillForm.getExistingSkill());
 		if (newSkill.getId() == null) {
 			LOG.debug("Edit Skill returned --> Skill edited successfully");
 			model.addAttribute("status", "success");
@@ -364,8 +362,39 @@ private static final Logger LOG = LoggerFactory.getLogger(ProjectManagementContr
 	
 	@RequestMapping(value = "/getAllSkills.do")
 	public @ResponseBody List<String> getAllSkills(Model model) {
+		LOG.debug("Inside getAllSkills.do");
 		List<String> skillList = projectManagementService.getSkill();
 		return skillList;
+	}
+	
+	@RequestMapping(value = "/viewResourceDetails.do")
+	public @ResponseBody ResourceDetails viewResourceDetails(@RequestParam("existingEmpId") String existingEmpId,Model model) {
+		LOG.debug("Inside viewResourceDetails.do");
+		List<String> skillList = projectManagementService.getSkill();
+		List<String> levelList = projectManagementService.getLevel();
+		List<String> capabilityList = projectManagementService.getCapability();
+		model.addAttribute("skillList", skillList);
+		model.addAttribute("levelList", levelList);
+		model.addAttribute("capabilityList", capabilityList);
+		ResourceDetails empDtls = projectManagementService.getEmployeeDetails(existingEmpId);
+		return empDtls;
+	}
+	
+	@RequestMapping(value = "/deleteResource.do")
+	public @ResponseBody String deleteResource(
+			@RequestParam("existingEmpId") String existingEmpId,
+			Model model) {
+
+		final ReferenceData deletedResource = getProjectManagementService()
+				.deleteResource(existingEmpId);
+
+		if (deletedResource.getId() == null) {
+			LOG.debug("Delete Resource returned --> Resource deleted successfully");
+		} else {
+			LOG.debug("Delete Resource returned --> "
+					+ deletedResource.getLabel());
+		}
+		return deletedResource.getId();
 	}
 
 }
