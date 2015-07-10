@@ -820,7 +820,7 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 			//Employee table
 			final StringBuffer employeeTable=new StringBuffer();
 			employeeTable.append("SELECT EMP_RESOURCE_NAME,EMP_ENTERPRISE_ID,EMP_EMPLOYEE_ID,");
-			employeeTable.append("EMP_LEVEL,EMP_ROLE,EMP_MOBILE_NO,EMP_PROJECT_START_DATE FROM EDB_MSTR_EMP_DTLS");
+			employeeTable.append("EMP_LEVEL,EMP_ROLE,EMP_MOBILE_NO,EMP_PROJECT_START_DATE FROM EDB_MSTR_EMP_DTLS WHERE IS_DELETED = 'No'");
 			PreparedStatement  preparedStatement = getConnection().prepareStatement(employeeTable.toString());
 			ResultSet r1 = preparedStatement.executeQuery();
 			while(r1.next()){
@@ -1029,11 +1029,13 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 	}
 	
 	public List<String> getLevel(){
+		PreparedStatement  preparedStatement = null;
+		ResultSet rs = null;
 		try{
 			final String getLevelQuery = "SELECT LEVEL_NAME FROM EDB_ROT_LEVEL";
 			ArrayList<String> levelList = new ArrayList<String>();
-			PreparedStatement  preparedStatement = getConnection().prepareStatement(getLevelQuery);
-			ResultSet rs = preparedStatement.executeQuery();
+			preparedStatement = getConnection().prepareStatement(getLevelQuery);
+			rs = preparedStatement.executeQuery();
 			while(rs.next()){
 				levelList.add(rs.getString("LEVEL_NAME"));
 			}
@@ -1042,30 +1044,67 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 		catch (Exception e) {
 			e.printStackTrace();
 		}
+		finally{
+			if(rs!=null){
+				try{
+				rs.close();
+				}
+				catch(Exception e){
+					log.error("Error while trying to close result set");
+				}
+			}
+			if(preparedStatement!=null){
+				try{
+					preparedStatement.close();
+				}
+				catch(Exception e){
+					log.error("Error while trying to close statement");
+				}
+			}
+		}
 		return null;
 	}
 	
 	public List<String> getCapability(){
+		PreparedStatement  preparedStatement = null;
+		ResultSet rs = null;
 		try{
 			final String getCapabilityQuery = "SELECT CAPABILITY_NAME FROM EDB_ROT_CAPABILITY";
 			ArrayList<String> capabilityList = new ArrayList<String>();
 			ArrayList<String> capListWoDuplicates = new ArrayList<String>();
-			PreparedStatement  preparedStatement = getConnection().prepareStatement(getCapabilityQuery);
-			ResultSet rs = preparedStatement.executeQuery();
+			preparedStatement = getConnection().prepareStatement(getCapabilityQuery);
+			rs = preparedStatement.executeQuery();
 			while(rs.next()){
 				capabilityList.add(rs.getString("CAPABILITY_NAME"));
 				capListWoDuplicates = new ArrayList<String>(new LinkedHashSet<String>(capabilityList));
 			}
-			
 			return capListWoDuplicates;
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
+		finally{
+			if(rs!=null){
+				try{
+				rs.close();
+				}
+				catch(Exception e){
+					log.error("Error while trying to close result set");
+				}
+			}
+			if(preparedStatement!=null){
+				try{
+					preparedStatement.close();
+				}
+				catch(Exception e){
+					log.error("Error while trying to close statement");
+				}
+			}
+		}
 		return null;
 	}
 	
-	public ReferenceData addResource(ResourceDetails resourceDetails){
+public ReferenceData addResource(ResourceDetails resourceDetails){
 		
 		final ReferenceData refData=new ReferenceData();
 		PreparedStatement prgmPrepStmt = null;
@@ -1077,7 +1116,7 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 				if(resourceDetails.getEmployeeNumber() != null) {
 					log.debug("Employee Name:{} Employee id:{}",resourceDetails.getEmployeeName(),resourceDetails.getEmployeeNumber());
 					log.debug("Inserting data into EDB_MSTR_EMP_DTLS table");
-					String prgInsQuery = "insert into EDB_MSTR_EMP_DTLS(EMP_RESOURCE_NAME, EMP_ENTERPRISE_ID, EMP_EMPLOYEE_ID, EMP_EMAIL, EMP_MOBILE_NO, EMP_SKILL, EMP_CAPABILITY, EMP_LEVEL, EMP_ROLE, EMP_PROJECT_START_DATE, EMP_ROLLOFF_DATE, EMP_PREVIOUS_LOCATION) values (?,?,?,?,?,?,?,?,?,?,?,?)";
+					String prgInsQuery = "insert into EDB_MSTR_EMP_DTLS(EMP_RESOURCE_NAME, EMP_ENTERPRISE_ID, EMP_EMPLOYEE_ID, EMP_EMAIL, EMP_MOBILE_NO, EMP_SKILL, EMP_CAPABILITY, EMP_LEVEL, EMP_ROLE, EMP_PROJECT_START_DATE, EMP_ROLLOFF_DATE, EMP_PREVIOUS_LOCATION,IS_DELETED) values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 					prgmPrepStmt = getConnection().prepareStatement(prgInsQuery);
 					prgmPrepStmt.setString(1, resourceDetails.getEmployeeName());
 					prgmPrepStmt.setString(2, resourceDetails.getEnterpriseId());
@@ -1091,6 +1130,7 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 					prgmPrepStmt.setString(10, resourceDetails.getProjectStartDate());
 					prgmPrepStmt.setString(11, resourceDetails.getProjectEndDate());
 					prgmPrepStmt.setString(12, resourceDetails.getPreviousLocation());
+					prgmPrepStmt.setString(13, "No");
 					prgmPrepStmt.executeUpdate();
 					
 					log.debug("Inserting data into EDB_EMP_SEC_SKILLS table");
@@ -1135,11 +1175,13 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 	
 	
 	public boolean isCapabilityExist(String capabilityName){
+		Statement  selectStatement = null;
+		ResultSet rs = null;
 		boolean isExist=false;
 		try{
 			String capabilityTable="SELECT CAPABILITY_ID FROM EDB_ROT_CAPABILITY WHERE UCase(CAPABILITY_NAME) = '"+capabilityName.toUpperCase()+"'";
-			Statement selectStatement = getConnection().createStatement();
-			ResultSet rs=selectStatement.executeQuery(capabilityTable);
+			selectStatement = getConnection().createStatement();
+			rs=selectStatement.executeQuery(capabilityTable);
 			
 			while(rs.next()){
 				if(rs.getInt("CAPABILITY_ID")>0){
@@ -1150,11 +1192,29 @@ public class ProjectManagementDaoImpl extends AbstractEdbDao implements ProjectM
 		}catch(Exception e){
 			
 		}
+		finally{
+			if(rs!=null){
+				try{
+				rs.close();
+				}
+				catch(Exception e){
+					log.error("Error while trying to close result set");
+				}
+			}
+			if(selectStatement!=null){
+				try{
+					selectStatement.close();
+				}
+				catch(Exception e){
+					log.error("Error while trying to close statement");
+				}
+			}
+		}
 		return isExist;
 	}
 	
 public ReferenceData addCapability(Capability capabilityDetails) {
-		
+		PreparedStatement capPrepStmt = null;
 		final ReferenceData refData=new ReferenceData();
 
 		try{
@@ -1162,7 +1222,7 @@ public ReferenceData addCapability(Capability capabilityDetails) {
 				if(capabilityDetails.getCapabilityName() != null) {
 					log.debug("Capability Name:{}",capabilityDetails.getCapabilityName());
 					String capInsQuery = "insert into EDB_ROT_CAPABILITY(CAPABILITY_NAME) values (?)";
-					PreparedStatement capPrepStmt = getConnection().prepareStatement(capInsQuery);
+					capPrepStmt = getConnection().prepareStatement(capInsQuery);
 					capPrepStmt.setString(1, capabilityDetails.getCapabilityName());
 					capPrepStmt.executeUpdate();
 					capPrepStmt.close();
@@ -1174,16 +1234,28 @@ public ReferenceData addCapability(Capability capabilityDetails) {
 				refData.setLabel(e.getMessage());
 				return refData;
 			}
+		finally{
+			if(capPrepStmt!=null){
+				try{
+					capPrepStmt.close();
+				}
+				catch(Exception e){
+					log.error("Error while trying to close statement");
+				}
+			}
+		}
 		return refData;
 	}
 
 
 public boolean isLevelExist(String levelName){
+	Statement  selectStatement = null;
+	ResultSet rs = null;
 	boolean isExist=false;
 	try{
 		String levelTable="SELECT ID FROM EDB_ROT_LEVEL WHERE UCase(LEVEL_NAME) = '"+levelName.toUpperCase()+"'";
-		Statement selectStatement = getConnection().createStatement();
-		ResultSet rs=selectStatement.executeQuery(levelTable);
+		selectStatement = getConnection().createStatement();
+		rs=selectStatement.executeQuery(levelTable);
 		
 		while(rs.next()){
 			if(rs.getInt("ID")>0){
@@ -1194,19 +1266,37 @@ public boolean isLevelExist(String levelName){
 	}catch(Exception e){
 		
 	}
+	finally{
+		if(rs!=null){
+			try{
+			rs.close();
+			}
+			catch(Exception e){
+				log.error("Error while trying to close result set");
+			}
+		}
+		if(selectStatement!=null){
+			try{
+				selectStatement.close();
+			}
+			catch(Exception e){
+				log.error("Error while trying to close statement");
+			}
+		}
+	}
 	return isExist;
 }
 
 public ReferenceData addLevel(Level levelDetails) {
 	
 	final ReferenceData refData=new ReferenceData();
-
+	PreparedStatement levPrepStmt = null;
 	try{
 			//Insert Program
 			if(levelDetails.getLevelName() != null) {
 				log.debug("Level Name:{}",levelDetails.getLevelName());
 				String levInsQuery = "insert into EDB_ROT_LEVEL(LEVEL_NAME) values (?)";
-				PreparedStatement levPrepStmt = getConnection().prepareStatement(levInsQuery);
+				levPrepStmt = getConnection().prepareStatement(levInsQuery);
 				levPrepStmt.setString(1, levelDetails.getLevelName());
 				levPrepStmt.executeUpdate();
 				levPrepStmt.close();
@@ -1218,15 +1308,27 @@ public ReferenceData addLevel(Level levelDetails) {
 			refData.setLabel(e.getMessage());
 			return refData;
 		}
+	finally{
+		if(levPrepStmt!=null){
+			try{
+				levPrepStmt.close();
+			}
+			catch(Exception e){
+				log.error("Error while trying to close statement");
+			}
+		}
+	}
 	return refData;
 }
 
 public boolean isSkillExist(int capabilityId,String skillName){
+	Statement  selectStatement = null;
+	ResultSet rs = null;
 	boolean isExist=false;
 	try{
 		String skillTable="SELECT SKILL_ID FROM EDB_ROT_SKILL WHERE UCase(SKILL_NAME) = '"+skillName.toUpperCase()+"' AND CAPABILITY_ID = "+capabilityId;
-		Statement selectStatement = getConnection().createStatement();
-		ResultSet rs=selectStatement.executeQuery(skillTable);
+		selectStatement = getConnection().createStatement();
+		rs=selectStatement.executeQuery(skillTable);
 		while(rs.next()){
 			if(rs.getInt("SKILL_ID")>0){
 				isExist=true;
@@ -1236,18 +1338,36 @@ public boolean isSkillExist(int capabilityId,String skillName){
 	}catch(Exception e){
 		
 	}
+	finally{
+		if(rs!=null){
+			try{
+			rs.close();
+			}
+			catch(Exception e){
+				log.error("Error while trying to close result set");
+			}
+		}
+		if(selectStatement!=null){
+			try{
+				selectStatement.close();
+			}
+			catch(Exception e){
+				log.error("Error while trying to close statement");
+			}
+		}
+	}
 	return isExist;
 }
 
 public ReferenceData addSkill(int capabilityId,Skill skillDetails) {
-	
+	PreparedStatement capPrepStmt = null;
 	final ReferenceData refData=new ReferenceData();
 	try{
 			//Insert Program
 			if(skillDetails.getSkillName() != null && skillDetails.getCapabilityName()!=null) {
 				log.debug("Skill Name:{} Capability:{}",skillDetails.getSkillName(),skillDetails.getCapabilityName());
 				String capInsQuery = "insert into EDB_ROT_SKILL(SKILL_NAME, CAPABILITY_ID) values (?,?)";
-				PreparedStatement capPrepStmt = getConnection().prepareStatement(capInsQuery);
+				capPrepStmt = getConnection().prepareStatement(capInsQuery);
 				capPrepStmt.setString(1, skillDetails.getSkillName());
 				capPrepStmt.setInt(2, capabilityId);
 				capPrepStmt.executeUpdate();
@@ -1260,46 +1380,101 @@ public ReferenceData addSkill(int capabilityId,Skill skillDetails) {
 			refData.setLabel(e.getMessage());
 			return refData;
 		}
+	finally{
+		if(capPrepStmt!=null){
+			try{
+				capPrepStmt.close();
+			}
+			catch(Exception e){
+				log.error("Error while trying to close statement");
+			}
+		}
+	}
 	return refData;
 }
 
-public ReferenceData updateResource(ResourceDetails resourceDetails) {
-		
-		final ReferenceData refData=new ReferenceData();
+public ReferenceData updateResource(ResourceDetails resourceDetails){
+	
+	final ReferenceData refData=new ReferenceData();
+	PreparedStatement prgmPrepStmt = null;
+	PreparedStatement delPrepStmt = null;
+	PreparedStatement skillPrepStmt = null;
 
-		try{
-				//update Program
-				log.debug("New Program Name:{} Existing Program id:{}",resourceDetails.getEmployeeName(),resourceDetails.getEmployeeNumber());
-				if(resourceDetails.getEmployeeNumber() != null) {
-					log.debug("New Program Name:[{}] | New Program Id:[{}]",resourceDetails.getEmployeeName(),resourceDetails.getEmployeeNumber());
-					String prgInsQuery = "UPDATE EDB_MSTR_EMP_DTLS SET EMP_RESOURCE_NAME=?, EMP_ENTERPRISE_ID=?, EMP_EMAIL=?, EMP_MOBILE_NO=?, EMP_SKILL=?, EMP_CAPABILITY=?, EMP_LEVEL=?, EMP_ROLE=?, EMP_PROJECT_START_DATE=?, EMP_ROLLOFF_DATE=?, EMP_PREVIOUS_LOCATION=? WHERE EMP_EMPLOYEE_ID=?";
-					PreparedStatement prgmPrepStmt = getConnection().prepareStatement(prgInsQuery);
-					prgmPrepStmt.setString(1, resourceDetails.getEmployeeName());
-					prgmPrepStmt.setString(2, resourceDetails.getEnterpriseId());
-					prgmPrepStmt.setString(3, resourceDetails.getEmailId());
-					prgmPrepStmt.setString(4, resourceDetails.getContactNumber());
-					prgmPrepStmt.setString(5, resourceDetails.getSkill());
-					prgmPrepStmt.setString(6, resourceDetails.getCapability());
-					prgmPrepStmt.setString(7, resourceDetails.getLevel());
-					prgmPrepStmt.setString(8, resourceDetails.getRole());
-					prgmPrepStmt.setString(9, resourceDetails.getProjectStartDate());
-					prgmPrepStmt.setString(10, resourceDetails.getProjectEndDate());
-					prgmPrepStmt.setString(11, resourceDetails.getPreviousLocation());
-					prgmPrepStmt.setString(12, resourceDetails.getEmployeeNumber());
-					prgmPrepStmt.executeUpdate();
-					prgmPrepStmt.close();
-					
-					
+	try{
+			//Insert Program
+			log.debug("Employee Name:{} Employee id:{}",resourceDetails.getEmployeeName(),resourceDetails.getEmployeeNumber());
+			if(resourceDetails.getEmployeeNumber() != null) {
+				log.debug("Employee Name:{} Employee id:{}",resourceDetails.getEmployeeName(),resourceDetails.getEmployeeNumber());
+				log.debug("Updating data in EDB_MSTR_EMP_DTLS table");
+				String prgInsQuery ="UPDATE EDB_MSTR_EMP_DTLS SET EMP_RESOURCE_NAME=?, EMP_ENTERPRISE_ID=?, EMP_EMAIL=?, EMP_MOBILE_NO=?, EMP_SKILL=?, EMP_CAPABILITY=?, EMP_LEVEL=?, EMP_ROLE=?, EMP_PROJECT_START_DATE=?, EMP_ROLLOFF_DATE=?, EMP_PREVIOUS_LOCATION=? WHERE EMP_EMPLOYEE_ID=?";
+				prgmPrepStmt = getConnection().prepareStatement(prgInsQuery);
+				prgmPrepStmt.setString(1, resourceDetails.getEmployeeName());
+				prgmPrepStmt.setString(2, resourceDetails.getEnterpriseId());
+				prgmPrepStmt.setString(3, resourceDetails.getEmailId());
+				prgmPrepStmt.setString(4, resourceDetails.getContactNumber());
+				prgmPrepStmt.setString(5, resourceDetails.getSkill());
+				prgmPrepStmt.setString(6, resourceDetails.getCapability());
+				prgmPrepStmt.setString(7, resourceDetails.getLevel());
+				prgmPrepStmt.setString(8, resourceDetails.getRole());
+				prgmPrepStmt.setString(9, resourceDetails.getProjectStartDate());
+				prgmPrepStmt.setString(10, resourceDetails.getProjectEndDate());
+				prgmPrepStmt.setString(11, resourceDetails.getPreviousLocation());
+				prgmPrepStmt.setString(12, resourceDetails.getEmployeeNumber());
+				prgmPrepStmt.executeUpdate();
+				
+				log.debug("Updating data in EDB_EMP_SEC_SKILLS table");
+				String oldSkillsDeleteQuery = "DELETE FROM EDB_EMP_SEC_SKILLS where EMP_ID = ?";
+				delPrepStmt = getConnection().prepareStatement(oldSkillsDeleteQuery);
+				delPrepStmt.setString(1, resourceDetails.getEmployeeNumber());
+				delPrepStmt.executeUpdate();
+				
+				String skillInsQuery = "INSERT INTO EDB_EMP_SEC_SKILLS(EMP_ID,SEC_SKILL) VALUES(?,?)";
+				skillPrepStmt = getConnection().prepareStatement(skillInsQuery);
+				for(String skill : resourceDetails.getSecSkills()){
+					skillPrepStmt.setString(1, resourceDetails.getEmployeeNumber());
+					skillPrepStmt.setString(2, skill);
+					skillPrepStmt.executeUpdate();
 				}
-							
-			}catch(Exception e)	{
-				log.error("Error inserting employee table :",e);
-				refData.setId("-1");
-				refData.setLabel(e.getMessage());
-				return refData;
+				
 			}
-		return refData;
+						
+		}catch(Exception e)	{
+			log.error("Error Updating employee table :",e);
+			refData.setId("-1");
+			refData.setLabel(e.getMessage());
+			return refData;
+		}
+	finally
+	{
+		if(prgmPrepStmt!=null){
+			try{
+				prgmPrepStmt.close();
+			}
+			catch(Exception e){
+				log.error("Error Updating employee table :",e);
+			}
+		}
+		
+		if(delPrepStmt!=null){
+			try{
+				delPrepStmt.close();
+			}
+			catch(Exception e){
+				log.error("Error Updating employee table :",e);
+			}
+		}
+		if(skillPrepStmt!=null){
+			try{
+				skillPrepStmt.close();
+			}
+			catch(Exception e){
+				log.error("Error Updating sec skill table :",e);
+			}
+		}
 	}
+	
+	return refData;
+}
 	
 	
 	public String getEmployeeName(String empID){
@@ -1341,11 +1516,13 @@ public ReferenceData updateResource(ResourceDetails resourceDetails) {
 
 	public int getCapabilityId(String capabilityName) {
 		int capabilityId = 0;
+		Statement  selectStatement = null;
+		ResultSet rs = null;
 		try
 		{
 			String capabilityTable="SELECT CAPABILITY_ID FROM EDB_ROT_CAPABILITY WHERE UCase(CAPABILITY_NAME) = '"+capabilityName.toUpperCase()+"'";
-			Statement selectStatement = getConnection().createStatement();
-			ResultSet rs=selectStatement.executeQuery(capabilityTable);
+			selectStatement = getConnection().createStatement();
+			rs=selectStatement.executeQuery(capabilityTable);
 			while(rs.next()){
 				capabilityId = rs.getInt("CAPABILITY_ID");
 			}
@@ -1353,11 +1530,29 @@ public ReferenceData updateResource(ResourceDetails resourceDetails) {
 		catch(Exception e){
 			
 		}
+		finally{
+			if(rs!=null){
+				try{
+				rs.close();
+				}
+				catch(Exception e){
+					log.error("Error while trying to close result set");
+				}
+			}
+			if(selectStatement!=null){
+				try{
+					selectStatement.close();
+				}
+				catch(Exception e){
+					log.error("Error while trying to close statement");
+				}
+			}
+		}
 		return capabilityId;
 	}
 
 	public ReferenceData editCapability(Capability capabilityDetails) {
-		
+		PreparedStatement capPrepStmt = null;
 		final ReferenceData refData=new ReferenceData();
 
 		try{
@@ -1365,7 +1560,7 @@ public ReferenceData updateResource(ResourceDetails resourceDetails) {
 				if(capabilityDetails.getCapabilityName() != null) {
 					log.debug("New Capability Name:{}",capabilityDetails.getCapabilityName());
 					String capInsQuery = "update EDB_ROT_CAPABILITY set CAPABILITY_NAME = ? where CAPABILITY_NAME = ?";
-					PreparedStatement capPrepStmt = getConnection().prepareStatement(capInsQuery);
+					capPrepStmt = getConnection().prepareStatement(capInsQuery);
 					capPrepStmt.setString(1, capabilityDetails.getCapabilityName());
 					capPrepStmt.setString(2, capabilityDetails.getExistingCapability());
 					capPrepStmt.executeUpdate();
@@ -1378,12 +1573,22 @@ public ReferenceData updateResource(ResourceDetails resourceDetails) {
 				refData.setLabel(e.getMessage());
 				return refData;
 			}
+		finally{
+			if(capPrepStmt!=null){
+				try{
+					capPrepStmt.close();
+				}
+				catch(Exception e){
+					log.error("Error while trying to close statement");
+				}
+			}
+		}
 		return refData;
 	}
 
 
 	public ReferenceData deleteCapability(String capabilityName) {
-		
+		PreparedStatement capPrepStmt = null;
 		final ReferenceData refData=new ReferenceData();
 
 		try{
@@ -1391,7 +1596,7 @@ public ReferenceData updateResource(ResourceDetails resourceDetails) {
 				if(capabilityName != null) {
 					log.debug("Capability to be deleted:{}",capabilityName);
 					String capInsQuery = "DELETE FROM EDB_ROT_CAPABILITY where CAPABILITY_NAME = ?";
-					PreparedStatement capPrepStmt = getConnection().prepareStatement(capInsQuery);
+					capPrepStmt = getConnection().prepareStatement(capInsQuery);
 					capPrepStmt.setString(1, capabilityName);
 					capPrepStmt.executeUpdate();
 					capPrepStmt.close();
@@ -1403,11 +1608,21 @@ public ReferenceData updateResource(ResourceDetails resourceDetails) {
 				refData.setLabel(e.getMessage());
 				return refData;
 			}
+		finally{
+			if(capPrepStmt!=null){
+				try{
+					capPrepStmt.close();
+				}
+				catch(Exception e){
+					log.error("Error while trying to close statement");
+				}
+			}
+		}
 		return refData;
 	}
 
 	public ReferenceData editLevel(Level levelDetails) {
-		
+		PreparedStatement levPrepStmt = null;
 		final ReferenceData refData=new ReferenceData();
 
 		try{
@@ -1415,7 +1630,7 @@ public ReferenceData updateResource(ResourceDetails resourceDetails) {
 				if(levelDetails.getLevelName() != null) {
 					log.debug("New Level Name:{}",levelDetails.getLevelName());
 					String levInsQuery = "update EDB_ROT_LEVEL set LEVEL_NAME = ? where LEVEL_NAME = ?";
-					PreparedStatement levPrepStmt = getConnection().prepareStatement(levInsQuery);
+					levPrepStmt = getConnection().prepareStatement(levInsQuery);
 					levPrepStmt.setString(1, levelDetails.getLevelName());
 					levPrepStmt.setString(2, levelDetails.getExistingLevel());
 					levPrepStmt.executeUpdate();
@@ -1428,19 +1643,29 @@ public ReferenceData updateResource(ResourceDetails resourceDetails) {
 				refData.setLabel(e.getMessage());
 				return refData;
 			}
+		finally{
+			if(levPrepStmt!=null){
+				try{
+					levPrepStmt.close();
+				}
+				catch(Exception e){
+					log.error("Error while trying to close statement");
+				}
+			}
+		}
 		return refData;
 	}
 
 	public ReferenceData deleteLevel(String levelName) {
 		
 		final ReferenceData refData=new ReferenceData();
-
+		PreparedStatement capPrepStmt = null;
 		try{
 				//Insert Program
 				if(levelName != null) {
 					log.debug("Level to be deleted:{}",levelName);
 					String capInsQuery = "DELETE FROM EDB_ROT_LEVEL where LEVEL_NAME = ?";
-					PreparedStatement capPrepStmt = getConnection().prepareStatement(capInsQuery);
+					capPrepStmt = getConnection().prepareStatement(capInsQuery);
 					capPrepStmt.setString(1, levelName);
 					capPrepStmt.executeUpdate();
 					capPrepStmt.close();
@@ -1452,16 +1677,28 @@ public ReferenceData updateResource(ResourceDetails resourceDetails) {
 				refData.setLabel(e.getMessage());
 				return refData;
 			}
+		finally{
+			if(capPrepStmt!=null){
+				try{
+					capPrepStmt.close();
+				}
+				catch(Exception e){
+					log.error("Error while trying to close statement");
+				}
+			}
+		}
 		return refData;
 	}
 
 	public List<String> getSkill(int capabilityId){
+		PreparedStatement  preparedStatement = null;
+		ResultSet rs = null;
 		try{
 			final String getskillQuery = "SELECT SKILL_NAME FROM EDB_ROT_SKILL WHERE CAPABILITY_ID = ?";
 			ArrayList<String> skillList = new ArrayList<String>();
-			PreparedStatement  preparedStatement = getConnection().prepareStatement(getskillQuery);
+			preparedStatement = getConnection().prepareStatement(getskillQuery);
 			preparedStatement.setInt(1, capabilityId);
-			ResultSet rs = preparedStatement.executeQuery();
+			rs = preparedStatement.executeQuery();
 			while(rs.next()){
 				skillList.add(rs.getString("SKILL_NAME"));
 			}
@@ -1470,18 +1707,36 @@ public ReferenceData updateResource(ResourceDetails resourceDetails) {
 		catch (Exception e) {
 			e.printStackTrace();
 		}
+		finally{
+			if(rs!=null){
+				try{
+				rs.close();
+				}
+				catch(Exception e){
+					log.error("Error while trying to close result set");
+				}
+			}
+			if(preparedStatement!=null){
+				try{
+					preparedStatement.close();
+				}
+				catch(Exception e){
+					log.error("Error while trying to close statement");
+				}
+			}
+		}
 		return null;
 	}
 
 	public ReferenceData editSkill(int capabilityId,Skill skillDetails) {
-		
+		PreparedStatement capPrepStmt = null;
 		final ReferenceData refData=new ReferenceData();
 		try{
 				//Insert Program
 				if(skillDetails.getSkillName() != null && skillDetails.getCapabilityName()!=null) {
 					log.debug("Skill Name:{} Capability:{}",skillDetails.getSkillName(),skillDetails.getCapabilityName());
 					String capInsQuery = "UPDATE EDB_ROT_SKILL SET SKILL_NAME = ? WHERE CAPABILITY_ID = ? AND SKILL_NAME = ?";
-					PreparedStatement capPrepStmt = getConnection().prepareStatement(capInsQuery);
+					capPrepStmt = getConnection().prepareStatement(capInsQuery);
 					capPrepStmt.setString(1, skillDetails.getSkillName());
 					capPrepStmt.setInt(2, capabilityId);
 					capPrepStmt.setString(3, skillDetails.getExistingSkill());
@@ -1495,16 +1750,27 @@ public ReferenceData updateResource(ResourceDetails resourceDetails) {
 				refData.setLabel(e.getMessage());
 				return refData;
 			}
+		finally{
+			if(capPrepStmt!=null){
+				try{
+					capPrepStmt.close();
+				}
+				catch(Exception e){
+					log.error("Error while trying to close statement");
+				}
+			}
+		}
 		return refData;
 	}
 
 	public ReferenceData deleteSkill(int capabilityId, String skillName){
+		PreparedStatement capPrepStmt = null;
 		final ReferenceData refData=new ReferenceData();
 		try{
 			if(skillName!=null) {
 				log.debug("Skill Name:{} CapabilityId:{}",skillName,capabilityId);
 				String capInsQuery = "DELETE FROM EDB_ROT_SKILL where CAPABILITY_ID = ? AND SKILL_NAME = ?";
-				PreparedStatement capPrepStmt = getConnection().prepareStatement(capInsQuery);
+				capPrepStmt = getConnection().prepareStatement(capInsQuery);
 				capPrepStmt.setInt(1, capabilityId);
 				capPrepStmt.setString(2, skillName);
 				capPrepStmt.executeUpdate();
@@ -1517,15 +1783,26 @@ public ReferenceData updateResource(ResourceDetails resourceDetails) {
 			refData.setLabel(e.getMessage());
 			return refData;
 		}
+		finally{
+			if(capPrepStmt!=null){
+				try{
+					capPrepStmt.close();
+				}
+				catch(Exception e){
+					log.error("Error while trying to close statement");
+				}
+			}
+		}
 	return refData;
 	}
 	
 	public ReferenceData deleteSkill(int capabilityId){
+		PreparedStatement capPrepStmt = null;
 		final ReferenceData refData=new ReferenceData();
 		try{
 				log.debug("Skills of CapabilityId:{}",capabilityId);
 				String capInsQuery = "DELETE FROM EDB_ROT_SKILL where CAPABILITY_ID = ?";
-				PreparedStatement capPrepStmt = getConnection().prepareStatement(capInsQuery);
+				capPrepStmt = getConnection().prepareStatement(capInsQuery);
 				capPrepStmt.setInt(1, capabilityId);
 				capPrepStmt.executeUpdate();
 				capPrepStmt.close();
@@ -1535,6 +1812,132 @@ public ReferenceData updateResource(ResourceDetails resourceDetails) {
 			refData.setId("-1");
 			refData.setLabel(e.getMessage());
 			return refData;
+		}
+		finally{
+			if(capPrepStmt!=null){
+				try{
+					capPrepStmt.close();
+				}
+				catch(Exception e){
+					log.error("Error while trying to close statement");
+				}
+			}
+		}
+	return refData;
+	}
+	
+	public ResourceDetails getEmployeeDetails(String existingEmpId){
+		ResourceDetails emp = new ResourceDetails();
+		PreparedStatement  preparedStatement = null;
+		ResultSet r1=null,r2 = null;
+		try{
+			//Employee table
+			final StringBuffer employeeTable=new StringBuffer();
+			employeeTable.append("SELECT EMP_EMPLOYEE_ID,EMP_RESOURCE_NAME,EMP_MOBILE_NO,EMP_EMAIL,EMP_ENTERPRISE_ID,EMP_ROLE,EMP_PROJECT_START_DATE,");
+			employeeTable.append("EMP_ROLLOFF_DATE,EMP_CAPABILITY,EMP_SKILL,EMP_LEVEL,EMP_PREVIOUS_LOCATION FROM EDB_MSTR_EMP_DTLS WHERE EMP_EMPLOYEE_ID = ?");
+			preparedStatement = getConnection().prepareStatement(employeeTable.toString());
+			preparedStatement.setString(1,existingEmpId);
+			r1 = preparedStatement.executeQuery();
+			
+			final String skillTable = "SELECT SEC_SKILL FROM EDB_EMP_SEC_SKILLS WHERE EMP_ID = ?";
+			preparedStatement = getConnection().prepareStatement(skillTable);
+			preparedStatement.setString(1,existingEmpId);
+			r2 = preparedStatement.executeQuery();
+			
+			List<String> secSkills = new ArrayList<String>();
+			
+			while(r2.next()){
+				secSkills.add(r2.getString("SEC_SKILL"));
+			}
+			
+			while(r1.next()){
+				emp.setEmployeeNumber(r1.getString("EMP_EMPLOYEE_ID"));
+				emp.setEmployeeName(r1.getString("EMP_RESOURCE_NAME"));
+				emp.setContactNumber( r1.getString("EMP_MOBILE_NO"));
+				emp.setEmailId(r1.getString("EMP_EMAIL"));
+				emp.setEnterpriseId(r1.getString("EMP_ENTERPRISE_ID"));
+				emp.setRole(r1.getString("EMP_ROLE"));
+				emp.setProjectStartDate(r1.getString("EMP_PROJECT_START_DATE"));
+				emp.setProjectEndDate(r1.getString("EMP_ROLLOFF_DATE"));
+				emp.setExisCapability(r1.getString("EMP_CAPABILITY"));
+				emp.setExisSkill(r1.getString("EMP_SKILL"));
+				emp.setExisLevel(r1.getString("EMP_LEVEL"));
+				emp.setPreviousLocation(r1.getString("EMP_PREVIOUS_LOCATION"));
+				emp.setExisSecSkills(secSkills);
+			}
+			preparedStatement.close();
+		}catch(Exception e)	{
+			log.error("Error retreiving employee table :",e);
+			return null;
+		}
+		finally{
+			if(r2!=null){
+				try{
+					r2.close();
+				}
+				catch(Exception e){
+					log.error("Error while trying to close result set");
+				}
+			}
+			if(r1!=null){
+				try{
+					r1.close();
+				}
+				catch(Exception e){
+					log.error("Error while trying to close result set");
+				}
+			}
+			if(preparedStatement!=null){
+				try{
+					preparedStatement.close();
+				}
+				catch(Exception e){
+					log.error("Error while trying to close statement");
+				}
+			}
+		}
+		return emp;
+	}
+	
+	public ReferenceData deleteResource(String existingEmpId){
+		final ReferenceData refData=new ReferenceData();
+		PreparedStatement capPrepStmt = null;
+		PreparedStatement delPrepStmt = null;
+		try{
+				log.debug("Emp Id:{}",existingEmpId);
+				log.debug("Soft deleting Employee from EDB_MSTR_EMP_DTLS table");
+				String capInsQuery = "UPDATE EDB_MSTR_EMP_DTLS SET IS_DELETED='Yes' WHERE EMP_EMPLOYEE_ID = ?";
+				capPrepStmt = getConnection().prepareStatement(capInsQuery);
+				capPrepStmt.setString(1, existingEmpId);
+				capPrepStmt.executeUpdate();
+				String skillDelQuery = "DELETE FROM EDB_EMP_SEC_SKILLS where EMP_ID = ?";
+				delPrepStmt = getConnection().prepareStatement(skillDelQuery);
+				delPrepStmt.setString(1, existingEmpId);
+				delPrepStmt.executeUpdate();
+		}
+		catch(Exception e)	{
+			log.error("Error deleting skill table :",e);
+			refData.setId("-1");
+			refData.setLabel(e.getMessage());
+			return refData;
+		}
+		finally{
+			if(delPrepStmt!=null){
+				try{
+					capPrepStmt.close();
+				}
+				catch(Exception e){
+					log.error("Error while trying to close statement");
+				}
+			}
+			if(delPrepStmt!=null){
+				try{
+					capPrepStmt.close();
+				}
+				catch(Exception e){
+					log.error("Error while trying to close statement");
+				}
+			}
 		}
 	return refData;
 	}
