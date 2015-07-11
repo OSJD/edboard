@@ -1,6 +1,11 @@
 package com.acc.tools.ed.integration.util;
 
 import java.text.DateFormatSymbols;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.joda.time.DateTime;
 
 public enum CalendarEnum {
 	Mon(1),
@@ -44,4 +49,32 @@ public enum CalendarEnum {
 		String[] months = new DateFormatSymbols().getMonths();
 		return months[month-1];
 	}
+	
+	public static String getWeekStartDate(String weekEndDate) throws ParseException{
+		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+		Date date = formatter.parse(weekEndDate);
+		Date startDate = new DateTime(date).minusDays(6).toDate();
+		String weekStartDate = formatter.format(startDate);
+		
+		return weekStartDate;
+	}
+	
+	public static String getNextWeekStartDate(String weekEndDate) throws ParseException{
+		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+		Date date = formatter.parse(weekEndDate);
+		Date startDate = new DateTime(date).plusDays(1).toDate();
+		String weekStartDate = formatter.format(startDate);
+		
+		return weekStartDate;
+	}
+	
+	public static String getNextWeekEndDate(String weekEndDate) throws ParseException{
+		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+		Date date = formatter.parse(weekEndDate);
+		Date startDate = new DateTime(date).plusDays(6).toDate();
+		String weekStartDate = formatter.format(startDate);
+		
+		return weekStartDate;
+	}
+	
 }

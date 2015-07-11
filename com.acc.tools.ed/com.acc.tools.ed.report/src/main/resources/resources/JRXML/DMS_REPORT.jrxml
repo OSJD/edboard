@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created using an evaluation version of JasperAssistant (http://www.jasperassistant.com) -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Unnamed" pageWidth="680" pageHeight="842" columnWidth="660" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10">
+	<property name="com.jasperassistant.designer.DataSource" value="DMS"/>
+	<property name="com.jasperassistant.designer.Grid" value="false"/>
+	<property name="com.jasperassistant.designer.SnapToGrid" value="false"/>
+	<property name="com.jasperassistant.designer.GridWidth" value="12"/>
+	<property name="com.jasperassistant.designer.GridHeight" value="12"/>
+	<parameter name="SUBREPORT1" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="SUBREPORT2" class="net.sf.jasperreports.engine.JasperReport"/>
+	<queryString language="XPath">
+		<![CDATA[/root/DMS]]>
+	</queryString>
+	<field name="programName" class="java.lang.String">
+		<fieldDescription><![CDATA[programName]]></fieldDescription>
+	</field>
+	<field name="currentStartDate" class="java.lang.String">
+		<fieldDescription><![CDATA[currentStartDate]]></fieldDescription>
+	</field>
+	<field name="currentEndDate" class="java.lang.String">
+		<fieldDescription><![CDATA[currentEndDate]]></fieldDescription>
+	</field>
+	<field name="futureStartDate" class="java.lang.String">
+		<fieldDescription><![CDATA[futureStartDate]]></fieldDescription>
+	</field>
+	<field name="futureEndDate" class="java.lang.String">
+		<fieldDescription><![CDATA[futureEndDate]]></fieldDescription>
+	</field>
+	<field name="DMSCurrent" class="java.util.List">
+		<fieldDescription><![CDATA[DMS_1]]></fieldDescription>
+	</field>
+	<field name="isCurrentData" class="java.lang.String">
+		<fieldDescription><![CDATA[isCurrentData]]></fieldDescription>
+	</field>
+	<field name="isFutureData" class="java.lang.String">
+		<fieldDescription><![CDATA[isFutureData]]></fieldDescription>
+	</field>
+	<pageHeader>
+		<band height="110">
+			<staticText>
+				<reportElement x="3" y="49" width="656" height="34"/>
+				<textElement textAlignment="Center">
+					<font size="24" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DMS REPORT]]></text>
+			</staticText>
+			<image hyperlinkType="None">
+				<reportElement x="99" y="5" width="409" height="41"/>
+				<imageExpression class="java.lang.String"><![CDATA["C:/Users/sathish.sampath/workspace1/DMSReport/src/HomePage.jpg"]]></imageExpression>
+			</image>
+			<textField hyperlinkType="None">
+				<reportElement x="2" y="85" width="236" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["PROGRAM NAME : "+$F{programName}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="223">
+			<textField hyperlinkType="None">
+				<reportElement x="1" y="1" width="512" height="30"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Achievements for the Period: "+$F{currentStartDate} +" "+"to" +" "+ $F{currentEndDate}]]></textFieldExpression>
+			</textField>
+			<textField hyperlinkType="None">
+				<reportElement positionType="Float" x="1" y="115" width="515" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA["Planned For Next Period: "+$F{futureStartDate} +" "+"to" +" "+ $F{futureEndDate}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="-1" y="61" width="663" height="53" isPrintWhenDetailOverflows="true"/>
+				<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JRXmlDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("//DMS//DMSCurrentData//DMSCurrent")]]></dataSourceExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT1}]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement positionType="Float" x="1" y="162" width="659" height="57"/>
+				<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JRXmlDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("//DMS//DMSFutureData//DMSFuture")]]></dataSourceExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT2}]]></subreportExpression>
+			</subreport>
+			<textField>
+				<reportElement x="0" y="34" width="662" height="26" isRemoveLineWhenBlank="true"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{isCurrentData}.equals("No")?"NO DATA":" "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="0" y="136" width="662" height="26" isRemoveLineWhenBlank="true"/>
+				<textElement textAlignment="Center" markup="none">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{isFutureData}.equals("No")?"NO DATA":" "]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="16">
+			<textField hyperlinkType="None">
+				<reportElement x="574" y="0" width="29" height="15"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="604" y="2" width="29" height="14"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[of]]></text>
+			</staticText>
+			<textField evaluationTime="Report" hyperlinkType="None">
+				<reportElement x="632" y="1" width="27" height="14"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="M/d/yy" hyperlinkType="None">
+				<reportElement x="1" y="0" width="51" height="14"/>
+				<textElement/>
+				<textFieldExpression class="java.util.Date"><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+			<textField pattern="h:mm:ss a" hyperlinkType="None">
+				<reportElement x="48" y="0" width="56" height="16"/>
+				<textElement/>
+				<textFieldExpression class="java.util.Date"><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

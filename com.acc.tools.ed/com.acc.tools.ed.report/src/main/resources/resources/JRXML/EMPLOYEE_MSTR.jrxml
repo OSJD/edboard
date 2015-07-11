@@ -6,6 +6,7 @@
 	<property name="com.jasperassistant.designer.SnapToGrid" value="false"/>
 	<property name="com.jasperassistant.designer.GridWidth" value="12"/>
 	<property name="com.jasperassistant.designer.GridHeight" value="12"/>
+	<parameter name="Logo" class="java.lang.String"/>
 	<queryString language="XPath">
 		<![CDATA[/root/EDB]]>
 	</queryString>
@@ -25,14 +26,18 @@
 		<fieldDescription><![CDATA[role]]></fieldDescription>
 	</field>
 	<title>
-		<band height="33">
+		<band height="87">
 			<staticText>
-				<reportElement x="-1" y="-1" width="562" height="34"/>
+				<reportElement x="1" y="49" width="562" height="34"/>
 				<textElement textAlignment="Center">
 					<font size="20"/>
 				</textElement>
 				<text><![CDATA[EMPLOYEE MASTER REPORT]]></text>
 			</staticText>
+			<image hyperlinkType="None">
+				<reportElement x="56" y="3" width="463" height="41"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{Logo}]]></imageExpression>
+			</image>
 		</band>
 	</title>
 	<pageHeader>
@@ -105,7 +110,7 @@
 				<textElement markup="none"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{role}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField hyperlinkType="None">
 				<reportElement x="131" y="2" width="183" height="20"/>
 				<textElement markup="none"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{entID}]]></textFieldExpression>

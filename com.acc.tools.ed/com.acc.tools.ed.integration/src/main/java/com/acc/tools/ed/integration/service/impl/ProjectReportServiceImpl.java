@@ -46,4 +46,15 @@ public class ProjectReportServiceImpl implements ProjectReportService{
 		e.printStackTrace();
 	}
 }
+	
+	public void generateDMSReport(HttpServletResponse response,String programName,String projectName,String releaseName,String weekStartDate,String weekEndDate){
+		try{
+			System.out.println("passing the values from impl");
+			projectReportDao.generateDMSReport(response,programName,projectName,releaseName,weekStartDate,weekEndDate);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
 }

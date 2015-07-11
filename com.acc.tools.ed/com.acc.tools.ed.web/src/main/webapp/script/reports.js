@@ -28,7 +28,7 @@ $(document).ready(
 					dateFormat: 'mm/dd/yy',
 					constrainInput: true,
 					changeMonth: true, 
-					changeYear: true 
+					changeYear: true, 
 			 });
 				
 			} else if(($("#reportsName").val()=='EmpMstr') || ($("#reportsName").val()=='0') ) {
@@ -58,7 +58,7 @@ $(document).ready(
 					$('#rptreleases')
 					  	.find('option')
 					  	.remove();
-					$('#rptreleases').append('<option value="SR">Select Release</option>');
+					$('#rptreleases').append('<option value="0">All Releases</option>');
 					for(var obj in response){
 						$('#rptreleases').append('<option value='+response[obj].id+'>'+response[obj].label+'</option>');
 					};
@@ -84,7 +84,7 @@ $(document).ready(
 					$('#rptproject')
 					  	.find('option')
 					  	.remove();
-					$('#rptproject').append('<option value="SR">Select Project</option>');
+					$('#rptproject').append('<option value="0">All Projects</option>');
 					for(var obj in response){
 						$('#rptproject').append('<option value='+response[obj].id+'>'+response[obj].label+'</option>');
 					};
@@ -94,19 +94,31 @@ $(document).ready(
 				}
 			});	
 		});
-		
+			
+	 $("#weekEndDate").datepicker({
+		 	showOn: 'button',
+			buttonText: 'Show Date',
+			buttonImageOnly: true,
+			buttonImage: 'resources/cal.gif',
+			dateFormat: 'mm/dd/yy',
+			constrainInput: true,
+			changeMonth: true, 
+			changeYear: true,
+			beforeShowDay: function(date) {
+		        return [date.getDay() == 6];
+		    }
+	 });
+	
 });
 
 
 
 
 function downloadReportMaster(){
-	
  	var lReportType= $("#reportsName").val();
 	var lStartDate = $("#reportStartDate").val();
 	var lEndDate = $("#reportEndDate").val();
 	var lReportFormat = $("#reportFormat").val();
-	
 	
 	if((lReportType == 'EmpMstr')){
 		if((lReportType != '0') && (lReportFormat != '0')){
@@ -127,6 +139,18 @@ function downloadReportMaster(){
 			
 		}
 	
-		
-		
 }
+
+function downloadDMSReport(){
+ 	var lReportProgram= $("#rptprogram").val();
+	var lProject = $("#rptproject").val();
+	var lRelease = $("#rptreleases").val();
+	var lEndDate = $("#weekEndDate").val();
+
+	if((lReportProgram != '0')  && (lEndDate != '')){	
+			$('#statusForm').submit();
+		}else{
+			alert("Please enter the Program Name and Week End Date");
+		}
+}
+

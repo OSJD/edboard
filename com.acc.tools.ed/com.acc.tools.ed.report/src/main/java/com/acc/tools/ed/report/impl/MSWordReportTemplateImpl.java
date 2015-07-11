@@ -38,6 +38,7 @@ import org.docx4j.wml.Hdr;
 import org.springframework.stereotype.Service;
 
 import com.acc.tools.ed.report.MSWordReportTemplate;
+import com.acc.tools.ed.report.dto.DMSReportData;
 import com.acc.tools.ed.report.dto.ReportMasterData;
 import com.acc.tools.ed.report.dto.WeeklyStatusReportData;
 import com.acc.tools.ed.report.util.ReportConstants;
@@ -210,14 +211,16 @@ public class MSWordReportTemplateImpl implements MSWordReportTemplate{
 		xmlFormat.append("</root>");
 		System.out.println("Output XML:"+xmlFormat.toString());
 		
-		outputPDF = GeneratePDFReport(xmlFormat,ReportConstants.RELEASE_MASTER_REPORT);
+		outputPDF = GeneratePDFReport(xmlFormat,ReportConstants.RELEASE_MASTER_REPORT,false);
 		
 		
 		// TODO Auto-generated method stub
 		return outputPDF;
 	}
-
-	private ByteArrayOutputStream GeneratePDFReport(StringBuilder xmlFormat,String reportPath) {
+	
+	
+	
+	private ByteArrayOutputStream GeneratePDFReport(StringBuilder xmlFormat,String reportPath,Boolean subReport) {
 		ByteArrayOutputStream output = null;
 		try{
 			Map<String, Object> params = new HashMap<String, Object>();
@@ -233,9 +236,20 @@ public class MSWordReportTemplateImpl implements MSWordReportTemplate{
 	        params.put(JRXPathQueryExecuterFactory.XML_NUMBER_PATTERN, "#,##0.##");
 	        params.put(JRXPathQueryExecuterFactory.XML_LOCALE, Locale.ENGLISH);
 	        params.put(JRParameter.REPORT_LOCALE, Locale.US);
+	        params.put("Logo",  MSWordReportTemplateImpl.class.getClass().getResource("/com.acc.tools.ed/com.acc.tools.ed.report/src/main/resources/ReportHomePage.jpg"));
 	       
 	        
 	        JasperReport report =  JasperCompileManager.compileReport(MSWordReportTemplateImpl.class.getClassLoader().getResourceAsStream(reportPath));
+	        
+	        if(subReport){
+	        	JasperReport subreport =  JasperCompileManager.compileReport(MSWordReportTemplateImpl.class.getClassLoader().getResourceAsStream(ReportConstants.DMS_SUB_REPORT_1));
+	            params.put(ReportConstants.DMS_SUBREPORT_1,subreport);
+	            
+	            JasperReport subreport1 =  JasperCompileManager.compileReport(MSWordReportTemplateImpl.class.getClassLoader().getResourceAsStream(ReportConstants.DMS_SUB_REPORT_2));
+	            params.put(ReportConstants.DMS_SUBREPORT_2,subreport1);
+	        }
+	        
+	        
 	        JasperPrint print = JasperFillManager.fillReport(report,params);
 	        
 	        byte[] bytes= JasperExportManager.exportReportToPdf(print);
@@ -277,7 +291,7 @@ public class MSWordReportTemplateImpl implements MSWordReportTemplate{
 		xmlFormat.append("</root>");
 		System.out.println(xmlFormat.toString());
 		
-		outputPDF = GeneratePDFReport(xmlFormat,ReportConstants.RELEASE_MASTER_REPORT);
+		outputPDF = GeneratePDFReport(xmlFormat,ReportConstants.RELEASE_MASTER_REPORT,false);
 		
 		return outputPDF;
 	}
@@ -301,7 +315,7 @@ public class MSWordReportTemplateImpl implements MSWordReportTemplate{
 		xmlFormat.append("</root>");
 		System.out.println(xmlFormat.toString());
 		
-		outputPDF = GeneratePDFReport(xmlFormat,ReportConstants.EMPLOYEE_MASTER_REPORT);
+		outputPDF = GeneratePDFReport(xmlFormat,ReportConstants.EMPLOYEE_MASTER_REPORT,false);
 		
 		return outputPDF;
 	}
@@ -311,4 +325,81 @@ public class MSWordReportTemplateImpl implements MSWordReportTemplate{
 		String result = (null!= value)?value:"-";
 		return result;
 	}
+
+	public OutputStream generateDMSPDFReport(List<DMSReportData> currentWeekData,List<DMSReportData> futureWeekData,String programName,String weekEndDate,String weekStartDate,String startDate,String endDate) {
+		ByteArrayOutputStream outputPDF = null;
+		
+		StringBuilder xmlFormat = createHeaderXML();
+	
+		xmlFormat.append("<DMS>");
+		xmlFormat.append("<programName>").append(checkNull(getProgram(programName))).append("</programName>");
+		xmlFormat.append("<currentStartDate>").append(checkNull(weekStartDate)).append("</currentStartDate>");
+		xmlFormat.append("<currentEndDate>").append(checkNull(weekEndDate)).append("</currentEndDate>");
+		xmlFormat.append("<futureStartDate>").append(checkNull(startDate)).append("</futureStartDate>");
+		xmlFormat.append("<futureEndDate>").append(checkNull(endDate)).append("</futureEndDate>");
+		
+		if(currentWeekData.isEmpty()){
+			xmlFormat.append("<isCurrentData>").append("No").append("</isCurrentData>");
+		}else{
+			xmlFormat.append("<isCurrentData>").append("Yes").append("</isCurrentData>");
+		}
+		
+		if(futureWeekData.isEmpty()){
+			xmlFormat.append("<isFutureData>").append("No").append("</isFutureData>");
+		}else{
+			xmlFormat.append("<isFutureData>").append("Yes").append("</isFutureData>");
+		}
+		
+		
+		xmlFormat.append("<DMSCurrentData>");
+		for(DMSReportData currentData:currentWeekData){
+			xmlFormat.append("<DMSCurrent>");
+			xmlFormat.append("<programName>").append(checkNull(currentData.getProgramName())).append("</programName>");
+			xmlFormat.append("<projectName>").append(checkNull(currentData.getProjectName())).append("</projectName>");
+			xmlFormat.append("<releaseName>").append(checkNull(currentData.getReleaseName())).append("</releaseName>");
+			xmlFormat.append("<compName>").append(checkNull(currentData.getComponentName())).append("</compName>");
+			xmlFormat.append("<compDesc>").append(checkNull(currentData.getFunctionalDesc())).append("</compDesc>");
+			xmlFormat.append("<compPhase>").append(checkNull(getPhase(currentData.getPhaseId()))).append("</compPhase>");
+			xmlFormat.append("</DMSCurrent>");
+		}
+		xmlFormat.append("</DMSCurrentData>");
+		xmlFormat.append("<DMSFutureData>");
+		for(DMSReportData futureData:futureWeekData){
+			xmlFormat.append("<DMSFuture>");
+			xmlFormat.append("<projectName>").append(checkNull(futureData.getProjectName())).append("</projectName>");
+			xmlFormat.append("<releaseName>").append(checkNull(futureData.getReleaseName())).append("</releaseName>");
+			xmlFormat.append("<compName>").append(checkNull(futureData.getComponentName())).append("</compName>");
+			xmlFormat.append("<compDesc>").append(checkNull(futureData.getFunctionalDesc())).append("</compDesc>");
+			xmlFormat.append("<compPhase>").append(checkNull(getPhase(futureData.getPhaseId()))).append("</compPhase>");
+			xmlFormat.append("</DMSFuture>");
+				
+		}
+		xmlFormat.append("</DMSFutureData>");
+		xmlFormat.append("</DMS>");
+		xmlFormat.append("</root>");
+		System.out.println(xmlFormat.toString());
+		outputPDF = GeneratePDFReport(xmlFormat,ReportConstants.DMS_REPORT,true);
+		
+		return outputPDF;
+	}
+
+	private String getPhase(Integer phaseId) {
+		String phase = null;
+		phase = ((null!=phaseId)&&(phaseId.equals(1))?"Analysis":phaseId.equals(2)?"Design":phaseId.equals(3)?"Build":"Test");
+		return phase;
+	}
+
+	private String getProgram(String programName) {
+		
+		String program = null;
+		
+		if(programName.equalsIgnoreCase("1")){
+			program = "CCSP";
+		}else{
+			program = "BAS AO";
+		}
+		return program;
+	}
+	
+	
 }

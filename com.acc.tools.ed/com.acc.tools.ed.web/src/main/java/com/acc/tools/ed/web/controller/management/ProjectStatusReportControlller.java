@@ -13,11 +13,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.acc.tools.ed.integration.dto.EDBUser;
-import com.acc.tools.ed.integration.dto.ResourceDetails;
-import com.acc.tools.ed.integration.dto.SurveyQuestionnaire;
-import com.acc.tools.ed.integration.dto.SurveySystem;
 import com.acc.tools.ed.integration.service.ProjectReportService;
+import com.acc.tools.ed.integration.util.CalendarEnum;
 import com.acc.tools.ed.report.MSWordReportTemplate;
 import com.acc.tools.ed.report.dto.WeeklyStatusReportData;
 import com.acc.tools.ed.web.controller.common.AbstractEdbBaseController;
@@ -123,4 +120,41 @@ public class ProjectStatusReportControlller extends AbstractEdbBaseController {
 			// TODO: handle exception
 		}
 	}
+
+	@RequestMapping(value = "/downloadDMSReport.do")
+	public void downloadDMSReport(
+			@ModelAttribute("statusForm") WeeklyStatusReportData statusForm,
+			HttpServletResponse response,
+			Model model) throws IOException {
+
+		try
+		{
+			
+		if(statusForm!= null)
+		{
+		String programName = statusForm.getProgramName();
+		String projectName =statusForm.getProjectName();
+		String releaseName=	statusForm.getReleaseName();
+		String weekEndDate = statusForm.getWeekEndDate();
+		
+		
+		String weekStartDate = CalendarEnum.getWeekStartDate(weekEndDate);
+		
+		
+		projectReportService.generateDMSReport(response,programName,projectName,releaseName,weekStartDate,weekEndDate);
+		
+		
+		}
+		else
+		{
+			throw new Exception("status form empty");
+		}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+	}
+
+
 }
