@@ -26,7 +26,7 @@ private Map<String,String> taskStatus=new LinkedHashMap<String, String>();
 	@Autowired
 	private ProjectWorkDao projectWorkDao;
 	public void  setTaskStatus(){
-		taskStatus.put("1", "Build Completed");
+	taskStatus.put("1", "Build Completed");
 		taskStatus.put("2", "Build In Progress");
 		taskStatus.put("3", "Build On Hold");
 		taskStatus.put("4", "Review Completed");
@@ -36,6 +36,9 @@ private Map<String,String> taskStatus=new LinkedHashMap<String, String>();
 		taskStatus.put("8", "Rework In Progress");
 		taskStatus.put("9", "Rework On Hold");
 		taskStatus.put("10", "Task Closed");
+		taskStatus.put("11", "Review Completed");
+		taskStatus.put("12", "Review In Progress");
+		taskStatus.put("13", "Review On Hold");
 	}
 	public Map<String,String>   getTaskStatus(){
 		
