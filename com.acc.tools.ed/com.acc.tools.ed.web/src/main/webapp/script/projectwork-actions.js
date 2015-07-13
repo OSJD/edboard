@@ -467,98 +467,104 @@ $(document).ready(
 					//Task object
 					var task=response["task"];
 					
-					if(('4'==task.taskStatus||'10'==task.taskStatus  )&&task.userId==task.reviewerId){
-						
-						$("#editTaskButton").hide();
-					}
-					else 
-					{
-						if(('4'==task.taskStatus||'10'==task.taskStatus || '1'==task.taskStatus||'5'==task.taskStatus||'6'==task.taskStatus  )&&task.userId!=task.reviewerId)
-							$("#editTaskButton").hide();
-					}
-					if(('1'==task.taskStatus||'7'==task.taskStatus)&&task.userId==task.reviewerId){
-						$("#editTaskStatus option").remove();
-						$("#editTaskStatus").append("<option value='-1'>--- Select ---</option>");
-						$("#editTaskStatus").append("<option value='4'>Review Completed</option>");
-						$("#editTaskStatus").append("<option value='5'>Review In Progress</option>");
-						$("#editTaskStatus").append("<option value='6'>Review On Hold</option>");
-						$("#editTaskReviewUser").hide();
-						
-					}
-					else if('4'==task.taskStatus&&task.userId!=task.reviewerId){
-						$('#editReviewRow').hide();
-						$("#editTaskStatus option").remove();
-						$("#editTaskStatus").append("<option value='-1'>--- Select ---</option>");
-						$("#editTaskStatus").append("<option value='7'>Rework Completed</option>");
-						$("#editTaskStatus").append("<option value='8'>Rework In Progress</option>");
-						$("#editTaskStatus").append("<option value='9'>Rework On Hold</option>");
-						$("#editTaskStatus").append("<option value='10'>Task Closed</option>");
-						$("#editTaskReviewUser").show();
-						var reviewers=response["reviewerList"];
-						$("#editTaskReviewUser option").remove();
-						$("#editTaskReviewUser").append("<option value='-1'>--- Select ---</option>");
-						for(var index in reviewers){
-							if(task.reviewerId==reviewers[index].id){
-							$("#editTaskReviewUser").append("<option value='"+reviewers[index].id+"'>"+reviewers[index].label+"</option>")
-							}
-							}
-						var reviewHistory=task.taskReviewHistory;
-						$("#rcTable > tbody > tr").remove();
-						for(var index in reviewHistory){
-							//alert(reviewHistory[index].reviewComment+" | "+reviewHistory[index].devResponse+" | "+reviewHistory[index].isReviewValid);
-							var reviewCommentRowNumber=$('#rcTable tr:last').index()+1;
-							if(task.userId==task.reviewerId){
-								var rowForReviewer="<tr><td><input type=\"hidden\" name=\"reviewHistoryId"+reviewCommentRowNumber+"\" id=\"reviewHistoryId"+reviewCommentRowNumber+"\" value=\""+reviewHistory[index].reviewHistoryId+"\"><textarea cols=\"60\" rows=\"5\" name=\"reviewComment"+reviewCommentRowNumber+"\" id=\"reviewComment"+reviewCommentRowNumber+"\">"+reviewHistory[index].reviewComment+"</textarea></td>"+
-									"<td><div style=\"width:365px;height: 75px;overflow: auto;\">"+reviewHistory[index].devResponse+"</div></td>"+
-									"<td><input type=\"checkbox\" name=\"isReviewValid"+reviewCommentRowNumber+"\" id=\"isReviewValid"+reviewCommentRowNumber+"\" checked=\"checked\"></td></tr>";
-								$("#rcTable tbody").append(rowForReviewer);
-							}else {
-								var rowForDeveloper="<tr><td><input type=\"hidden\" name=\"reviewHistoryId"+reviewCommentRowNumber+"\" id=\"reviewHistoryId"+reviewCommentRowNumber+"\" value=\""+reviewHistory[index].reviewHistoryId+"\"><div style=\"width:365px;height: 75px;overflow: auto;\">"+reviewHistory[index].reviewComment+"</div></td>"+
-									"<td><textarea cols=\"60\" rows=\"5\" name=\"devResponse"+reviewCommentRowNumber+"\" id=\"devResponse"+reviewCommentRowNumber+"\">"+reviewHistory[index].devResponse+"</textarea></td>"+
-									"<td><input type=\"checkbox\" name=\"isReviewValid"+reviewCommentRowNumber+"\" id=\"isReviewValid"+reviewCommentRowNumber+"\" checked=\"checked\"></td></tr>";
-								$("#rcTable tbody").append(rowForDeveloper);
-							}
-						}
-					}
-					else if('7'==task.taskStatus&&task.userId!=task.reviewerId){
-						$('#editReviewRow').hide();
-						$("#editTaskStatus option").remove();
-						$("#editTaskStatus").append("<option value='-1'>--- Select ---</option>");
-						
-						$("#editTaskStatus").append("<option value='10'>Task Closed</option>");
-						var reviewHistory=task.taskReviewHistory;
-						$("#rcTable > tbody > tr").remove();
-						for(var index in reviewHistory){
-							alert(index);
-							//alert(reviewHistory[index].reviewComment+" | "+reviewHistory[index].devResponse+" | "+reviewHistory[index].isReviewValid);
-							var reviewCommentRowNumber=$('#rcTable tr:last').index()+1;
-							if(task.userId==task.reviewerId){
-								var rowForReviewer="<tr><td><input type=\"hidden\" name=\"reviewHistoryId"+reviewCommentRowNumber+"\" id=\"reviewHistoryId"+reviewCommentRowNumber+"\" value=\""+reviewHistory[index].reviewHistoryId+"\"><textarea cols=\"60\" rows=\"5\" name=\"reviewComment"+reviewCommentRowNumber+"\" id=\"reviewComment"+reviewCommentRowNumber+"\">"+reviewHistory[index].reviewComment+"</textarea></td>"+
-									"<td><div style=\"width:365px;height: 75px;overflow: auto;\">"+reviewHistory[index].devResponse+"</div></td>"+
-									"<td><input type=\"checkbox\" name=\"isReviewValid"+reviewCommentRowNumber+"\" id=\"isReviewValid"+reviewCommentRowNumber+"\" checked=\"checked\"></td></tr>";
-								$("#rcTable tbody").append(rowForReviewer);
-							}else {
-								var rowForDeveloper="<tr><td><input type=\"hidden\" name=\"reviewHistoryId"+reviewCommentRowNumber+"\" id=\"reviewHistoryId"+reviewCommentRowNumber+"\" value=\""+reviewHistory[index].reviewHistoryId+"\"><div style=\"width:365px;height: 75px;overflow: auto;\">"+reviewHistory[index].reviewComment+"</div></td>"+
-									"<td><textarea cols=\"60\" rows=\"5\" name=\"devResponse"+reviewCommentRowNumber+"\" id=\"devResponse"+reviewCommentRowNumber+"\">"+reviewHistory[index].devResponse+"</textarea></td>"+
-									"<td><input type=\"checkbox\" name=\"isReviewValid"+reviewCommentRowNumber+"\" id=\"isReviewValid"+reviewCommentRowNumber+"\" checked=\"checked\"></td></tr>";
-								$("#rcTable tbody").append(rowForDeveloper);
-							}
-						}
-					}
-					else{
+if(task.userId==task.reviewerId){
+	
+	if('1'==task.taskStatus||'5'==task.taskStatus||'6'==task.taskStatus){
+		$("#editTaskStatus option").remove();
+		$("#editTaskStatus").append("<option value='-1'>--- Select ---</option>");
+		$("#editTaskStatus").append("<option value='4'>Review Completed</option>");
+		$("#editTaskStatus").append("<option value='5'>Review In Progress</option>");
+		$("#editTaskStatus").append("<option value='6'>Review On Hold</option>");
+		$("#editTaskReviewUser").hide();
+	}
+	else if('7'==task.taskStatus||'12'==task.taskStatus||'13'==task.taskStatus){
+		$("#editTaskStatus option").remove();
+		$("#editTaskStatus").append("<option value='-1'>--- Select ---</option>");
+		$("#editTaskStatus").append("<option value='11'>Review Completed</option>");
+		$("#editTaskStatus").append("<option value='12'>Review In Progress</option>");
+		$("#editTaskStatus").append("<option value='13'>Review On Hold</option>");
+		$("#editTaskReviewUser").hide();
+	}
+	else{
+		$("#editTaskStatus option").remove();
+		$("#editTaskButton").hide();
+	}
+	
+}
+else{
+	 
+	if('4'==task.taskStatus||'8'==task.taskStatus||'9'==task.taskStatus){
+		$('#editReviewRow').hide();
+		$("#editTaskStatus option").remove();
+		$("#editTaskStatus").append("<option value='-1'>--- Select ---</option>");
+		$("#editTaskStatus").append("<option value='7'>Rework Completed</option>");
+		$("#editTaskStatus").append("<option value='8'>Rework In Progress</option>");
+		$("#editTaskStatus").append("<option value='9'>Rework On Hold</option>");
+		$("#editTaskStatus").append("<option value='10'>Task Closed</option>");
+		$("#editTaskReviewUser").show();
+		var reviewers=response["reviewerList"];
+		$("#editTaskReviewUser option").remove();
+		$("#editTaskReviewUser").append("<option value='-1'>--- Select ---</option>");
+		for(var index in reviewers){
+			if(task.reviewerId==reviewers[index].id){
+			$("#editTaskReviewUser").append("<option value='"+reviewers[index].id+"'>"+reviewers[index].label+"</option>")
+			}
+			}
+		var reviewHistory=task.taskReviewHistory;
+		$("#rcTable > tbody > tr").remove();
+		for(var index in reviewHistory){
+			//alert(reviewHistory[index].reviewComment+" | "+reviewHistory[index].devResponse+" | "+reviewHistory[index].isReviewValid);
+			var reviewCommentRowNumber=$('#rcTable tr:last').index()+2;
+			if(task.userId==task.reviewerId){
+				var rowForReviewer="<tr><td><input type=\"hidden\" name=\"reviewHistoryId"+reviewCommentRowNumber+"\" id=\"reviewHistoryId"+reviewCommentRowNumber+"\" value=\""+reviewHistory[index].reviewHistoryId+"\"><textarea cols=\"60\" rows=\"5\" name=\"reviewComment"+reviewCommentRowNumber+"\" id=\"reviewComment"+reviewCommentRowNumber+"\">"+reviewHistory[index].reviewComment+"</textarea></td>"+
+					"<td><div style=\"width:365px;height: 75px;overflow: auto;\">"+reviewHistory[index].devResponse+"</div></td>"+
+					"<td><input type=\"checkbox\" name=\"isReviewValid"+reviewCommentRowNumber+"\" id=\"isReviewValid"+reviewCommentRowNumber+"\" checked=\"checked\"></td></tr>";
+				$("#rcTable tbody").append(rowForReviewer);
+			}else {
+				var rowForDeveloper="<tr><td><input type=\"hidden\" name=\"reviewHistoryId"+reviewCommentRowNumber+"\" id=\"reviewHistoryId"+reviewCommentRowNumber+"\" value=\""+reviewHistory[index].reviewHistoryId+"\"><div style=\"width:365px;height: 75px;overflow: auto;\">"+reviewHistory[index].reviewComment+"</div></td>"+
+					"<td><textarea cols=\"60\" rows=\"5\" name=\"devResponse"+reviewCommentRowNumber+"\" id=\"devResponse"+reviewCommentRowNumber+"\">"+reviewHistory[index].devResponse+"</textarea></td>"+
+					"<td><input type=\"checkbox\" name=\"isReviewValid"+reviewCommentRowNumber+"\" id=\"isReviewValid"+reviewCommentRowNumber+"\" checked=\"checked\"></td></tr>";
+				$("#rcTable tbody").append(rowForDeveloper);
+			}
+		}
+	}
+	else if('11'==task.taskStatus){
+		
+		$('#editReviewRow').hide();
+		$("#editTaskStatus option").remove();
+		$("#editTaskStatus").append("<option value='-1'>--- Select ---</option>");
+		
+		$("#editTaskStatus").append("<option value='10'>Task Closed</option>");
+		var reviewHistory=task.taskReviewHistory;
+		$("#rcTable > tbody > tr").remove();
+		for(var index in reviewHistory){
+			//alert(reviewHistory[index].reviewComment+" | "+reviewHistory[index].devResponse+" | "+reviewHistory[index].isReviewValid);
+			var reviewCommentRowNumber=$('#rcTable tr:last').index()+2;
+			if(task.userId==task.reviewerId){
+				var rowForReviewer="<tr><td><input type=\"hidden\" name=\"reviewHistoryId"+reviewCommentRowNumber+"\" id=\"reviewHistoryId"+reviewCommentRowNumber+"\" value=\""+reviewHistory[index].reviewHistoryId+"\"><textarea cols=\"60\" rows=\"5\" name=\"reviewComment"+reviewCommentRowNumber+"\" id=\"reviewComment"+reviewCommentRowNumber+"\">"+reviewHistory[index].reviewComment+"</textarea></td>"+
+					"<td><div style=\"width:365px;height: 75px;overflow: auto;\">"+reviewHistory[index].devResponse+"</div></td>"+
+					"<td><input type=\"checkbox\" name=\"isReviewValid"+reviewCommentRowNumber+"\" id=\"isReviewValid"+reviewCommentRowNumber+"\" checked=\"checked\"></td></tr>";
+				$("#rcTable tbody").append(rowForReviewer);
+			}else {
+				var rowForDeveloper="<tr><td><input type=\"hidden\" name=\"reviewHistoryId"+reviewCommentRowNumber+"\" id=\"reviewHistoryId"+reviewCommentRowNumber+"\" value=\""+reviewHistory[index].reviewHistoryId+"\"><div style=\"width:365px;height: 75px;overflow: auto;\">"+reviewHistory[index].reviewComment+"</div></td>"+
+					"<td><textarea cols=\"60\" rows=\"5\" name=\"devResponse"+reviewCommentRowNumber+"\" id=\"devResponse"+reviewCommentRowNumber+"\">"+reviewHistory[index].devResponse+"</textarea></td>"+
+					"<td><input type=\"checkbox\" name=\"isReviewValid"+reviewCommentRowNumber+"\" id=\"isReviewValid"+reviewCommentRowNumber+"\" checked=\"checked\"></td></tr>";
+				$("#rcTable tbody").append(rowForDeveloper);
+			}
+		}
+	}
+	else{
+		$("#editTaskStatus").hide();
+		$("#editTaskStatus option").remove();
+		$("#editTaskButton").hide();
+	}
+}				
+					
+					
+					
+				
+					/*else{
 						$("#editTaskStatus").hide();
-						$("#editTaskReviewUser").hide();
-						$("#editTaskButton").hide();
-					}
-					/*else if('Build'==workType){
-						// Reviewer List
-						var reviewers=response["reviewerList"];
-						$("#editTaskReviewUser option").remove();
-						$("#editTaskReviewUser").append("<option value='-1'>--- Select ---</option>")
-						for(var index in reviewers){
-							$("#editTaskReviewUser").append("<option value='"+reviewers[index].id+"'>"+reviewers[index].label+"</option>")
-						}
-							
 					}*/
 					$("#editTaskName").html(task.taskName);
 					$("#editTaskType").html(task.taskType); 
@@ -588,6 +594,7 @@ $(document).ready(
 			$("#editTaskPanel").data('param', componentId);
 			editTaskDialog.dialog('open');
 		});
+		
 		
 		$("#editReviewRow").button().on("click",function(){
 			$(this).unbind("click");
