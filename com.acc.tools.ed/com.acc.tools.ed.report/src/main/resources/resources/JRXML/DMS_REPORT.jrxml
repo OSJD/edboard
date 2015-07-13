@@ -8,6 +8,9 @@
 	<property name="com.jasperassistant.designer.GridHeight" value="12"/>
 	<parameter name="SUBREPORT1" class="net.sf.jasperreports.engine.JasperReport"/>
 	<parameter name="SUBREPORT2" class="net.sf.jasperreports.engine.JasperReport"/>
+	<parameter name="Logo" class="java.io.InputStream" isForPrompting="false">
+	 <defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	 </parameter>
 	<queryString language="XPath">
 		<![CDATA[/root/DMS]]>
 	</queryString>
@@ -36,20 +39,20 @@
 		<fieldDescription><![CDATA[isFutureData]]></fieldDescription>
 	</field>
 	<pageHeader>
-		<band height="110">
+		<band height="105">
 			<staticText>
-				<reportElement x="3" y="49" width="656" height="34"/>
+				<reportElement x="0" y="44" width="656" height="34"/>
 				<textElement textAlignment="Center">
 					<font size="24" isBold="true"/>
 				</textElement>
 				<text><![CDATA[DMS REPORT]]></text>
 			</staticText>
 			<image hyperlinkType="None">
-				<reportElement x="99" y="5" width="409" height="41"/>
-				<imageExpression class="java.lang.String"><![CDATA["C:/Users/sathish.sampath/workspace1/DMSReport/src/HomePage.jpg"]]></imageExpression>
+				<reportElement x="210" y="5" width="335" height="37"/>
+				<imageExpression class="java.io.InputStream"><![CDATA[$P{Logo}]]></imageExpression>
 			</image>
 			<textField hyperlinkType="None">
-				<reportElement x="2" y="85" width="236" height="20"/>
+				<reportElement x="-1" y="81" width="236" height="20"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -83,14 +86,14 @@
 				<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JRXmlDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("//DMS//DMSFutureData//DMSFuture")]]></dataSourceExpression>
 				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT2}]]></subreportExpression>
 			</subreport>
-			<textField>
+			<textField hyperlinkType="None">
 				<reportElement x="0" y="34" width="662" height="26" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{isCurrentData}.equals("No")?"NO DATA":" "]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField hyperlinkType="None">
 				<reportElement positionType="Float" x="0" y="136" width="662" height="26" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Center" markup="none">
 					<font size="14" isBold="true"/>

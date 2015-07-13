@@ -236,11 +236,11 @@ public class MSWordReportTemplateImpl implements MSWordReportTemplate{
 	        params.put(JRXPathQueryExecuterFactory.XML_NUMBER_PATTERN, "#,##0.##");
 	        params.put(JRXPathQueryExecuterFactory.XML_LOCALE, Locale.ENGLISH);
 	        params.put(JRParameter.REPORT_LOCALE, Locale.US);
-	        params.put("Logo",  MSWordReportTemplateImpl.class.getClass().getResource("/com.acc.tools.ed/com.acc.tools.ed.report/src/main/resources/ReportHomePage.jpg"));
-	       
 	        
+	        InputStream imgInputStream = this.getClass().getClassLoader().getResourceAsStream("/ReportHomePage.jpg");
+	        params.put("Logo", imgInputStream );
+	      
 	        JasperReport report =  JasperCompileManager.compileReport(MSWordReportTemplateImpl.class.getClassLoader().getResourceAsStream(reportPath));
-	        
 	        if(subReport){
 	        	JasperReport subreport =  JasperCompileManager.compileReport(MSWordReportTemplateImpl.class.getClassLoader().getResourceAsStream(ReportConstants.DMS_SUB_REPORT_1));
 	            params.put(ReportConstants.DMS_SUBREPORT_1,subreport);
