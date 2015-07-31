@@ -104,7 +104,7 @@
 										</select>
 									</td>
 								</tr>	
-								<tr>
+							<!-- 	<tr>
 									<td colspan="4" style="text-align: center; background-image: none; background-color: white;">
 										<table style="width: 100%;">
 											<tr>
@@ -149,7 +149,7 @@
 											</tr>	 										
 										</table>
 									</td>
-								</tr>
+								</tr> -->
 								<tr>
 									<td colspan="4" style="text-align: center; background-image: none; background-color: white;">
 										<table style="width: 100%;">
