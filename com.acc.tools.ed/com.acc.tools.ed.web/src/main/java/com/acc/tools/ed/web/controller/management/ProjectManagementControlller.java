@@ -62,6 +62,7 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		model.addAttribute("projectList", projectList);
 		model.addAttribute("programList",getProgramList());
 		model.addAttribute("addEmpDetailsForm",new ResourceDetails());
+		model.addAttribute("updateEmpDetailsForm",new ResourceDetails());
 		model.addAttribute("statusForm",new WeeklyStatusReportData());
 
 		LOG.debug("Add Project retruned --> Project Id: {} | Project Name:{}", newProject.getId(),newProject.getLabel());
@@ -191,7 +192,7 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		
 	
 			
-	   for ( String empId : addReleaseForm.getResourcesAndHours().keySet()) {
+	   for ( String empId : addReleaseForm.getResourcesAndHours().keySet()) {`
 	    	dayFromIndex = 0;
 	    	dayToIndex = 0;
 	    	tempDateStart = releaseStrtDate;
@@ -213,6 +214,7 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		     getProjectManagementService().addReleasePlan(addReleaseForm,empId,dateStart,tempDateStart.minusDays(1),dayFromIndex,dayToIndex,true);     
 		     
 		}*/
+		addReleaseForm.setReleaseId(Integer.valueOf(refData.getId()));
 		getProjectManagementService().addReleasePlanUpdate(addReleaseForm);
 		
 		return refData;
@@ -248,6 +250,7 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 		model.addAttribute("editProjectForm", new ProjectForm());
 		model.addAttribute("addEmpDetailsForm",new ResourceDetails());
 		model.addAttribute("projectList", getProjectList());
+		model.addAttribute("updateEmpDetailsForm",new ResourceDetails());
 		model.addAttribute("statusForm",new WeeklyStatusReportData());
 
 		return "/projectmanagement/index";
@@ -338,11 +341,11 @@ public class ProjectManagementControlller extends AbstractEdbBaseController {
 	}
 	
 	@RequestMapping(value = "/deleteComponent.do")
-	public String deleteComponent(@RequestParam("componentId") int componentId,Model model) {
+	public @ResponseBody String deleteComponent(@RequestParam("componentId") int componentId,Model model) {
 		
-		LOG.debug("Project Name:[{--}] deleteComponent:[{}]");
+		LOG.debug("Project Name:[{--}] deleteComponent:[{}]"+ componentId);
 		getProjectWorkService().deleteComponent(componentId);
-		return "/projectwork/newTask";
+		return "Success";
 	}
 	
 
