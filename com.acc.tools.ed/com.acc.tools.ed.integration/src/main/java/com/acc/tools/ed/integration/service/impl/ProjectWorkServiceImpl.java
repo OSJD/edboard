@@ -36,10 +36,7 @@ private Map<String,String> taskStatus=new LinkedHashMap<String, String>();
 		taskStatus.put("8", "Rework In Progress");
 		taskStatus.put("9", "Rework On Hold");
 		taskStatus.put("10", "Task Closed");
-		taskStatus.put("11", "Review Completed");
-		taskStatus.put("12", "Review In Progress");
-		taskStatus.put("13", "Review On Hold");
-	}
+			}
 	public Map<String,String>   getTaskStatus(){
 		
 		return taskStatus;
