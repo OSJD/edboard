@@ -3,9 +3,13 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="f"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="jstl"%>
+
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<jstl:url var="base" value="/"></jstl:url>
+
 <!DOCTYPE html >
 <html>
+<input type="hidden" value="${base}" id="contextPath"/>
 <head>
 
 
